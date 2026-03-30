@@ -10,7 +10,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPa
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.SwitchItem;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadStatus;
+import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -86,7 +86,7 @@ public class ZxyUtils {
                     //#if MC < 12001
                     //$$ MemoryUtils.setLatestPos(pos);
                     //#endif
-                    ModLoadStatus.closeScreen++;
+                    ModLoadUtils.closeScreen++;
                     OpenInventoryPacket.sendOpenInventory(pos, client.level.dimension());
                 }
                 invBlockList.remove(pos);
@@ -150,7 +150,7 @@ public class ZxyUtils {
                     return;
                 }
                 highlightPosList.addAll(syncPosList);
-                ModLoadStatus.closeScreen++;
+                ModLoadUtils.closeScreen++;
                 num = 1;
             }
         } else if (!syncPosList.isEmpty()) {
@@ -237,7 +237,7 @@ public class ZxyUtils {
                 if ((!Configs.Core.CLOUD_INVENTORY.getBooleanValue() || !openIng) && OpenInventoryPacket.key == null) {
                     for (BlockPos pos : syncPosList) {
                         if (!openInv(pos, true)) continue;
-                        ModLoadStatus.closeScreen++;
+                        ModLoadUtils.closeScreen++;
                         blockPos = pos;
                         num = 3;
                         break;

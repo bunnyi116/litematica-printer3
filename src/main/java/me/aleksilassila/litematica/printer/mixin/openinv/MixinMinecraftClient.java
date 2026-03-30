@@ -9,7 +9,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadStatus;
+import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -46,8 +46,8 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = {"setScreen"}, at = {@At(value = "HEAD")}, cancellable = true)
     public void setScreen(@Nullable Screen screen, CallbackInfo ci) {
-        if(ModLoadStatus.closeScreen > 0 && /*screen != null &&*/ screen instanceof AbstractContainerScreen<?>){
-            ModLoadStatus.closeScreen--;
+        if(ModLoadUtils.closeScreen > 0 && /*screen != null &&*/ screen instanceof AbstractContainerScreen<?>){
+            ModLoadUtils.closeScreen--;
             ci.cancel();
         }
     }

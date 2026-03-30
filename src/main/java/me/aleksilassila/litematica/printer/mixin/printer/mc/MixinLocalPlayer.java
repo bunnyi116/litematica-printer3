@@ -8,6 +8,7 @@ import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.printer.BlockPosCooldownManager;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
+import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.UpdateCheckerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -32,7 +33,6 @@ import java.util.concurrent.CompletableFuture;
 //#if MC >= 12001 
 import me.aleksilassila.litematica.printer.printer.zxy.chesttracker.MemoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
-import me.aleksilassila.litematica.printer.utils.ModLoadStatus;
 //#endif
 
 @Mixin(LocalPlayer.class)
@@ -69,7 +69,7 @@ public class MixinLocalPlayer extends AbstractClientPlayer {
     @Inject(at = @At("HEAD"), method = "closeContainer")
     public void close(CallbackInfo ci) {
         //#if MC >= 12001
-        if (ModLoadStatus.isLoadChestTrackerLoaded()) {
+        if (ModLoadUtils.isChestTrackerLoaded()) {
             MemoryUtils.saveMemory(this.containerMenu);
         }
         OpenInventoryPacket.reSet();

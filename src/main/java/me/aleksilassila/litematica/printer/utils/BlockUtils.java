@@ -25,7 +25,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Method;
 import java.util.Optional;
 
 public class BlockUtils {
@@ -58,9 +57,9 @@ public class BlockUtils {
 
     static {
         try {
-            if (ModUtils.isBlockMinerLoaded()) {
+            if (ModLoadUtils.isBlockMinerLoaded()) {
                 bedrockMiner = new BlockMiner();
-            } else if (ModUtils.isBedrockMinerLoaded()) {
+            } else if (ModLoadUtils.isBedrockMinerLoaded()) {
                 bedrockMiner = new BedrockMiner();
             } else {
                 bedrockMiner = null;
@@ -470,7 +469,7 @@ public class BlockUtils {
         if (Configs.Placement.QUICK_SHULKER_MODE.getOptionListValue() == QuickShulkerModeType.CLICK_SLOT) {
             client.gameMode.handleInventoryMouseClick(client.player.containerMenu.containerId, shulkerBoxSlot, 1, ClickType.PICKUP, client.player);
         } else if (Configs.Placement.QUICK_SHULKER_MODE.getOptionListValue() == QuickShulkerModeType.INVOKE) {
-            if (ModUtils.isQuickShulkerLoaded()) {
+            if (ModLoadUtils.isQuickShulkerLoaded()) {
                 try {
                     ClientUtil.CheckAndSend(stack, shulkerBoxSlot);
                 } catch (Exception ignored) {}

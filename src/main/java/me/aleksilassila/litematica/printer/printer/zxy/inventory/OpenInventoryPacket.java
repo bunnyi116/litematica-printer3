@@ -3,7 +3,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 import fi.dy.masa.malilib.util.StringUtils;
 import io.netty.buffer.Unpooled;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.utils.ModLoadStatus;
+import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.utils.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.IdentifierUtils;
@@ -373,7 +373,7 @@ public class OpenInventoryPacket {
             if (Minecraft.getInstance().player != null) {
                 Minecraft.getInstance().player.closeContainer();
             }
-            ModLoadStatus.closeScreen--;
+            ModLoadUtils.closeScreen--;
             openIng = false;
             isOpenHandler = false;
             ClientPlayerTickManager.PRINT.setPrinterMemorySync(false); ;

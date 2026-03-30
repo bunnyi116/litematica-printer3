@@ -10,7 +10,7 @@ import me.aleksilassila.litematica.printer.printer.BlockPosCooldownManager;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadStatus;
+import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,7 +32,7 @@ public class MineHandler extends ClientPlayerTickHandler {
             return false;
         }
         if (Configs.Mine.EXCAVATE_LIMITER.getOptionListValue().equals(ExcavateListMode.TWEAKEROO)) {
-            if (!ModLoadStatus.isTweakerooLoaded()) return true;
+            if (!ModLoadUtils.isTweakerooLoaded()) return true;
             UsageRestriction.ListType listType = BLOCK_TYPE_BREAK_RESTRICTION.getListType();
             if (listType == UsageRestriction.ListType.BLACKLIST) {
                 return BLOCK_TYPE_BREAK_RESTRICTION_BLACKLIST.getStrings().stream()
