@@ -112,4 +112,15 @@ public class ConfigUtils {
         }
         return null;
     }
+
+    public static float getBreakProgressThreshold() {
+        int value = Configs.Break.BREAK_PROGRESS_THRESHOLD.getIntegerValue();
+        if (value < 0) {
+            value = 0;
+        } else if (value > 100) {
+            value = 100;
+        }
+        return (float) value / 100;
+    }
+
 }

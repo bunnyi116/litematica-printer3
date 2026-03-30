@@ -2,7 +2,6 @@ package me.aleksilassila.litematica.printer.mixin.printer.mc;
 
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.*;
-import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -11,6 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket.Action;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,25 +21,63 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("DataFlowIssue")
 @Mixin(value = MultiPlayerGameMode.class, priority = 1020)
 public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExtension {
     // @formatter:off
-    @Shadow private BlockPos destroyBlockPos;
-    @Shadow private ItemStack destroyingItem;
-    @Shadow private float destroyProgress;
-    @Shadow private boolean isDestroying;
-    @Shadow @Final private Minecraft minecraft;
-    @Shadow public abstract boolean destroyBlock(final BlockPos pos);
-    @Shadow protected abstract boolean sameDestroyTarget(final BlockPos pos);
-    @Shadow protected abstract void ensureHasSentCarriedItem();
+    @Shadow
+    private BlockPos destroyBlockPos;
+    @Shadow
+    private ItemStack destroyingItem;
+    @Shadow
+    private float destroyProgress;
+    @Shadow
+    private boolean isDestroying;
+    @Shadow
+    @Final
+    private Minecraft minecraft;
+    @Unique
+    private float delayedDestroyProgress;
+    @Unique
+    private BlockPos delayedDestroyPos;
+    @Unique
+    private boolean hasDelayedDestroy;
+
+    @Shadow
+    public abstract boolean destroyBlock(final BlockPos pos);
+
+    @Shadow
+    protected abstract boolean sameDestroyTarget(final BlockPos pos);
+
+    @Shadow
+    protected abstract void ensureHasSentCarriedItem();
+
     //#if MC > 11802
     @Shadow public abstract InteractionResult useItemOn(LocalPlayer player, InteractionHand hand, BlockHitResult blockHitResult);
     //#else
     //$$ @Shadow public abstract InteractionResult useItemOn(LocalPlayer player,ClientLevel level, InteractionHand hand, BlockHitResult blockHitResult);
     //#endif
+
     // @formatter:on
+
+    @Inject(at = @At("HEAD"), method = "tick")
+    public void tick(CallbackInfo ci) {
+        if (this.hasDelayedDestroy) {
+            BlockState blockState = minecraft.level.getBlockState(this.delayedDestroyPos);
+            if (blockState.isAir()) {
+                this.hasDelayedDestroy = false;
+                return;
+            }
+            this.delayedDestroyProgress = this.delayedDestroyProgress + blockState.getDestroyProgress(minecraft.player, minecraft.level, this.delayedDestroyPos);
+            if (this.delayedDestroyProgress >= 1.0F) {
+                this.hasDelayedDestroy = false;
+            }
+        }
+    }
 
     @Override
     public BlockPos litematica_printer$destroyBlockPos() {
@@ -49,11 +87,6 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
     @Override
     public boolean litematica_printer$isDestroying() {
         return isDestroying;
-    }
-
-    @Override
-    public void litematica_printer$startPrediction(PredictiveAction predictiveAction) {
-        NetworkUtils.sendPacket(predictiveAction);
     }
 
     @Override
@@ -77,82 +110,20 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
         return InteractionResult.PASS;
     }
 
-    @Unique
-    private float litematica_printer$GetBreakingProgressMax() {
-        int value = Configs.Break.BREAK_PROGRESS_THRESHOLD.getIntegerValue();
-        if (value < 70) {
-            value = 70;
-        } else if (value > 100) {
-            value = 100;
-        }
-        return (float) value / 100;
-    }
 
     @Unique
-    private int litematica_printer$GetDestroyStage() {
-        float breakingProgress = destroyProgress >= litematica_printer$GetBreakingProgressMax() ? 1.0F : destroyProgress;
+    private int litematica_printer$getDestroyStage() {
+        float breakingProgress = destroyProgress >= ConfigUtils.getBreakProgressThreshold() ? 1.0F : destroyProgress;
         return breakingProgress > 0.0F ? (int) (breakingProgress * 10.0F) : -1;
     }
 
     @Unique
-    private ServerboundPlayerActionPacket litematica_printer$GetServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action action, BlockPos blockPos, Direction direction, int sequence) {
+    private ServerboundPlayerActionPacket litematica_printer$getServerboundPlayerActionPacket(Action action, BlockPos blockPos, Direction direction, int sequence) {
         //#if MC > 11802
         return new ServerboundPlayerActionPacket(action, blockPos, direction, sequence);
         //#else
         //$$ return new ServerboundPlayerActionPacket(action, blockPos, direction);
         //#endif
-    }
-
-    @Unique
-    private BlockBreakResult litematica_printer$startDestroyBlock(BlockPos blockPos, Direction direction, LocalPlayer player, ClientLevel level, MultiPlayerGameMode gameMode, boolean localPrediction) {
-        if (player.blockActionRestricted(level, blockPos, gameMode.getPlayerMode())) {
-            return BlockBreakResult.FAILED;
-        }
-        if (!level.getWorldBorder().isWithinBounds(blockPos)) {
-            return BlockBreakResult.FAILED;
-        }
-        if (player.getAbilities().instabuild) {
-            NetworkUtils.sendPacket(i -> {
-                if (localPrediction) {
-                    destroyBlock(blockPos);
-                }
-                return litematica_printer$GetServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, blockPos, direction, i);
-            });
-            return BlockBreakResult.COMPLETED;
-        }
-        if (!this.isDestroying || !this.sameDestroyTarget(blockPos)) {
-            if (this.isDestroying) {
-                NetworkUtils.sendPacket(litematica_printer$GetServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK, this.destroyBlockPos, direction, 0));
-            }
-            BlockState blockState = level.getBlockState(blockPos);
-            boolean bl = !blockState.isAir();
-            if (bl && this.destroyProgress == 0.0F) {
-                if (localPrediction) {
-                    blockState.attack(level, blockPos, player);
-                }
-            }
-            float destroyProgress = blockState.getDestroyProgress(player, level, blockPos);
-            if (bl && destroyProgress >= 1.0F) {
-                if (localPrediction) {
-                    destroyBlock(blockPos);
-                }
-            } else {
-                this.isDestroying = true;
-                this.destroyBlockPos = blockPos;
-                this.destroyProgress = 0.0F;
-                this.destroyingItem = player.getMainHandItem();
-                if (localPrediction) {
-                    level.destroyBlockProgress(player.getId(), this.destroyBlockPos, this.litematica_printer$GetDestroyStage());
-                }
-            }
-            NetworkUtils.sendPacket(sequence -> litematica_printer$GetServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, blockPos, direction, sequence));
-            if (destroyProgress >= 1.0F) {
-                return BlockBreakResult.COMPLETED;
-            } else {
-                return BlockBreakResult.IN_PROGRESS;
-            }
-        }
-        return BlockBreakResult.FAILED;
     }
 
     @Override
@@ -164,11 +135,11 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
             return BlockBreakResult.FAILED;
         }
         if (player.getAbilities().instabuild && level.getWorldBorder().isWithinBounds(blockPos)) {
-            NetworkUtils.sendPacket(i -> {
+            NetworkUtils.sendPacket(sequence -> {
                 if (localPrediction) {
                     destroyBlock(blockPos);
                 }
-                return litematica_printer$GetServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, blockPos, direction, i);
+                return litematica_printer$getServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, blockPos, direction, sequence);
             });
             return BlockBreakResult.COMPLETED;
         }
@@ -179,35 +150,102 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
         } else {
             ensureHasSentCarriedItem();
         }
+        BlockState blockState = level.getBlockState(blockPos);
+        boolean isAir = blockState.isAir();
+        if (isAir) {
+            return BlockBreakResult.COMPLETED;
+        }
+        if (this.hasDelayedDestroy && blockPos.equals(this.delayedDestroyPos)) {
+            return BlockBreakResult.COMPLETED;
+        }
         if (this.sameDestroyTarget(blockPos)) {
-            BlockState blockState = level.getBlockState(blockPos);
             if (blockState.isAir()) {
                 this.isDestroying = false;
                 return BlockBreakResult.COMPLETED;
+            }
+            this.destroyProgress = this.destroyProgress + blockState.getDestroyProgress(player, level, blockPos);
+            boolean completed = this.destroyProgress >= ConfigUtils.getBreakProgressThreshold();
+            if (completed) {
+                this.isDestroying = false;
+                this.destroyProgress = 0.0F;
+                NetworkUtils.sendPacket(sequence -> {
+                    if (localPrediction) {
+                        destroyBlock(blockPos);
+                    }
+                    return litematica_printer$getServerboundPlayerActionPacket(Action.STOP_DESTROY_BLOCK, blockPos, direction, sequence);
+                });
             } else {
-                this.destroyProgress = this.destroyProgress + blockState.getDestroyProgress(player, level, blockPos);
-                boolean b = this.destroyProgress >= litematica_printer$GetBreakingProgressMax();
-                if (b) {
-                    this.isDestroying = false;
-                    NetworkUtils.sendPacket(i -> {
-                        if (localPrediction) {
-                            destroyBlock(blockPos);
-                        }
-                        return litematica_printer$GetServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK, blockPos, direction, i);
-                    });
-                    this.destroyProgress = 0.0F;
-                }
-                if (localPrediction) {
-                    level.destroyBlockProgress(player.getId(), this.destroyBlockPos, this.litematica_printer$GetDestroyStage());
-                }
-                if (b) {
-                    return BlockBreakResult.COMPLETED;
-                } else {
+                if (this.hasDelayedDestroy) {
                     return BlockBreakResult.IN_PROGRESS;
                 }
+                this.isDestroying = false;
+                this.destroyProgress = 0.0F;
+                NetworkUtils.sendPacket(sequence -> {
+                    if (localPrediction) {
+                        destroyBlock(blockPos);
+                    }
+                    return litematica_printer$getServerboundPlayerActionPacket(Action.STOP_DESTROY_BLOCK, blockPos, direction, sequence);
+                });
             }
-        } else {
-            return this.litematica_printer$startDestroyBlock(blockPos, direction, player, level, gameMode, localPrediction);
+            if (localPrediction) {
+                level.destroyBlockProgress(player.getId(), this.destroyBlockPos, this.litematica_printer$getDestroyStage());
+            }
+            if (completed) {
+                return BlockBreakResult.COMPLETED;
+            } else {
+                return BlockBreakResult.IN_PROGRESS;
+            }
+        } else if (!this.isDestroying || !this.sameDestroyTarget(blockPos)) {
+            if (this.isDestroying) {
+                NetworkUtils.sendPacket(litematica_printer$getServerboundPlayerActionPacket(Action.ABORT_DESTROY_BLOCK, this.destroyBlockPos, direction, 0));
+            }
+            if (this.destroyProgress == 0.0F) {
+                if (localPrediction) {
+                    blockState.attack(level, blockPos, player);
+                }
+            }
+            float destroyProgress = blockState.getDestroyProgress(player, level, blockPos);
+            if (destroyProgress >= 1.0F) {
+                if (localPrediction) {
+                    destroyBlock(blockPos);
+                }
+                NetworkUtils.sendPacket(sequence -> litematica_printer$getServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, blockPos, direction, sequence));
+            } else {
+                this.isDestroying = true;
+                this.destroyBlockPos = blockPos;
+                this.destroyProgress = 0.0F;
+                this.destroyingItem = player.getMainHandItem();
+                if (localPrediction) {
+                    level.destroyBlockProgress(player.getId(), this.destroyBlockPos, this.litematica_printer$getDestroyStage());
+                }
+                NetworkUtils.sendPacket(sequence -> litematica_printer$getServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, blockPos, direction, sequence));
+                if (!this.hasDelayedDestroy) {
+                    this.setDelayedDestroyBlock();
+                    NetworkUtils.sendPacket(sequence -> {
+                        if (localPrediction) {
+                            this.destroyBlock(this.delayedDestroyPos);
+                        }
+                        return litematica_printer$getServerboundPlayerActionPacket(Action.STOP_DESTROY_BLOCK, blockPos, direction, sequence);
+                    });
+                    return BlockBreakResult.COMPLETED;
+                }
+            }
+            if (destroyProgress >= 1.0F) {
+                return BlockBreakResult.COMPLETED;
+            } else {
+                return BlockBreakResult.IN_PROGRESS;
+            }
         }
+        return BlockBreakResult.FAILED;
+    }
+
+
+    @Unique
+    public void setDelayedDestroyBlock() {
+        this.hasDelayedDestroy = true;
+        this.delayedDestroyPos = destroyBlockPos;
+        this.delayedDestroyProgress = destroyProgress;
+        this.isDestroying = false;
+        this.destroyProgress = 0.0F;
     }
 }
