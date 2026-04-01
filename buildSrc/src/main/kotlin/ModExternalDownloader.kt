@@ -43,7 +43,6 @@ object ExternalModDownloader {
         val trimmedUrl = downloadUrl.trim()
         require(trimmedUrl.isNotBlank()) { "下载链接不能为空！" }
         require(outputDir.isDirectory || outputDir.mkdirs()) { "无法创建输出目录：${outputDir.absolutePath}" }
-        println()
         return try {
             val targetFileName = fileName ?: extractFileNameFromUrl(trimmedUrl)
             ?: throw IOException("无法识别文件名，请手动指定 fileName 参数")

@@ -38,11 +38,9 @@ repositories {
 
     strictMaven("https://maven.terraformersmc.com/releases", "com.terraformersmc")  // ModMenu
     strictMaven("https://maven.nucleoid.xyz", "eu.pb4") // ModMenu依赖TextPlaceholderAPI
-
-    strictMaven("https://jitpack.io")
-    strictMaven("https://maven.isxander.dev/releases")
-
     strictMaven("https://maven.blamejared.com")     // Searchables 配置库
+    strictMaven("https://maven.isxander.dev/releases")
+    strictMaven("https://jitpack.io")
 }
 
 // https://github.com/FabricMC/fabric-loader/issues/783
@@ -104,7 +102,7 @@ tasks {
     register<Copy>("buildAndCollect") {
         group = "build"
         from(jar.map { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod_version")}"))
+        into(rootProject.layout.buildDirectory.file("libs/$modVersion"))
         dependsOn("build")
     }
 }
