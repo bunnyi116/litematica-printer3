@@ -15,26 +15,37 @@ version = fullProjectVersion
 group = modMavenGroup
 
 repositories {
-    maven("https://maven.fabricmc.net") { name = "FabricMC" }
-    maven("https://maven.fallenbreath.me/releases") { name = "FallenBreath" }
-    maven("https://api.modrinth.com/maven") { name = "Modrinth" }
-    maven("https://www.cursemaven.com") { name = "CurseMaven" }
-    maven("https://maven.terraformersmc.com/releases") { name = "TerraformersMC" } // ModMenu 源
-    maven("https://maven.nucleoid.xyz") { name = "Nucleoid" }  // ModMenu依赖 Text Placeholder API
-
-    maven("https://maven.shedaniel.me") { name = "Shedaniel" }  // Cloth API/Config 官方源
-    maven("https://maven.isxander.dev/releases") { name = "XanderReleases" }
-    maven("https://maven.jackf.red/releases") { name = "Jackfred" }   // JackFredLib 依赖
-    maven("https://maven.blamejared.com") { name = "BlameJared" }   // Searchables 配置库
-    maven("https://maven.kyrptonaught.dev") { name = "Kyrptonaught" }   // KyrptConfig 依赖
-    maven("https://jitpack.io") { name = "Jitpack" }
-    maven("https://server.bbkr.space/artifactory/libs-release") { name = "CottonMC" }   // LibGui 依赖
-    maven("https://staging.alexiil.uk/maven/") { name = "CottonMC" }
-    maven("https://mvnrepository.com/artifact/com.belerweb/pinyin4j") { // 拼音库
-        name = "Pinyin4j"
-        content {
-            includeGroupAndSubgroups("com.belerweb")
+    fun strictMaven(url: String, vararg groups: String) = exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            groups.forEach {
+                includeGroupAndSubgroups(it)
+                includeGroupAndSubgroups("$it.*")
+            }
         }
+    }
+    strictMaven("https://mvnrepository.com/artifact/com.belerweb/pinyin4j")
+
+    strictMaven("https://maven.fabricmc.net")
+    strictMaven("https://maven.fallenbreath.me/releases")
+    strictMaven("https://www.cursemaven.com", "curse.maven")
+    strictMaven("https://api.modrinth.com/maven", "maven.modrinth")
+
+    strictMaven("https://maven.terraformersmc.com/releases", "com.terraformersmc")  // ModMenu
+    strictMaven("https://maven.nucleoid.xyz", "eu.pb4") // ModMenu依赖TextPlaceholderAPI
+
+    strictMaven("https://jitpack.io")
+    strictMaven("https://maven.jackf.red/releases", "red.jackf")  // JackFredLib 依赖
+    strictMaven("https://maven.isxander.dev/releases")
+    strictMaven("https://maven.blamejared.com") // Searchables 配置库
+    strictMaven("https://staging.alexiil.uk/maven/")
+
+    strictMaven("https://maven.shedaniel.me")  // Cloth API/Config 官方源
+    if (mcVersionInt <= 12006) {
+        strictMaven("https://maven.kyrptonaught.dev")  // KyrptConfig依赖
+    }
+    if (mcVersionInt <= 11904) {
+        strictMaven("https://server.bbkr.space/artifactory/libs-release")   // LibGui 依赖
     }
 }
 

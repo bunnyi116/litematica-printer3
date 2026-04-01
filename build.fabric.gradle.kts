@@ -19,27 +19,30 @@ version = fullProjectVersion
 group = modMavenGroup
 
 repositories {
-    maven("https://maven.fabricmc.net") { name = "FabricMC" }
-    maven("https://maven.fallenbreath.me/releases") { name = "FallenBreath" }
-    maven("https://api.modrinth.com/maven") { name = "Modrinth" }
-    maven("https://www.cursemaven.com") { name = "CurseMaven" }
-    maven("https://maven.terraformersmc.com/releases") { name = "TerraformersMC" } // ModMenu 源
-    maven("https://maven.nucleoid.xyz") { name = "Nucleoid" }  // ModMenu依赖 Text Placeholder API
-
-    maven("https://maven.shedaniel.me") { name = "Shedaniel" }  // Cloth API/Config 官方源
-    maven("https://maven.isxander.dev/releases") { name = "XanderReleases" }
-    maven("https://maven.jackf.red/releases") { name = "Jackfred" }   // JackFredLib 依赖
-    maven("https://maven.blamejared.com") { name = "BlameJared" }   // Searchables 配置库
-    maven("https://maven.kyrptonaught.dev") { name = "Kyrptonaught" }   // KyrptConfig 依赖
-    maven("https://jitpack.io") { name = "Jitpack" }
-    maven("https://server.bbkr.space/artifactory/libs-release") { name = "CottonMC" }   // LibGui 依赖
-    maven("https://staging.alexiil.uk/maven/") { name = "CottonMC" }
-    maven("https://mvnrepository.com/artifact/com.belerweb/pinyin4j") { // 拼音库
-        name = "Pinyin4j"
-        content {
-            includeGroupAndSubgroups("com.belerweb")
+    fun strictMaven(url: String, vararg groups: String) = exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            groups.forEach {
+                includeGroupAndSubgroups(it)
+                includeGroupAndSubgroups("$it.*")
+            }
         }
     }
+    strictMaven("https://mvnrepository.com/artifact/com.belerweb/pinyin4j")
+
+    strictMaven("https://maven.fabricmc.net")
+    strictMaven("https://maven.fallenbreath.me/releases")
+
+    strictMaven("https://www.cursemaven.com", "curse.maven")
+    strictMaven("https://api.modrinth.com/maven", "maven.modrinth")
+
+    strictMaven("https://maven.terraformersmc.com/releases", "com.terraformersmc")  // ModMenu
+    strictMaven("https://maven.nucleoid.xyz", "eu.pb4") // ModMenu依赖TextPlaceholderAPI
+
+    strictMaven("https://jitpack.io")
+    strictMaven("https://maven.isxander.dev/releases")
+
+    strictMaven("https://maven.blamejared.com")     // Searchables 配置库
 }
 
 // https://github.com/FabricMC/fabric-loader/issues/783
@@ -54,8 +57,12 @@ dependencies {
 
     implementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+
     implementation("com.belerweb:pinyin4j:${prop("pinyin_version")}")?.let { include(it) }
+
     implementation("com.terraformersmc:modmenu:${prop("modmenu")}")
+
+    // masa
     implementation("maven.modrinth:malilib:$malilib")
     implementation("maven.modrinth:litematica:$litematica")
     implementation("maven.modrinth:tweakeroo:${prop("tweakeroo")}")
@@ -69,17 +76,14 @@ dependencies {
     implementation("com.blamejared.searchables:${prop("searchables")}")
 
     // 快捷潜影盒
-    implementation("com.github.EnderPhantomWing:quickshulker-multi:${prop("quickshulker")}") {
-        exclude(group = "atonkish.reinfcore", module = "reinforced-core")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.20.6")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.1")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.3")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.4")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.5")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.8")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.10")
-        exclude(group = "com.github.EnderPhantomWing.quickshulker-multi", module = "quickshulker-mc1.21.11")
+    val quickshulkerUrl = prop("quickshulker").toString()
+    if (quickshulkerUrl.isNotEmpty()) {
+        val quickshulkerFile = downloadDependencyMod(quickshulkerUrl)
+        if (quickshulkerFile != null && quickshulkerFile.exists()) {
+            implementation(files(quickshulkerFile))
+        }
     }
+
     implementation("me.fallenbreath:conditional-mixin-fabric:0.6.4")
 }
 
