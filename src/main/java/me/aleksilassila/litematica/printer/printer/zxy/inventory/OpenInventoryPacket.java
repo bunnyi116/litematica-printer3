@@ -265,7 +265,7 @@ public class OpenInventoryPacket {
         ServerLevel world = server.getLevel(key);
         if (world == null) return;
         BlockState blockState = world.getBlockState(pos);
-        //#if MC >= 260001
+        //#if MC >= 260100
         world.getChunkSource().addTicketWithRadius(OPEN_TICKET, new ChunkPos(pos.getX(), pos.getZ()), 2);
         //#elseif MC > 12104
         //$$ world.getChunkSource().addTicketWithRadius(OPEN_TICKET, new ChunkPos(pos), 2);

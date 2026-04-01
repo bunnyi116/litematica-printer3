@@ -91,7 +91,7 @@ public abstract class MixinGui {
     }
 
     // @formatter:off
-    //#if MC >= 260001
+    //#if MC >= 260100
     @Inject(method = "extractHotbarAndDecorations", at = @At("TAIL"))
     //#else
     //$$ @Inject(method = "renderItemHotbar", at = @At("TAIL"))

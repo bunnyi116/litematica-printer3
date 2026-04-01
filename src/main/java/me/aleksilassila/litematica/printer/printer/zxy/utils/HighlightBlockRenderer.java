@@ -39,7 +39,7 @@ import com.mojang.blaze3d.vertex.MeshData;
 import org.joml.Vector4f;
 //#endif
 
-//#if MC >= 260001
+//#if MC >= 260100
 import org.joml.Matrix4fc;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -93,7 +93,7 @@ public class HighlightBlockRenderer implements IRenderer {
     }
 
     // @formatter:off
-    //#if MC > 260001
+    //#if MC > 260100
     public void test3(Matrix4fc matrices, Color4f color4f, Set<BlockPos> posSet) {
     //#elseif MC > 12004
     //$$ public void test3(Matrix4f matrices, Color4f color4f, Set<BlockPos> posSet) {
@@ -184,7 +184,7 @@ public class HighlightBlockRenderer implements IRenderer {
     }
 
     @Override
-    //#if MC >= 260001
+    //#if MC >= 260100
     public void onRenderWorldLast(RenderTarget fb, Matrix4fc matrices, CameraRenderState cameraState, Frustum culling, RenderBuffers buffers, GpuBufferSlice terrainFog, Vector4f fogColor, ProfilerFiller profiler) {
     //#elseif MC > 12004
     //$$ public void onRenderWorldLast(Matrix4f matrices, Matrix4f projMatrix) {
