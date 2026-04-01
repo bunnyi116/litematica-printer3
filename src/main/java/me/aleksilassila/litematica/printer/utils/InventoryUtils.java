@@ -21,7 +21,7 @@ import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -226,7 +226,7 @@ public class InventoryUtils {
                         player.inventoryMenu.getStateId(),
                         Shorts.checkedCast(slot),
                         SignedBytes.checkedCast(currentHotbarSlot),
-                        ClickType.SWAP,
+                        ContainerInput.SWAP,
                         snapshot,
                         hashedStack
                 ));
@@ -242,10 +242,10 @@ public class InventoryUtils {
                 //$$   ));
                 //#endif
 
-                player.inventoryMenu.clicked(slot, currentHotbarSlot, ClickType.SWAP, player);
+                player.inventoryMenu.clicked(slot, currentHotbarSlot, ContainerInput.SWAP, player);
             } else {
                 if (client.gameMode != null) {
-                    client.gameMode.handleInventoryMouseClick(player.inventoryMenu.containerId, slot, currentHotbarSlot, ClickType.SWAP, player);
+                    client.gameMode.handleContainerInput(player.inventoryMenu.containerId, slot, currentHotbarSlot, ContainerInput.SWAP, player);
                 }
             }
             return true;
@@ -335,7 +335,7 @@ public class InventoryUtils {
                     player.inventoryMenu.getStateId(),
                     Shorts.checkedCast(sourceSlot),
                     SignedBytes.checkedCast(OFFHAND_SLOT_INDEX), // 目标：副手槽位40
-                    ClickType.SWAP,
+                    ContainerInput.SWAP,
                     snapshot,
                     hashedStack
             ));
@@ -352,15 +352,15 @@ public class InventoryUtils {
             //#endif
 
             // 本地同步交换操作
-            player.inventoryMenu.clicked(sourceSlot, OFFHAND_SLOT_INDEX, ClickType.SWAP, player);
+            player.inventoryMenu.clicked(sourceSlot, OFFHAND_SLOT_INDEX, ContainerInput.SWAP, player);
         } else {
             // 不使用数据包：本地直接交换到副手
             if (client.gameMode != null) {
-                client.gameMode.handleInventoryMouseClick(
+                client.gameMode.handleContainerInput(
                         player.inventoryMenu.containerId,
                         sourceSlot,
                         OFFHAND_SLOT_INDEX, // 目标：副手槽位40
-                        ClickType.SWAP,
+                        ContainerInput.SWAP,
                         player
                 );
             }

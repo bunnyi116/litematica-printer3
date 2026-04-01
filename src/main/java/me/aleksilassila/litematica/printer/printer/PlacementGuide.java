@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @SuppressWarnings("IfCanBeSwitch")
 public class PlacementGuide extends PrinterUtils {
     @SuppressWarnings("all")
-    protected static final Map<Block, Block> STRIPPED_LOGS = AxeItemAccessor.getStrippedBlocks();
+    protected static final Map<Block, Block> STRIPPED_LOGS = AxeItemAccessor.getStrippables();
     protected static List<String> compostWhitelistCache = new ArrayList<>();      // 缓存堆肥桶白名单的字符串列表（用于判断是否修改）
     protected static Item[] whitelistItemsCache = new Item[0];    // 缓存过滤后的可堆肥物品列表（避免重复计算）
     protected final @NotNull Minecraft mc;
@@ -1103,17 +1103,18 @@ public class PlacementGuide extends PrinterUtils {
         COMPOSTER(ComposterBlock.class),                // 堆肥桶
 
         // 其他
-        FARMLAND(FarmBlock.class),              // 耕地
+        FARMLAND(FarmlandBlock.class),              // 耕地
         DIRT_PATH(DirtPathBlock.class),         // 土径
         DEAD_CORAL(Block.class),                // 死珊瑚
         NETHER_PORTAL(NetherPortalBlock.class), // 下界传送门
-        SKIP(SkullBlock.class, LiquidBlock.class, BubbleColumnBlock.class, WaterlilyBlock.class), // 跳过
+        SKIP(SkullBlock.class, LiquidBlock.class, BubbleColumnBlock.class, LilyPadBlock.class), // 跳过
         DEFAULT; // 默认
 
         private final Class<?>[] classes;
 
         ClassHook(Class<?>... classes) {
             this.classes = classes;
+
         }
     }
 

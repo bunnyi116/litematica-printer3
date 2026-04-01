@@ -11,18 +11,6 @@ plugins {
     id("com.replaymod.preprocess")
 }
 
-val time = SimpleDateFormat("yyMMdd")
-    .apply { timeZone = TimeZone.getTimeZone("GMT+08:00") }
-    .format(Date())
-    .toString()
-
-var fullProjectVersion = "$modVersion+$time"
-if (System.getenv("IS_THIS_RELEASE") == "false") {
-    val buildNumber: String? = System.getenv("GITHUB_RUN_NUMBER")
-    if (buildNumber != null) {
-        fullProjectVersion += "+build.$buildNumber"
-    }
-}
 version = fullProjectVersion
 group = modMavenGroup
 
@@ -33,16 +21,15 @@ repositories {
     maven("https://www.cursemaven.com") { name = "CurseMaven" }
     maven("https://maven.terraformersmc.com/releases") { name = "TerraformersMC" } // ModMenu 源
     maven("https://maven.nucleoid.xyz") { name = "Nucleoid" }  // ModMenu依赖 Text Placeholder API
-//    maven("https://masa.dy.fi/maven") { name = "Masa" }
-//    maven("https://masa.dy.fi/maven/sakura-ryoko") { name = "SakuraRyoko" }
+
     maven("https://maven.shedaniel.me") { name = "Shedaniel" }  // Cloth API/Config 官方源
     maven("https://maven.isxander.dev/releases") { name = "XanderReleases" }
     maven("https://maven.jackf.red/releases") { name = "Jackfred" }   // JackFredLib 依赖
     maven("https://maven.blamejared.com") { name = "BlameJared" }   // Searchables 配置库
     maven("https://maven.kyrptonaught.dev") { name = "Kyrptonaught" }   // KyrptConfig 依赖
+    maven("https://jitpack.io") { name = "Jitpack" }
     maven("https://server.bbkr.space/artifactory/libs-release") { name = "CottonMC" }   // LibGui 依赖
     maven("https://staging.alexiil.uk/maven/") { name = "CottonMC" }
-    maven("https://jitpack.io") { name = "Jitpack" }
     maven("https://mvnrepository.com/artifact/com.belerweb/pinyin4j") { // 拼音库
         name = "Pinyin4j"
         content {
@@ -157,6 +144,15 @@ loom {
             programArgs(programArgs)
             runDir = "../../run/client"
         }
+    }
+}
+
+tasks {
+    register<Copy>("buildAndCollect") {
+        group = "build"
+        from(remapJar.map { it.archiveFile })
+        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod_version")}"))
+        dependsOn("build")
     }
 }
 

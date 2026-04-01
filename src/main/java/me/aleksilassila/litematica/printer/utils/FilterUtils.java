@@ -142,8 +142,9 @@ public class FilterUtils {
         if (tagName.isEmpty()) {
             return false;
         }
+
         // 直接处理Block类型的TagKey流，无类型转换
-        Stream<TagKey<Block>> blockTagStream = blockState.getTags();
+        Stream<TagKey<Block>> blockTagStream = blockState.tags();
         return blockTagStream
                 .map(tag -> tag.location().toString())
                 .anyMatch(tagFullName -> matchString(tagFullName, tagName, matchRules));
@@ -157,7 +158,7 @@ public class FilterUtils {
             return false;
         }
         // 直接处理Item类型的TagKey流，无类型转换
-        Stream<TagKey<Item>> itemTagStream = itemStack.getTags();
+        Stream<TagKey<Item>> itemTagStream = itemStack.tags();
         return itemTagStream
                 .map(tag -> tag.location().toString())
                 .anyMatch(tagFullName -> matchString(tagFullName, tagName, matchRules));

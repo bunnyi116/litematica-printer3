@@ -14,7 +14,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -176,8 +176,8 @@ public class InventoryUtils {
                             player.closeContainer();
                             //刷新濳影盒
                             if (shulkerBoxSlot != -1) {
-                                client.gameMode.handleInventoryMouseClick(sc.containerId, shulkerBoxSlot, 0, ClickType.PICKUP, client.player);
-                                client.gameMode.handleInventoryMouseClick(sc.containerId, shulkerBoxSlot, 0, ClickType.PICKUP, client.player);
+                                client.gameMode.handleContainerInput(sc.containerId, shulkerBoxSlot, 0, ContainerInput.PICKUP, client.player);
+                                client.gameMode.handleContainerInput(sc.containerId, shulkerBoxSlot, 0, ContainerInput.PICKUP, client.player);
                             }
                             shulkerBoxSlot = -1;
                             isOpenHandler = false;

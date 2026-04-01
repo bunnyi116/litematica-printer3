@@ -15,9 +15,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-import static fi.dy.masa.litematica.util.WorldUtils.applyCarpetProtocolHitVec;
-import static fi.dy.masa.litematica.util.WorldUtils.applyPlacementProtocolV3;
-
 //#if MC < 11900
 //$$ import fi.dy.masa.malilib.util.SubChunkPos;
 //#endif
@@ -33,10 +30,10 @@ public class LitematicaUtils {
             EasyPlaceProtocol protocol = PlacementHandler.getEffectiveProtocolVersion();
             Vec3 hitPos = Vec3.atLowerCornerOf(pos);
             if (protocol == EasyPlaceProtocol.V3) {
-                return applyPlacementProtocolV3(pos, stateSchematic, hitPos);
+                return fi.dy.masa.litematica.util.WorldUtils.applyPlacementProtocolV3(pos, stateSchematic, hitPos);
             } else if (protocol == EasyPlaceProtocol.V2) {
                 // Carpet Accurate Block placements protocol support, plus slab support
-                return applyCarpetProtocolHitVec(pos, stateSchematic, hitPos);
+                return fi.dy.masa.litematica.util.WorldUtils.applyCarpetProtocolHitVec(pos, stateSchematic, hitPos);
             }
         }
         return null;

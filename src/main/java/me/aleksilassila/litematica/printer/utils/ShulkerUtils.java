@@ -5,7 +5,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.QuickShulkerModeType;
 import net.kyrptonaught.quickshulker.client.ClientUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 
 @SuppressWarnings({"DataFlowIssue", "SpellCheckingInspection"})
@@ -15,7 +15,7 @@ public class ShulkerUtils {
 
     public static void openShulker(ItemStack stack, int shulkerBoxSlot) {
         if (openMode == QuickShulkerModeType.CLICK_SLOT) {
-            client.gameMode.handleInventoryMouseClick(client.player.containerMenu.containerId, shulkerBoxSlot, 1, ClickType.PICKUP, client.player);
+            client.gameMode.handleContainerInput(client.player.containerMenu.containerId, shulkerBoxSlot, 1, ContainerInput.PICKUP, client.player);
         } else if (openMode == QuickShulkerModeType.INVOKE) {
             if (ModLoadUtils.isQuickShulkerLoaded()) {
                 try {

@@ -1,10 +1,9 @@
-import org.gradle.api.Project
 import org.gradle.api.GradleException
 import org.gradle.api.JavaVersion
+import org.gradle.api.Project
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.TimeZone
+import java.util.*
 
 fun Project.propOrNull(key: String) = findProperty(key)
 fun Project.prop(key: String) = propOrNull(key) ?: throw GradleException("buildSrc: 属性 $key 未配置/值为空")
@@ -68,7 +67,13 @@ private fun getFullProjectVersion(modVersion: String): String {
             version += "+build.$buildNumber"
         }
     }
-    return version;
+    if (System.getenv("IS_THIS_RELEASE") == "false") {
+        val buildNumber: String? = System.getenv("GITHUB_RUN_NUMBER")
+        if (buildNumber != null) {
+            version += "+build.$buildNumber"
+        }
+    }
+    return version
 }
 
 val Project.placeholderProps: Map<String, Any?>

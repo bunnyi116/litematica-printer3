@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -106,18 +106,18 @@ public class SwitchItem {
                 boolean reInv = false;
                 //检查记录的槽位是否有物品
                 if (sc.slots.get(slot1).getItem().isEmpty()) {
-                    client.gameMode.handleInventoryMouseClick(sc.containerId, i, 0, ClickType.PICKUP, client.player);
-                    client.gameMode.handleInventoryMouseClick(sc.containerId, slot1, 0, ClickType.PICKUP, client.player);
+                    client.gameMode.handleContainerInput(sc.containerId, i, 0, ContainerInput.PICKUP, client.player);
+                    client.gameMode.handleContainerInput(sc.containerId, slot1, 0, ContainerInput.PICKUP, client.player);
                     reInv = true;
                 } else {
                     int count = reSwitchItem.getCount();
-                    client.gameMode.handleInventoryMouseClick(sc.containerId, i, 0, ClickType.PICKUP, client.player);
+                    client.gameMode.handleContainerInput(sc.containerId, i, 0, ContainerInput.PICKUP, client.player);
                     for (Integer integer : sameItem) {
                         int count1 = sc.slots.get(integer).getItem().getCount();
                         int maxCount = sc.slots.get(integer).getItem().getMaxStackSize();
                         int i1 = maxCount - count1;
                         count -= i1;
-                        client.gameMode.handleInventoryMouseClick(sc.containerId, integer, 0, ClickType.PICKUP, client.player);
+                        client.gameMode.handleContainerInput(sc.containerId, integer, 0, ContainerInput.PICKUP, client.player);
                         if (count <= 0) reInv = true;
                     }
                 }
@@ -127,7 +127,7 @@ public class SwitchItem {
                 if (!reInv) {
                     client.gui.setOverlayMessage(Component.nullToEmpty("复原库存物品失败"), false);
                 }
-                client.gameMode.handleInventoryMouseClick(sc.containerId, i, 0, ClickType.PICKUP, client.player);
+                client.gameMode.handleContainerInput(sc.containerId, i, 0, ContainerInput.PICKUP, client.player);
                 return;
             }
         }

@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 import fi.dy.masa.malilib.util.restrictions.UsageRestriction;
 import fi.dy.masa.malilib.config.ConfigManager;
 import me.aleksilassila.litematica.printer.Reference;
@@ -674,7 +674,11 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
     public void load() {
         File settingFile = new File(FILE_PATH);
         if (settingFile.isFile() && settingFile.exists()) {
-            JsonElement jsonElement = JsonUtils.parseJsonFile(settingFile);
+            //#if MC >= 260001
+            JsonElement jsonElement = JsonUtils.parseJsonFile(settingFile.toPath());
+            //#else
+            //$$ JsonElement jsonElement = JsonUtils.parseJsonFile(settingFile);
+            //#endif
             if (jsonElement != null && jsonElement.isJsonObject()) {
                 JsonObject obj = jsonElement.getAsJsonObject();
                 ConfigUtils.readConfigBase(obj, Reference.MOD_ID, OPTIONS);
@@ -684,10 +688,15 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
     @Override
     public void save() {
+        File settingFile = new File(FILE_PATH);
         if ((CONFIG_DIR.exists() && CONFIG_DIR.isDirectory()) || CONFIG_DIR.mkdirs()) {
             JsonObject configRoot = new JsonObject();
             ConfigUtils.writeConfigBase(configRoot, Reference.MOD_ID, OPTIONS);
-            JsonUtils.writeJsonToFile(configRoot, new File(FILE_PATH));
+            //#if MC >= 260001
+            JsonUtils.writeJsonToFile(configRoot, settingFile.toPath());
+            //#else
+            //$$ JsonUtils.writeJsonToFile(configRoot, settingFile);
+            //#endif
         }
     }
 

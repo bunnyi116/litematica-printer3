@@ -14,7 +14,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -467,7 +467,7 @@ public class BlockUtils {
     // Add methods from BlockUtils
     public static void openShulker(ItemStack stack, int shulkerBoxSlot) {
         if (Configs.Placement.QUICK_SHULKER_MODE.getOptionListValue() == QuickShulkerModeType.CLICK_SLOT) {
-            client.gameMode.handleInventoryMouseClick(client.player.containerMenu.containerId, shulkerBoxSlot, 1, ClickType.PICKUP, client.player);
+            client.gameMode.handleContainerInput(client.player.containerMenu.containerId, shulkerBoxSlot, 1, ContainerInput.PICKUP, client.player);
         } else if (Configs.Placement.QUICK_SHULKER_MODE.getOptionListValue() == QuickShulkerModeType.INVOKE) {
             if (ModLoadUtils.isQuickShulkerLoaded()) {
                 try {
