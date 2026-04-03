@@ -90,6 +90,11 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
     }
 
     @Override
+    public void litematica_printer$startPrediction(PredictiveAction predictiveAction) {
+        NetworkUtils.sendPacket(predictiveAction);
+    }
+
+    @Override
     public InteractionResult litematica_printer$useItemOn(boolean localPrediction, InteractionHand hand, BlockHitResult blockHit) {
         if (localPrediction) {
             //#if MC > 11802
