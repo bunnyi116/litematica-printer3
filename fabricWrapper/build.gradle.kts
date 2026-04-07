@@ -42,11 +42,13 @@ fun getNextLocalBuildNumber(currentModVersion: String, currentTime: String): Int
         buildNumber++
     }
     try {
-        val jsonBuilder = JsonBuilder(mapOf(
-            "lastModVersion" to currentModVersion,
-            "lastTime" to currentTime,
-            "buildNumber" to buildNumber
-        ))
+        val jsonBuilder = JsonBuilder(
+            mapOf(
+                "lastModVersion" to currentModVersion,
+                "lastTime" to currentTime,
+                "buildNumber" to buildNumber
+            )
+        )
         localBuildInfoFile.writeText(jsonBuilder.toPrettyString()) // 格式化输出，方便阅读
     } catch (e: Exception) {
         println("⚠ 写入本地构建号JSON文件失败: ${e.message ?: "未知错误"}")

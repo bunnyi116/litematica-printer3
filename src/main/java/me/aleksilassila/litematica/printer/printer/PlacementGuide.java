@@ -117,11 +117,11 @@ public class PlacementGuide extends PrinterUtils {
     private @Nullable Action buildActionMissingBlock(SchematicBlockContext ctx, ClassHook requiredType, AtomicReference<Boolean> skip) {
         switch (requiredType) {
             case TORCH -> {
-                Direction lookDirection = ctx.getRequiredStateProperty(WallTorchBlock.FACING).orElse(Direction.UP).getOpposite();
+                Direction lookDirection = ctx.requiredProperty(WallTorchBlock.FACING).orElse(Direction.UP).getOpposite();
                 return new Action().setSides(lookDirection).setLookDirection(lookDirection).setRequiresSupport();
             }
             case AMETHYST -> {
-                Direction lookDirection = ctx.getRequiredStateProperty(AmethystClusterBlock.FACING).orElse(Direction.UP).getOpposite();
+                Direction lookDirection = ctx.requiredProperty(AmethystClusterBlock.FACING).orElse(Direction.UP).getOpposite();
                 return new Action().setSides(lookDirection).setRequiresSupport();
             }
             case SLAB -> {
@@ -338,7 +338,7 @@ public class PlacementGuide extends PrinterUtils {
                 return new Action().setSides(Direction.DOWN).setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE).setRequiresSupport();
             }
             case OBSERVER -> {
-                @Nullable Direction facing = ctx.getRequiredStateProperty(ObserverBlock.FACING).orElse(null);
+                @Nullable Direction facing = ctx.requiredProperty(ObserverBlock.FACING).orElse(null);
                 if (facing == null) {
                     return null;
                 }
@@ -364,7 +364,7 @@ public class PlacementGuide extends PrinterUtils {
                         // 检查输入端方块是侦测器的情况同时是侦测链, 查找源头状态
                         SchematicBlockContext temp = input;
                         while (temp.requiredState.getBlock() instanceof ObserverBlock) {
-                            @Nullable Direction tempObserverFacing = temp.getRequiredStateProperty(ObserverBlock.FACING).orElse(null);
+                            @Nullable Direction tempObserverFacing = temp.requiredProperty(ObserverBlock.FACING).orElse(null);
                             // 查找下一个侦测器并检查并检查状态是否正确
                             SchematicBlockContext offset = temp.offset(tempObserverFacing);
                             if (tempObserverFacing != null && BlockPrintState.get(offset) != BlockPrintState.CORRECT) {
@@ -389,7 +389,7 @@ public class PlacementGuide extends PrinterUtils {
                             // 检查输入端方块是侦测器的情况同时是侦测链, 查找源头状态
                             temp = input;
                             while (temp.requiredState.getBlock() instanceof ObserverBlock) {
-                                @Nullable Direction tempObserverFacing = temp.getRequiredStateProperty(ObserverBlock.FACING).orElse(null);
+                                @Nullable Direction tempObserverFacing = temp.requiredProperty(ObserverBlock.FACING).orElse(null);
                                 // 查找下一个侦测器并检查并检查状态是否正确
                                 SchematicBlockContext offset = temp.offset(tempObserverFacing);
                                 if (tempObserverFacing != null && BlockPrintState.get(offset) != BlockPrintState.CORRECT) {
@@ -491,7 +491,7 @@ public class PlacementGuide extends PrinterUtils {
                     for (Direction direction : Direction.values()) {
                         SchematicBlockContext temp = ctx.offset(direction);
                         while (temp.requiredState.getBlock() instanceof ObserverBlock) {
-                            @Nullable Direction tempObserverFacing = temp.getRequiredStateProperty(ObserverBlock.FACING).orElse(null);
+                            @Nullable Direction tempObserverFacing = temp.requiredProperty(ObserverBlock.FACING).orElse(null);
                             if (tempObserverFacing != null) {
                                 SchematicBlockContext offset = temp.offset(tempObserverFacing);
                                 if (tempObserverFacing == direction) {

@@ -86,7 +86,7 @@ public class PrintHandler extends ClientPlayerTickHandler {
         if (Configs.Print.FALLING_CHECK.getBooleanValue() && ctx.requiredState.getBlock() instanceof FallingBlock) {
             BlockPos downPos = blockPos.below();
             if (level.getBlockState(downPos) != ctx.requiredState) {
-                MessageUtils.setOverlayMessage("方块 " + ctx.getRequiredBlockName().getString() + " 下方方块不相符，跳过放置");
+                MessageUtils.setOverlayMessage("方块 " + ctx.requiredBlockName().getString() + " 下方方块不相符，跳过放置");
                 return;
             }
         }

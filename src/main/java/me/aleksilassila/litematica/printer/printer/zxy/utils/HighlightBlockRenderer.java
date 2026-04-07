@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.event.RenderEventHandler;
 import fi.dy.masa.malilib.interfaces.IRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
+import me.aleksilassila.litematica.printer.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -53,7 +54,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 public class HighlightBlockRenderer implements IRenderer {
     public static HighlightBlockRenderer instance = new HighlightBlockRenderer();
     public static Map<String, HighlightTheProject> highlightTheProjectMap = new HashMap<>();
-    public static String threadName = "litematica-printer-render";
+    public static String threadName = Reference.MOD_ID + "-render";
     public static boolean shaderIng = false;
     public static List<String> clearList = new LinkedList<>();
     public static Map<String, Set<BlockPos>> setMap = new HashMap<>();
