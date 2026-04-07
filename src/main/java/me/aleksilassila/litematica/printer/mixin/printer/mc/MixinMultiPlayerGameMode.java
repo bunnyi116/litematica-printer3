@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.mixin.printer.mc;
 
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.*;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
@@ -140,6 +141,12 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
         } else {
             ensureHasSentCarriedItem();
         }
+        if (Configs.Break.FAST_BREAK.getBooleanValue()){
+            NetworkUtils.sendPacket(sequence -> litematica_printer$getServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, blockPos, direction, sequence));
+            NetworkUtils.sendPacket(sequence -> litematica_printer$getServerboundPlayerActionPacket(Action.STOP_DESTROY_BLOCK, blockPos, direction, sequence));
+            return BlockBreakResult.COMPLETED;
+        }
+        boolean useDelayedDestroy = Configs.Break.BREAK_USE_DELAYED_DESTROY.getBooleanValue();
         BlockState blockState = level.getBlockState(blockPos);
         boolean isAir = blockState.isAir();
         if (isAir) {
@@ -165,7 +172,7 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
                     return litematica_printer$getServerboundPlayerActionPacket(Action.STOP_DESTROY_BLOCK, blockPos, direction, sequence);
                 });
             } else {
-                if (this.hasDelayedDestroy) {
+                if (this.hasDelayedDestroy && useDelayedDestroy) {
                     return BlockBreakResult.IN_PROGRESS;
                 }
                 this.isDestroying = false;
@@ -209,7 +216,7 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
                     level.destroyBlockProgress(player.getId(), this.destroyBlockPos, this.litematica_printer$getDestroyStage());
                 }
                 NetworkUtils.sendPacket(sequence -> litematica_printer$getServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, blockPos, direction, sequence));
-                if (!this.hasDelayedDestroy) {
+                if (!this.hasDelayedDestroy && useDelayedDestroy) {
                     this.setDelayedDestroyBlock();
                     NetworkUtils.sendPacket(sequence -> {
                         if (localPrediction) {
