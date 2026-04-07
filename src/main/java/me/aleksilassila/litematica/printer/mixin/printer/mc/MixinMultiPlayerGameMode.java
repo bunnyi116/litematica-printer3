@@ -80,21 +80,6 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
     }
 
     @Override
-    public BlockPos litematica_printer$destroyBlockPos() {
-        return destroyBlockPos;
-    }
-
-    @Override
-    public boolean litematica_printer$isDestroying() {
-        return isDestroying;
-    }
-
-    @Override
-    public void litematica_printer$startPrediction(PredictiveAction predictiveAction) {
-        NetworkUtils.sendPacket(predictiveAction);
-    }
-
-    @Override
     public InteractionResult litematica_printer$useItemOn(boolean localPrediction, InteractionHand hand, BlockHitResult blockHit) {
         if (localPrediction) {
             //#if MC > 11802
@@ -108,9 +93,9 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
             return InteractionResult.FAIL;
         }
         //#if MC > 11802
-        litematica_printer$startPrediction((sequence) -> new ServerboundUseItemOnPacket(hand, blockHit, sequence));
+        NetworkUtils.sendPacket(sequence -> new ServerboundUseItemOnPacket(hand, blockHit, sequence));
         //#else
-        //$$ litematica_printer$startPrediction((sequence) -> new ServerboundUseItemOnPacket(hand, blockHit));
+        //$$ NetworkUtils.sendPacket(sequence -> new ServerboundUseItemOnPacket(hand, blockHit));
         //#endif
         return InteractionResult.PASS;
     }

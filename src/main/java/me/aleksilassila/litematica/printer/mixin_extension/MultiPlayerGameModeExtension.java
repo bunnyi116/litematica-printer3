@@ -12,10 +12,4 @@ public interface MultiPlayerGameModeExtension {
     InteractionResult litematica_printer$useItemOn(boolean localPrediction, InteractionHand hand, BlockHitResult blockHit);
 
     BlockBreakResult litematica_printer$continueDestroyBlock(boolean localPrediction, BlockPos blockPos, Direction direction);
-
-    void litematica_printer$startPrediction(PredictiveAction predictiveAction);
-
-    BlockPos litematica_printer$destroyBlockPos();
-
-    boolean litematica_printer$isDestroying();
 }
