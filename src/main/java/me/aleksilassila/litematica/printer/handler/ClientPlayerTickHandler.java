@@ -4,6 +4,7 @@ import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
+import fi.dy.masa.malilib.util.position.Vec3i;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.*;
@@ -185,7 +186,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         }
         // 更新迭代范围
         if (this.playerInteractionBox != null) {
-            BlockPos playerPos = this.player.getOnPos();
+            BlockPos playerPos = Vec3i.containing(this.player.getEyePosition());
             double threshold = getWorkRange() * 0.7; // 玩家移动阈值：工作范围的70%
             @Nullable PrinterBox playerInteractionBox = this.playerInteractionBox.get();
             if (playerInteractionBox == null
