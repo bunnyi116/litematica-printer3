@@ -186,7 +186,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         }
         // 更新迭代范围
         if (this.playerInteractionBox != null) {
-            BlockPos playerPos = Vec3i.containing(this.player.getEyePosition());
+            BlockPos playerPos = this.player.blockPosition();
             double threshold = getWorkRange() * 0.7; // 玩家移动阈值：工作范围的70%
             @Nullable PrinterBox playerInteractionBox = this.playerInteractionBox.get();
             if (playerInteractionBox == null
