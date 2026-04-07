@@ -53,20 +53,12 @@ val Project.javaVersion
     }
 val Project.mixinJavaVersion get() = "JAVA_${javaVersion}"
 
-val Project.fullProjectVersion: String get() = getFullProjectVersion(modVersion)
-
-private fun getFullProjectVersion(modVersion: String): String {
+val Project.fullProjectVersion: String get() {
     val time = SimpleDateFormat("yyMMdd")
         .apply { timeZone = TimeZone.getTimeZone("GMT+08:00") }
         .format(Date())
         .toString()
     var version = "$modVersion+$time"
-    if (System.getenv("IS_THIS_RELEASE") == "false") {
-        val buildNumber: String? = System.getenv("GITHUB_RUN_NUMBER")
-        if (buildNumber != null) {
-            version += "+build.$buildNumber"
-        }
-    }
     if (System.getenv("IS_THIS_RELEASE") == "false") {
         val buildNumber: String? = System.getenv("GITHUB_RUN_NUMBER")
         if (buildNumber != null) {
