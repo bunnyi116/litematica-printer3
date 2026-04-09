@@ -31,6 +31,10 @@ repositories {
     strictMaven("https://www.cursemaven.com", "curse.maven")
     strictMaven("https://api.modrinth.com/maven", "maven.modrinth")
 
+    if (mcVersionInt <= 12006) {
+        strictMaven("https://maven.kyrptonaught.dev", "net.kyrptonaught")  // KyrptConfig依赖
+    }
+
     strictMaven("https://maven.terraformersmc.com/releases", "com.terraformersmc")  // ModMenu
     strictMaven("https://maven.nucleoid.xyz", "eu.pb4") // ModMenu依赖TextPlaceholderAPI
     strictMaven("https://maven.jackf.red/releases", "red.jackf")  // JackFredLib 依赖
@@ -38,9 +42,7 @@ repositories {
     strictMaven("https://staging.alexiil.uk/maven/")
     strictMaven("https://maven.isxander.dev/releases")
     strictMaven("https://maven.shedaniel.me")  // Cloth API/Config 官方源
-    if (mcVersionInt <= 12006) {
-        strictMaven("https://maven.kyrptonaught.dev")  // KyrptConfig依赖
-    }
+
     if (mcVersionInt <= 11904) {
         strictMaven("https://server.bbkr.space/artifactory/libs-release")   // LibGui 依赖
     }
