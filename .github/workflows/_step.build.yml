@@ -20,39 +20,34 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'SKIP') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
-          distribution: 'temurin'
+          distribution: 'microsoft'
 
-      - name: Cache Gradle dependencies (public caches)
-        uses: actions/cache@v3
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v5
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
             ./.gradle
-          # 固定缓存键（公共缓存），不依赖文件哈希
           key: ${{ runner.os }}-gradle-common
-          # 恢复键与主键一致，确保优先使用公共缓存
           restore-keys: |
             ${{ runner.os }}-gradle-common
 
-      - name: make gradle wrapper executable
+      - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build (versionpack)
+      - name: Build fabricWrapper subproject
         run: ./gradlew :fabricWrapper:build --stacktrace
 
-      - name: Delete versionpack-sources.jar
-        run: |
-          find fabricWrapper/build/libs/ -name "*-sources.jar" -exec rm {} \;
-
-      - name: Upload versionpack jar
-        uses: actions/upload-artifact@v4
+      - name: Capture build artifacts
+        uses: actions/upload-artifact@v7
         with:
           name: Artifacts
-          path: fabricWrapper/build/libs/
+          path: fabricWrapper/build/libs/*.jar
+          archive: false
