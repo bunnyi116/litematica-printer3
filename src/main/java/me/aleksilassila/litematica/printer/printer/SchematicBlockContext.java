@@ -48,11 +48,11 @@ public class SchematicBlockContext {
         return property(currentState, property);
     }
 
-    public Block requiredBlock() {
+    public Block requiredState() {
         return requiredState.getBlock();
     }
 
-    public Block currentBlock() {
+    public Block currentState() {
         return currentState.getBlock();
     }
 

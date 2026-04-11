@@ -5,7 +5,7 @@ import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.utils.ItemUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.enums.BlockPrintState;
+import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.utils.*;
 import net.fabricmc.fabric.mixin.content.registry.AxeItemAccessor;
 import net.minecraft.client.Minecraft;
@@ -46,8 +46,8 @@ public class PlacementGuide extends PrinterUtils {
     }
 
     public @Nullable Action getAction(SchematicBlockContext ctx) {
-        BlockPrintState state = BlockPrintState.get(ctx);
-        if (!ctx.requiredState.canSurvive(ctx.level, ctx.blockPos) || state == BlockPrintState.CORRECT) {
+        BlockMatchResult state = BlockMatchResult.compare(ctx);
+        if (!ctx.requiredState.canSurvive(ctx.level, ctx.blockPos) || state == BlockMatchResult.CORRECT) {
             return null;
         }
         for (ClassHook hook : ClassHook.values()) {
@@ -66,7 +66,7 @@ public class PlacementGuide extends PrinterUtils {
     }
 
     @SuppressWarnings("EnhancedSwitchMigration")
-    private @Nullable Action buildAction(SchematicBlockContext ctx, ClassHook requiredType, BlockPrintState state, AtomicReference<Boolean> skip) {
+    private @Nullable Action buildAction(SchematicBlockContext ctx, ClassHook requiredType, BlockMatchResult state, AtomicReference<Boolean> skip) {
         // 跳过含水方块
         if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue() && BlockStateUtils.isWaterBlock(ctx.requiredState)) {
             return null;
@@ -97,13 +97,13 @@ public class PlacementGuide extends PrinterUtils {
         }
         Action action;
         switch (state) {
-            case MISSING_BLOCK:
+            case MISSING:
                 action = buildActionMissingBlock(ctx, requiredType, skip);
                 break;
-            case ERROR_BLOCK:
+            case WRONG_BLOCK:
                 action = buildActionErrorBlock(ctx, requiredType, skip);
                 break;
-            case ERROR_BLOCK_STATE:
+            case WRONG_STATE:
                 action = buildActionErrorBlockState(ctx, requiredType, skip);
                 break;
             default:
@@ -358,16 +358,16 @@ public class PlacementGuide extends PrinterUtils {
                     }
 
                     // 输入端与输出端放置状态一致情况下
-                    BlockPrintState inputState = BlockPrintState.get(input, inputPropertiesToIgnore.toArray(new Property<?>[0]));
-                    BlockPrintState outputState = BlockPrintState.get(output);
-                    if (inputState == BlockPrintState.CORRECT && outputState == BlockPrintState.CORRECT) {
+                    BlockMatchResult inputState = BlockMatchResult.compare(input, inputPropertiesToIgnore.toArray(new Property<?>[0]));
+                    BlockMatchResult outputState = BlockMatchResult.compare(output);
+                    if (inputState == BlockMatchResult.CORRECT && outputState == BlockMatchResult.CORRECT) {
                         // 检查输入端方块是侦测器的情况同时是侦测链, 查找源头状态
                         SchematicBlockContext temp = input;
                         while (temp.requiredState.getBlock() instanceof ObserverBlock) {
                             @Nullable Direction tempObserverFacing = temp.requiredProperty(ObserverBlock.FACING).orElse(null);
                             // 查找下一个侦测器并检查并检查状态是否正确
                             SchematicBlockContext offset = temp.offset(tempObserverFacing);
-                            if (tempObserverFacing != null && BlockPrintState.get(offset) != BlockPrintState.CORRECT) {
+                            if (tempObserverFacing != null && BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
                                 return null;
                             }
                             // 传递检查
@@ -376,11 +376,11 @@ public class PlacementGuide extends PrinterUtils {
                         return new Action().setLookDirection(facing);
                     }
                     // 输入端已放置成功，并状态一致
-                    if (inputState == BlockPrintState.CORRECT) {
+                    if (inputState == BlockMatchResult.CORRECT) {
                         SchematicBlockContext temp = input;
                         while (temp.requiredState.getBlock() instanceof FallingBlock) {
                             SchematicBlockContext offset = temp.offset(Direction.DOWN);
-                            if (BlockPrintState.get(offset) != BlockPrintState.CORRECT) {
+                            if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
                                 return null;
                             }
                             temp = offset;
@@ -392,7 +392,7 @@ public class PlacementGuide extends PrinterUtils {
                                 @Nullable Direction tempObserverFacing = temp.requiredProperty(ObserverBlock.FACING).orElse(null);
                                 // 查找下一个侦测器并检查并检查状态是否正确
                                 SchematicBlockContext offset = temp.offset(tempObserverFacing);
-                                if (tempObserverFacing != null && BlockPrintState.get(offset) != BlockPrintState.CORRECT) {
+                                if (tempObserverFacing != null && BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
                                     return null;
                                 }
                                 // 传递检查
@@ -419,7 +419,7 @@ public class PlacementGuide extends PrinterUtils {
                             }
                         }
 
-                    } else if (inputState == BlockPrintState.ERROR_BLOCK_STATE) {  // 方块类型相同，但方块状态不一致
+                    } else if (inputState == BlockMatchResult.WRONG_STATE) {  // 方块类型相同，但方块状态不一致
                         return null;
                     } else {
                         if (!output.requiredState.isAir()) {
@@ -495,7 +495,7 @@ public class PlacementGuide extends PrinterUtils {
                             if (tempObserverFacing != null) {
                                 SchematicBlockContext offset = temp.offset(tempObserverFacing);
                                 if (tempObserverFacing == direction) {
-                                    if (BlockPrintState.get(offset) != BlockPrintState.CORRECT) {
+                                    if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
                                         return null;
                                     }
                                 }
