@@ -10,6 +10,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPa
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.SwitchItem;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
+import me.aleksilassila.litematica.printer.utils.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -77,10 +78,10 @@ public class ZxyUtils {
         if (printerMemoryAdding && !openIng && OpenInventoryPacket.key == null) {
             if (invBlockList.isEmpty()) {
                 printerMemoryAdding = false;
-                client.gui.setOverlayMessage(Component.nullToEmpty("打印机库存添加完成"), false);
+                MessageUtils.setOverlayMessage(Component.nullToEmpty("打印机库存添加完成"), false);
                 return;
             }
-            client.gui.setOverlayMessage(Component.nullToEmpty("添加库存中"), false);
+            MessageUtils.setOverlayMessage(Component.nullToEmpty("添加库存中"), false);
             for (BlockPos pos : invBlockList) {
                 if (client.level != null) {
                     //#if MC < 12001
@@ -130,13 +131,13 @@ public class ZxyUtils {
                                     //$$ !client.level.noCollision(Shulker.getProgressDeltaAabb(blockState.getValue(FACING), 0.0f, 0.5f).move(pos).deflate(1.0E-6)) &&
                                     //#endif
                                     entity.getAnimationStatus() == ShulkerBoxBlockEntity.AnimationStatus.CLOSED)) {
-                        client.gui.setOverlayMessage(Component.nullToEmpty("容器无法打开"), false);
+                        MessageUtils.setOverlayMessage(Component.nullToEmpty("容器无法打开"), false);
                     } else if (!isInventory) {
-                        client.gui.setOverlayMessage(Component.nullToEmpty("这不是容器 无法同步"), false);
+                        MessageUtils.setOverlayMessage(Component.nullToEmpty("这不是容器 无法同步"), false);
                         return;
                     }
                 } catch (Exception e) {
-                    client.gui.setOverlayMessage(Component.nullToEmpty("这不是容器 无法同步"), false);
+                    MessageUtils.setOverlayMessage(Component.nullToEmpty("这不是容器 无法同步"), false);
                     return;
                 }
             }
@@ -158,7 +159,7 @@ public class ZxyUtils {
             syncPosList = new LinkedList<>();
             if (client.player != null) client.player.clientSideCloseContainer();
             num = 0;
-            client.gui.setOverlayMessage(Component.nullToEmpty("已取消同步"), false);
+            MessageUtils.setOverlayMessage(Component.nullToEmpty("已取消同步"), false);
         }
     }
 
@@ -169,7 +170,7 @@ public class ZxyUtils {
         } else {
             if (client.player != null && !ConfigUtils.canInteracted(pos)) {
                 if (!ignoreThePrompt)
-                    client.gui.setOverlayMessage(Component.nullToEmpty("距离过远无法打开容器"), false);
+                    MessageUtils.setOverlayMessage(Component.nullToEmpty("距离过远无法打开容器"), false);
                 return false;
             }
             if (client.gameMode != null) {
@@ -223,7 +224,7 @@ public class ZxyUtils {
                 //打开列表中的容器 只要容器同步列表不为空 就会一直执行此处
                 if (client.player == null) return;
                 playerItemsCount = new HashMap<>();
-                client.gui.setOverlayMessage(Component.nullToEmpty("剩余 " + syncPosList.size() + " 个容器. 再次按下快捷键取消同步"), false);
+                MessageUtils.setOverlayMessage(Component.nullToEmpty("剩余 " + syncPosList.size() + " 个容器. 再次按下快捷键取消同步"), false);
                 if (!client.player.containerMenu.equals(client.player.inventoryMenu)) return;
                 NonNullList<Slot> slots = client.player.inventoryMenu.slots;
                 slots.forEach(slot -> itemsCount(playerItemsCount, slot.getItem()));
@@ -245,7 +246,7 @@ public class ZxyUtils {
                 }
                 if (syncPosList.isEmpty()) {
                     num = 0;
-                    client.gui.setOverlayMessage(Component.nullToEmpty("同步完成"), false);
+                    MessageUtils.setOverlayMessage(Component.nullToEmpty("同步完成"), false);
                 }
             }
             case 3 -> {

@@ -16,6 +16,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.chesttracker.SearchItem;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 //#elseif MC < 12001
+//$$ import me.aleksilassila.litematica.printer.utils.MessageUtils;
 //$$ import net.minecraft.network.chat.Component;
 //$$ import net.minecraft.resources.ResourceLocation;
 //$$ import me.aleksilassila.litematica.printer.printer.zxy.memory.MemoryDatabase;
@@ -55,7 +56,7 @@ public class HotkeysCallback {
             //$$     database.clearDimension(dimension);
             //$$     }
             //$$ }
-            //$$ client.gui.setOverlayMessage(Component.nullToEmpty("打印机库存已清空"), false);
+            //$$ MessageUtils.setOverlayMessage(Component.nullToEmpty("打印机库存已清空"), false);
             //#endif
             return true;
         }

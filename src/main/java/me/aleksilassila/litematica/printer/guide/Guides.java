@@ -14,7 +14,11 @@ public class Guides {
     private final AtomicReference<Boolean> skipOtherGuide = new AtomicReference<>();
 
     private Guides() {
+        // 跳过指南应优先被注册, 当没有需要跳过的方块需要进行注释掉, 否者会拦截所有方块
         register(SkipGuide.class, SkullBlock.class, LiquidBlock.class, BubbleColumnBlock.class, LilyPadBlock.class);
+
+        // 默认指南需要最后被注册, 它的作用是用于兜底
+        register(DefaultGuide.class);
     }
 
     @SafeVarargs
@@ -23,7 +27,7 @@ public class Guides {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public final List<Guide> getGuides(SchematicBlockContext context) {
+    private List<Guide> getGuides(SchematicBlockContext context) {
         List<Guide> guides = new ArrayList<>();
         for (GuideRegistration reg : registrations) {
             boolean b = false;
@@ -61,7 +65,7 @@ public class Guides {
             if (action.isPresent()) {
                 return action;
             }
-            if (this.skipOtherGuide.get()) {
+            if (this.skipOtherGuide.get()) {    // 跳过其他指南
                 break;
             }
         }
