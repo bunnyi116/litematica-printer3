@@ -85,9 +85,12 @@ public class PrintHandler extends ClientPlayerTickHandler {
 
     @Override
     protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
-        if (Configs.Print.FALLING_CHECK.getBooleanValue() && ctx.requiredState.getBlock() instanceof FallingBlock) {
+        if (Configs.Placement.FALLING_CHECK.getBooleanValue() && ctx.requiredState.getBlock() instanceof FallingBlock) {
             BlockPos downPos = blockPos.below();
-            if (level.getBlockState(downPos) != ctx.requiredState) {
+            if (FallingBlock.isFree(level.getBlockState(downPos))) {
+                MessageUtils.setOverlayMessage("方块 " + ctx.requiredBlockName().getString() + " 下方无支撑，跳过放置");
+                return;
+            } else if (level.getBlockState(downPos) != ctx.schematic.getBlockState(downPos)) {
                 MessageUtils.setOverlayMessage("方块 " + ctx.requiredBlockName().getString() + " 下方方块不相符，跳过放置");
                 return;
             }
