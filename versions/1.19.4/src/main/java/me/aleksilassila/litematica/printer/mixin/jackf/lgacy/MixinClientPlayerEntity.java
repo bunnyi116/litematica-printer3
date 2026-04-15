@@ -1,6 +1,6 @@
 package me.aleksilassila.litematica.printer.mixin.jackf.lgacy;
 
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
 import me.aleksilassila.litematica.printer.printer.zxy.memory.MemoryUtils;
@@ -29,7 +29,7 @@ public class MixinClientPlayerEntity {
         if (ModLoadUtils.isChestTrackerLoaded() && Configs.Core.CLOUD_INVENTORY.getBooleanValue() &&
                 (Configs.Core.WORK_SWITCH.getBooleanValue() || printerMemoryAdding || syncPrinterInventory) && (
                 pos != null || MemoryUtils.getMemoryPos() != null)) {
-            if (!minecraft.player.containerMenu.equals(minecraft.player.inventoryMenu)) {
+            if (minecraft.player != null && !minecraft.player.containerMenu.equals(minecraft.player.inventoryMenu)) {
                 MemoryUtils.handleItemsFromScreen(minecraft.player.containerMenu);
             }
         }
