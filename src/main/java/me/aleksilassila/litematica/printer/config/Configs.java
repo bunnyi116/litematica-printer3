@@ -123,7 +123,7 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 .build();
 
         public static final ConfigInteger ITERATOR_TOTAL_PER_TICK = integer("workIterationsTotalPerTick")
-                .defaultValue(0)
+                .defaultValue(2744)
                 .range(0, 1919810)
                 .build();
 
