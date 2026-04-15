@@ -78,11 +78,11 @@ public class PlacementGuide extends PrinterUtils {
                 return null;
             }
             if (ctx.currentState.getBlock() instanceof IceBlock) {  // 冰块
-                if (BlockPosCooldownManager.INSTANCE.isOnCooldown(ctx.level, "print_water", ctx.blockPos)) {
+                if (CooldownUtils.INSTANCE.isOnCooldown(ctx.level, "print_water", ctx.blockPos)) {
                     return null;
                 } else {
                     InteractionUtils.INSTANCE.add(ctx);
-                    BlockPosCooldownManager.INSTANCE.setCooldown(ctx.level, "print_water", ctx.blockPos, 20);
+                    CooldownUtils.INSTANCE.setCooldown(ctx.level, "print_water", ctx.blockPos, 20);
                 }
                 return null;
             }

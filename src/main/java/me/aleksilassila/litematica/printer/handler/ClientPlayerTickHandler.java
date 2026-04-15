@@ -10,6 +10,7 @@ import me.aleksilassila.litematica.printer.enums.*;
 import me.aleksilassila.litematica.printer.printer.*;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
+import me.aleksilassila.litematica.printer.utils.CooldownUtils;
 import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.minecraft.client.Minecraft;
@@ -28,57 +29,22 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * 打印机客户端玩家Tick抽象处理器
- */
-@SuppressWarnings("SpellCheckingInspection")
 public abstract class ClientPlayerTickHandler extends ConfigUtils {
-    /**
-     * 玩家交互盒原子引用，用于存储当前玩家的迭代范围（方块检测范围）
-     * 原子引用保证多线程环境下的安全访问，null表示该处理器不使用迭代功能
-     */
     @Getter
     @Nullable
     public final AtomicReference<PrinterBox> playerInteractionBox;
-
-    /**
-     * 处理器唯一标识
-     */
     @Getter
     private final String id;
-
-    /**
-     * 该处理器绑定的打印模式类型，用于单模式下的处理器匹配
-     * 为null时表示该处理器不绑定具体模式，多模式下生效
-     */
     @Getter
     @Nullable
     private final PrintModeType printMode;
-
-    /**
-     * 多模式下该处理器的启用配置项，控制处理器是否生效
-     * 为null时表示该处理器无需单独配置启用，由全局配置控制
-     */
     @Getter
     @Nullable
     private final ConfigBoolean enableConfig;
-
-    /**
-     * 多模式下该处理器的启用配置项，控制处理器是否生效
-     * 为null时表示该处理器无需单独配置启用，由全局配置控制
-     */
     @Getter
     @Nullable
     private final ConfigOptionList selectionType;
-
-    /***
-     * 跳过迭代(可传递对象)
-     */
     private final AtomicReference<Boolean> skipIteration = new AtomicReference<>(false);
-
-    /**
-     * 线程安全队列：存储当前Tick内迭代的所有方块信息（用于渲染帧级消费）
-     */
     private final Queue<GuiBlockInfo> guiBlockInfoQueue = new ConcurrentLinkedQueue<>();
 
     protected Minecraft mc;
@@ -94,39 +60,14 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
     @Nullable
     private PrinterBox lastPlayerInteractionBox;
 
-    /**
-     * 上次Tick的玩家所在位置，用于检测玩家是否发生移动
-     * 玩家移动超过阈值时，会重新创建玩家交互盒
-     */
     @Nullable
     private BlockPos lastPlayerPos;
 
-    /**
-     * 该处理器上次执行的全局Tick时间，用于控制处理器执行间隔
-     * 初始值-1L作为首次执行的判断标识，兼容全局Tick从0开始的场景
-     */
     private long lastTickTime = -1L;
-
-    /**
-     * 渲染进度索引：控制每帧从队列中读取第几个方块信息
-     */
     @Getter
     private int renderIndex = 0;
-
-    /**
-     * GUI方块信息的缓存剩余Tick数，控制GUI信息的展示时长
-     * 每次更新GUI队列时重置为20，每Tick递减，为0时清空队列
-     */
     private int guiBlockPosCacheTicks;
 
-    /**
-     * 构造器，初始化处理器核心属性
-     *
-     * @param id           处理器唯一标识，不可重复
-     * @param printMode    绑定的打印模式类型，可为null
-     * @param enableConfig 多模式下的启用配置项，可为null
-     * @param useBox       是否使用玩家交互盒（迭代功能），true则初始化原子引用，false则为null
-     */
     protected ClientPlayerTickHandler(String id, @Nullable PrintModeType printMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
         this.id = id;
         this.printMode = printMode;
@@ -151,9 +92,6 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         }
     }
 
-    /**
-     * 核心Tick方法，模板方法设计的核心执行流程
-     */
     public void tick() {
         // GUI迭代信息缓存处理：每Tick递减缓存计数，计数为0时清空队列
         if (this.guiBlockPosCacheTicks > 0) {
@@ -195,7 +133,6 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
                 this.lastPlayerPos = playerPos;
                 PrinterBox box = new PrinterBox(playerPos);
                 if (Configs.Core.CHECK_PLAYER_INTERACTION_RANGE.getBooleanValue()) {
-                    // 性能优化
                     playerInteractionBox = box.expand((int) Math.ceil(PlayerUtils.getPlayerBlockInteractionRange(5) + 3));
                 } else {
                     playerInteractionBox = box.expand(getWorkRange());
@@ -255,18 +192,16 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
                         gui.interacted = false;
                         continue;
                     }
-                    if (isNeedRangeCheck()) {   // 给GUI计算进度而生的一个虚方法
-                        if (isSchematicBlockHandler()) {
-                            if (!LitematicaUtils.isSchematicBlock(pos)) {
-                                continue;
-                            }
-                        } else if (!LitematicaUtils.isWithinSelection1ModeRange(pos)) {
+                    if (isSchematicBlockHandler()) {
+                        if (!LitematicaUtils.isSchematicBlock(pos)) {
                             continue;
                         }
-                        if (selectionType != null && !ConfigUtils.isPositionInSelectionRange(player, pos, selectionType)) {
-                            gui.posInSelectionRange = false;
-                            continue;
-                        }
+                    } else if (!LitematicaUtils.isWithinSelection1ModeRange(pos)) {
+                        continue;
+                    }
+                    if (selectionType != null && !ConfigUtils.isPositionInSelectionRange(player, pos, selectionType)) {
+                        gui.posInSelectionRange = false;
+                        continue;
                     }
                     gui.posInSelectionRange = true;
                     // 方块迭代权限校验：子类可重写实现自定义过滤逻辑
@@ -296,11 +231,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         return false;
     }
 
-    /**
-     * 添加方块信息到迭代队列，并初始化缓存时长
-     *
-     * @param guiBlockInfo 待添加的方块信息
-     */
+
     private void addGuiBlockInfoToQueue(GuiBlockInfo guiBlockInfo) {
         if (guiBlockInfo != null) {
             this.guiBlockInfoQueue.add(guiBlockInfo);
@@ -308,12 +239,6 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         }
     }
 
-    /**
-     * 【渲染阶段调用】获取当前帧要显示的迭代方块信息
-     * 按渲染帧率逐帧消费队列中的信息，模拟迭代过程
-     *
-     * @return 当前帧应显示的方块信息，无则返回null
-     */
     @Nullable
     public GuiBlockInfo getCurrentRenderGuiBlockInfo() {
         if (guiBlockInfoQueue.isEmpty()) {
@@ -331,11 +256,6 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         return currentInfo;
     }
 
-    /**
-     * 兼容原有逻辑的get方法（可选保留）
-     *
-     * @return 队列中最后一个元素（原逻辑的最终位置）
-     */
     @Nullable
     public GuiBlockInfo getGuiBlockInfo() {
         if (guiBlockInfoQueue.isEmpty()) {
@@ -345,26 +265,14 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         return ((GuiBlockInfo[]) guiBlockInfoQueue.toArray(new GuiBlockInfo[0]))[guiBlockInfoQueue.size() - 1];
     }
 
-    /**
-     * 兼容原有逻辑的set方法（可选保留，避免子类报错）
-     */
     public void setGuiBlockInfo(@Nullable GuiBlockInfo guiBlockInfo) {
         this.addGuiBlockInfoToQueue(guiBlockInfo);
     }
 
-    /**
-     * 获取迭代队列的长度（用于HUD显示迭代总数）
-     */
     public int getGuiBlockInfoQueueSize() {
         return guiBlockInfoQueue.size();
     }
 
-    /**
-     * 配置层面的执行权限校验，私有方法避免子类篡改
-     * 校验逻辑：全局启用 → 模式匹配（单/多）→ 配置启用，层层校验
-     *
-     * @return true-配置允许执行，false-配置禁止执行
-     */
     private boolean isConfigAllowExecute() {
         // 全局打印机功能未启用，直接禁止所有处理器执行
         if (!ConfigUtils.isEnable()) {
@@ -386,123 +294,55 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         return true;
     }
 
-    /**
-     * 获取处理器的执行间隔（单位：Tick），子类可重写自定义
-     * 返回值≤0时，表示不限制执行间隔，每Tick都执行
-     *
-     * @return 执行间隔Tick数，默认-1（不限制）
-     */
     protected int getTickInterval() {
         return -1;
     }
 
-    /**
-     * 获取单Tick内最大迭代次数，用于限制迭代逻辑防止主线程阻塞，子类可重写自定义
-     * 返回值≤0时，表示不限制迭代次数，一次性迭代完所有方块
-     * 推荐值：10~50（适配Minecraft 50ms/Tick的主线程限制）
-     *
-     * @return 单Tick最大迭代次数，默认-1（不限制）
-     */
     protected int getMaxEffectiveExecutionsPerTick() {
         return -1;
     }
 
-    /**
-     * 获取单Tick内最大总迭代遍历数（技术兜底），用于限制方块遍历次数防止主线程阻塞，子类可重写自定义
-     * 返回值≤0时（含0），表示无上限，一次性遍历完所有符合基础条件的方块
-     * 该数值统计所有遍历的方块（无论是否过滤、是否执行成功），仅做技术兜底防卡顿
-     * 推荐值：50~100（适配Minecraft 50ms/Tick的主线程耗时限制）
-     *
-     * @return 单Tick最大总迭代遍历数，默认-1（无上限）
-     */
     protected int getMaxTotalIterationsPerTick() {
         return Configs.Core.ITERATOR_TOTAL_PER_TICK.getIntegerValue();
     }
 
-    /**
-     * 普通任务执行前的预处理逻辑，子类可重写实现
-     * 执行时机：游戏对象初始化完成后，{link #execute()}执行前
-     * 适用于：初始化临时变量、清理旧数据、参数准备等
-     */
     protected void preprocess() {
     }
 
-    /**
-     * 处理器业务层面的执行条件判断，子类可重写实现自定义条件
-     * 执行时机：配置权限校验{@link #isConfigAllowExecute()}通过后
-     * 适用于：基于游戏状态、玩家状态的动态执行条件判断
-     *
-     * @return true-满足业务执行条件，false-不满足，默认true
-     */
     protected boolean canExecute() {
         return true;
     }
 
-    /**
-     * 迭代任务的执行条件判断，子类可重写实现自定义条件
-     * 执行时机：玩家交互盒非空且普通任务执行条件{link #canExecute()}满足后
-     * 适用于：基于迭代范围、世界状态的迭代执行条件判断
-     *
-     * @return true-满足迭代执行条件，false-不满足，默认true
-     */
     protected boolean canIterate() {
         return true;
     }
 
-    /**
-     * 判断指定方块是否允许被迭代处理，子类可重写实现自定义过滤逻辑
-     * 执行时机：方块可交互性校验{@link ConfigUtils#canInteracted(BlockPos)}通过后
-     * 适用于：基于方块状态、冷却、类型的自定义过滤
-     *
-     * @param pos 待判断的方块位置，不会为null
-     * @return true-允许迭代处理，false-禁止，默认true
-     */
     public boolean canIterationBlockPos(BlockPos pos) {
         return true;
     }
 
-    /**
-     * 单次方块迭代的核心执行方法，子类必须重写实现自定义迭代逻辑
-     * 执行时机：方块可交互性和迭代权限校验均通过后
-     * 适用于：方块放置、破坏、标记、冷却设置等迭代类业务
-     */
     protected void executeIteration(BlockPos pos, AtomicReference<Boolean> skipIteration) {
     }
 
-    /**
-     * 判断指定方块是否处于当前处理器的冷却中，避免重复处理
-     * 冷却数据由{link BlockPosCooldownManager}统一管理，按处理器id区分
-     *
-     * @param pos 待判断的方块位置，可为null
-     * @return true-处于冷却中，false-可处理；位置/世界为空时默认返回true
-     */
     public boolean isBlockPosOnCooldown(@Nullable BlockPos pos) {
         if (this.level == null || pos == null) return true;
-        return BlockPosCooldownManager.INSTANCE.isOnCooldown(this.level, this.getId(), pos);
+        return CooldownUtils.INSTANCE.isOnCooldown(this.level, this.getId(), pos);
     }
 
     public boolean isBlockPosOnCooldown(String name, @Nullable BlockPos pos) {
         if (this.level == null || pos == null) return true;
-        return BlockPosCooldownManager.INSTANCE.isOnCooldown(this.level, this.getId() + "_" + name, pos);
+        return CooldownUtils.INSTANCE.isOnCooldown(this.level, this.getId() + "_" + name, pos);
     }
 
-    /**
-     * 为指定方块设置当前处理器的冷却时间，避免短时间内重复处理
-     * 冷却数据由{link BlockPosCooldownManager}统一管理，按处理器id区分
-     *
-     * @param pos           待设置冷却的方块位置，可为null
-     * @param cooldownTicks 冷却时间（单位：Tick），小于1则不处理
-     */
     public void setBlockPosCooldown(@Nullable BlockPos pos, int cooldownTicks) {
         if (this.level == null || pos == null || cooldownTicks < 1) return;
-        BlockPosCooldownManager.INSTANCE.setCooldown(this.level, this.getId(), pos, cooldownTicks);
+        CooldownUtils.INSTANCE.setCooldown(this.level, this.getId(), pos, cooldownTicks);
     }
 
     public void setBlockPosCooldown(String name, @Nullable BlockPos pos, int cooldownTicks) {
         if (this.level == null || pos == null || cooldownTicks < 1) return;
-        BlockPosCooldownManager.INSTANCE.setCooldown(this.level, this.getId() + "_" + name, pos, cooldownTicks);
+        CooldownUtils.INSTANCE.setCooldown(this.level, this.getId() + "_" + name, pos, cooldownTicks);
     }
-
 
     protected Direction[] getPlayerOrderedByNearest() {
         return Direction.orderedByNearest(player);
@@ -510,9 +350,5 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
 
     protected Direction getPlayerPlacementDirection() {
         return getPlayerOrderedByNearest()[0].getOpposite();
-    }
-
-    protected boolean isNeedRangeCheck() {
-        return true;
     }
 }

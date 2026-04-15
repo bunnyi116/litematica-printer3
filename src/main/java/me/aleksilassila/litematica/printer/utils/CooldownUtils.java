@@ -1,7 +1,5 @@
-package me.aleksilassila.litematica.printer.printer;
+package me.aleksilassila.litematica.printer.utils;
 
-import me.aleksilassila.litematica.printer.utils.ConfigUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -11,8 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-public class BlockPosCooldownManager {
-    public static BlockPosCooldownManager INSTANCE = new BlockPosCooldownManager();
+public class CooldownUtils {
+    public static CooldownUtils INSTANCE = new CooldownUtils();
 
     private final Map<Info, Integer> cooldownMap = new HashMap<>();
 

@@ -11,6 +11,7 @@ import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 
 import java.util.Arrays;
@@ -30,18 +31,10 @@ public class GuiHandler extends ClientPlayerTickHandler {
     @Getter
     private final Progress mineProgress = new Progress(Configs.Core.MINE);
 
+    private final Progress[] progresses = new Progress[]{totalProgress, printProgress, fluidProgress, fillProgress, mineProgress};
+
     public GuiHandler() {
         super(NAME, null, Configs.Core.RENDER_HUD, null, true);
-    }
-
-    @Override
-    protected boolean isNeedRangeCheck() {
-        return false;
-    }
-
-    @Override
-    public boolean canIterationBlockPos(BlockPos pos) {
-        return super.canIterationBlockPos(pos);
     }
 
     @Override
@@ -69,7 +62,7 @@ public class GuiHandler extends ClientPlayerTickHandler {
             totalProgress.total++;
         }
         if (isFillMode()) {
-            if (Arrays.asList(ClientPlayerTickManager.FILL.getFillModeItemList()).contains(level.getBlockState(blockPos).getBlock().asItem())) {
+            if (!level.getBlockState(blockPos).isAir()) {
                 fillProgress.finished++;
                 totalProgress.finished++;
             }
@@ -84,34 +77,20 @@ public class GuiHandler extends ClientPlayerTickHandler {
             mineProgress.total++;
             totalProgress.total++;
         }
-        printProgress.calculateProgress();
-        fluidProgress.calculateProgress();
-        fillProgress.calculateProgress();
-        mineProgress.calculateProgress();
-        totalProgress.calculateProgress();
+        for (Progress progress : progresses) {
+            progress.calculateProgress();
+        }
     }
 
     @Override
     protected void stopIteration(boolean interrupt) {
         if (!interrupt) {
-            resetAllProgress();
+            for (Progress progress : progresses) {
+                progress.reset();
+            }
         }
     }
 
-    /**
-     * 重置所有模式的进度计数
-     */
-    private void resetAllProgress() {
-        totalProgress.reset();
-        printProgress.reset();
-        fluidProgress.reset();
-        fillProgress.reset();
-        mineProgress.reset();
-    }
-
-    /**
-     * 进度管理内部类（独立计数+自动修正进度范围）
-     */
     @Getter
     public static class Progress {
         private final ConfigBase<?> config;
