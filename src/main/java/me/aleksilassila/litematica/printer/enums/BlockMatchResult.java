@@ -1,7 +1,7 @@
 package me.aleksilassila.litematica.printer.enums;
 
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
-import me.aleksilassila.litematica.printer.utils.BlockStateUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 

@@ -6,7 +6,7 @@ import me.aleksilassila.litematica.printer.interfaces.Implementation;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.PlayerLook;
 import me.aleksilassila.litematica.printer.printer.PrinterUtils;
-import me.aleksilassila.litematica.printer.utils.BlockUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.BlockUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

@@ -7,6 +7,8 @@ import me.aleksilassila.litematica.printer.enums.ExcavateListMode;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.TweakerooUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

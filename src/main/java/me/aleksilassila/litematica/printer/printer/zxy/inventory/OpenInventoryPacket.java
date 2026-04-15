@@ -3,17 +3,16 @@ package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 import fi.dy.masa.malilib.util.StringUtils;
 import io.netty.buffer.Unpooled;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
-import me.aleksilassila.litematica.printer.utils.MessageUtils;
-import me.aleksilassila.litematica.printer.utils.IdentifierUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.IdentifierUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -47,7 +46,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 //#if MC >= 12001
 import me.aleksilassila.litematica.printer.printer.zxy.chesttracker.MemoryUtils;
-import red.jackf.chesttracker.api.providers.InteractionTracker;
 //#endif
 
 

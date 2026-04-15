@@ -1,7 +1,7 @@
 //package me.aleksilassila.litematica.printer.guide;
 //
 //import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
-//import me.aleksilassila.litematica.printer.utils.BlockStateUtils;
+//import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 //import net.minecraft.core.Direction;
 //import net.minecraft.core.FrontAndTop;
 //import net.minecraft.world.level.block.state.properties.*;

@@ -8,7 +8,7 @@ import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.printer.BlockPosCooldownManager;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.UpdateCheckerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;

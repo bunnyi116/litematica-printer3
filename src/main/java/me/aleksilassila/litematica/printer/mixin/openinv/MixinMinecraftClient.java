@@ -9,7 +9,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

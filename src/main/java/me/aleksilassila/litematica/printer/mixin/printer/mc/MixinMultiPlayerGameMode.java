@@ -4,6 +4,9 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.*;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
+import me.aleksilassila.litematica.printer.utils.minecraft.NetworkUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.TweakerooUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -104,7 +107,7 @@ public abstract class MixinMultiPlayerGameMode implements MultiPlayerGameModeExt
 
     @Unique
     private int litematica_printer$getDestroyStage() {
-        float breakingProgress = destroyProgress >= ConfigUtils.getBreakProgressThreshold() ? 1.0F : destroyProgress;
+        float breakingProgress = this.destroyProgress >= ConfigUtils.getBreakProgressThreshold() ? 1.0F : this.destroyProgress;
         return breakingProgress > 0.0F ? (int) (breakingProgress * 10.0F) : -1;
     }
 

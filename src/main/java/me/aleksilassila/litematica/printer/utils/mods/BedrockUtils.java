@@ -1,5 +1,6 @@
-package me.aleksilassila.litematica.printer.utils;
+package me.aleksilassila.litematica.printer.utils.mods;
 
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;

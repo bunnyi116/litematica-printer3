@@ -5,7 +5,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
-import me.aleksilassila.litematica.printer.utils.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;

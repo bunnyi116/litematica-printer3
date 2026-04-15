@@ -1,8 +1,8 @@
 package me.aleksilassila.litematica.printer.mixin.jackf.fix;
 
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
-import me.aleksilassila.litematica.printer.utils.PlayerUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.kyrptonaught.quickshulker.client.ClientUtil;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

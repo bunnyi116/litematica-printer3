@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.utils;
+package me.aleksilassila.litematica.printer.utils.minecraft;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

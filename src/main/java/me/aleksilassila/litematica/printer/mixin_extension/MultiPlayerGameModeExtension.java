@@ -1,6 +1,5 @@
 package me.aleksilassila.litematica.printer.mixin_extension;
 
-import me.aleksilassila.litematica.printer.utils.PredictiveAction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

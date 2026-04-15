@@ -10,8 +10,8 @@ import me.aleksilassila.litematica.printer.enums.*;
 import me.aleksilassila.litematica.printer.printer.*;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
-import me.aleksilassila.litematica.printer.utils.LitematicaUtils;
-import me.aleksilassila.litematica.printer.utils.PlayerUtils;
+import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -24,7 +24,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;

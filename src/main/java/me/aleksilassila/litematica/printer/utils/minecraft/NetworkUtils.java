@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.utils;
+package me.aleksilassila.litematica.printer.utils.minecraft;
 
 import me.aleksilassila.litematica.printer.printer.PlayerLook;
 import net.minecraft.client.Minecraft;
@@ -7,7 +7,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
-import org.jetbrains.annotations.Nullable;
 
 public class NetworkUtils {
 

@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.utils;
+package me.aleksilassila.litematica.printer.utils.mods;
 
 import net.fabricmc.loader.api.FabricLoader;
 

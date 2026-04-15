@@ -13,6 +13,8 @@ import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.utils.*;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;

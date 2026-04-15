@@ -10,8 +10,8 @@ import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPa
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.SwitchItem;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
-import me.aleksilassila.litematica.printer.utils.MessageUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

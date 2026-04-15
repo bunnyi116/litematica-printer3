@@ -10,7 +10,7 @@ import me.aleksilassila.litematica.printer.printer.BlockPosCooldownManager;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

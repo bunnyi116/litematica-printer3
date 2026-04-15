@@ -2,11 +2,13 @@ package me.aleksilassila.litematica.printer;
 
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import me.aleksilassila.litematica.printer.gui.ConfigUi;
-import me.aleksilassila.litematica.printer.utils.*;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.HighlightBlockRenderer;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 
 import static me.aleksilassila.litematica.printer.config.Configs.*;
 
@@ -39,7 +41,7 @@ public class InitHandler implements IInitializationHandler {
                 Core.FLUID.setBooleanValue(false);
                 Core.WORK_SWITCH.setBooleanValue(false);
                 Core.WORK_MODE_TYPE.setOptionListValue(PrintModeType.PRINTER);
-                MessageUtils.setOverlayMessage(StringUtils.literal("已关闭全部模式"));
+                MessageUtils.setOverlayMessage("已关闭全部模式");
             }
             return true;
         });

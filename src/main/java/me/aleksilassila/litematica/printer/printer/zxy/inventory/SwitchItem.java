@@ -1,9 +1,9 @@
 package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
 import fi.dy.masa.malilib.util.InventoryUtils;
-import me.aleksilassila.litematica.printer.utils.MessageUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
-import me.aleksilassila.litematica.printer.utils.ShulkerUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ShulkerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

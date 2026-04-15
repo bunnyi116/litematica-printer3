@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.printer;
 
 import fi.dy.masa.litematica.world.WorldSchematic;
 import lombok.ToString;
-import me.aleksilassila.litematica.printer.utils.BlockStateUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;

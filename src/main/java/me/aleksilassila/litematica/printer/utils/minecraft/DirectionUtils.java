@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.utils;
+package me.aleksilassila.litematica.printer.utils.minecraft;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -11,6 +11,7 @@ public class DirectionUtils {
     private static final int ROTATION_MIN = 0;
     private static final int ROTATION_MAX = 15;
     private static final float ROTATION_TO_YAW_FACTOR = 22.5F;
+
     private static final float[] SIN = Util.make(new float[65536], fs -> {
         for (int ix = 0; ix < fs.length; ix++) {
             fs[ix] = (float) Math.sin(ix / 10430.378350470453);
@@ -39,18 +40,6 @@ public class DirectionUtils {
         //#else
         //$$ return direction.getNormal();
         //#endif
-    }
-
-    public static Direction getFacingAxisX(float yaw) {
-        return Direction.EAST.isFacingAngle(yaw) ? Direction.EAST : Direction.WEST;
-    }
-
-    public static Direction getFacingAxisY(float pitch) {
-        return pitch < 0.0F ? Direction.UP : Direction.DOWN;
-    }
-
-    public static Direction getFacingAxisZ(float yaw) {
-        return Direction.SOUTH.isFacingAngle(yaw) ? Direction.SOUTH : Direction.NORTH;
     }
 
     public static float sin(double d) {
@@ -104,12 +93,7 @@ public class DirectionUtils {
         return Direction.fromYRot(yaw);
     }
 
-    /**
-     * 将方块Rotation转换为玩家视角Yaw（带范围防范）
-     *
-     * @param rotation 方块Rotation值（会自动修正到0-15范围）
-     * @return 玩家视角Yaw值（严格约束在[-180, 180]）
-     */
+
     public static float rotationToPlayerYaw(int rotation) {
         // 防范性处理：确保rotation在0-15范围内（即使传入非法值也能修正）
         rotation = clampRotation(rotation);
@@ -120,12 +104,6 @@ public class DirectionUtils {
         return playerLookYaw;
     }
 
-    /**
-     * 获取方块Rotation的相反方向Rotation（带范围防范）
-     *
-     * @param rotation 方块Rotation值（会自动修正到0-15范围）
-     * @return 相反方向的Rotation（严格约束在0-15）
-     */
     public static int getOppositeRotation(int rotation) {
         // 先修正输入的Rotation范围
         rotation = clampRotation(rotation);
@@ -143,12 +121,6 @@ public class DirectionUtils {
         return oppositeRotation;
     }
 
-    /**
-     * 获取玩家视角Yaw的相反方向Yaw（带范围防范）
-     *
-     * @param playerLookYaw 玩家视角Yaw（任意值都能被修正）
-     * @return 相反方向Yaw（严格约束在[-180, 180]）
-     */
     public static float getOppositeYaw(float playerLookYaw) {
         // 先归一化输入的Yaw（即使传入非法值，比如500、-400也能修正）
         playerLookYaw = normalizeYaw(playerLookYaw);
@@ -158,12 +130,6 @@ public class DirectionUtils {
         return oppositeYaw;
     }
 
-    /**
-     * 将任意Yaw值强制归一化到[-180, 180]范围（核心防范方法）
-     *
-     * @param yaw 任意浮点数的Yaw值（比如370、-200、500等）
-     * @return 归一化后的Yaw值（严格在[-180, 180]）
-     */
     private static float normalizeYaw(float yaw) {
         // 先取模360，将值约束到[-360, 360]
         yaw = yaw % 360.0F;
@@ -176,12 +142,6 @@ public class DirectionUtils {
         return yaw;
     }
 
-    /**
-     * 将任意整数Rotation强制约束到0-15范围（核心防范方法）
-     *
-     * @param rotation 任意整数（比如-5、20、100等）
-     * @return 修正后的Rotation（严格在0-15）
-     */
     private static int clampRotation(int rotation) {
         // 取模16，将值约束到[-15, 15]
         rotation = rotation % (ROTATION_MAX + 1);

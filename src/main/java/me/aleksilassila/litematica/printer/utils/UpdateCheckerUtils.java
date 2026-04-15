@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.I18n;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.StringUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.ChatFormatting;

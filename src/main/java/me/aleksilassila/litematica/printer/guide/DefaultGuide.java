@@ -1,13 +1,10 @@
 package me.aleksilassila.litematica.printer.guide;
 
-import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
-import me.aleksilassila.litematica.printer.utils.BlockStateUtils;
-import me.aleksilassila.litematica.printer.utils.ConfigUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.core.FrontAndTop;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Optional;

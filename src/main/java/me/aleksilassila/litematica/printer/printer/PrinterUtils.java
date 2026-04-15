@@ -1,6 +1,6 @@
 package me.aleksilassila.litematica.printer.printer;
 
-import me.aleksilassila.litematica.printer.utils.DirectionUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.DirectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;

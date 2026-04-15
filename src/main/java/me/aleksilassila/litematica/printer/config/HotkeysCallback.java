@@ -16,7 +16,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.chesttracker.SearchItem;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 //#elseif MC < 12001
-//$$ import me.aleksilassila.litematica.printer.utils.MessageUtils;
+//$$ import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 //$$ import net.minecraft.network.chat.Component;
 //$$ import net.minecraft.resources.ResourceLocation;
 //$$ import me.aleksilassila.litematica.printer.printer.zxy.memory.MemoryDatabase;

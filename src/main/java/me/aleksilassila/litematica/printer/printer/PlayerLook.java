@@ -1,7 +1,7 @@
 package me.aleksilassila.litematica.printer.printer;
 
 import lombok.Data;
-import me.aleksilassila.litematica.printer.utils.DirectionUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.DirectionUtils;
 import net.minecraft.core.Direction;
 
 @Data

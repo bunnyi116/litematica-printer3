@@ -13,6 +13,7 @@ import lombok.Setter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin.printer.litematica.EasyPlaceUtilsAccessor;
 import me.aleksilassila.litematica.printer.mixin.printer.litematica.InventoryUtilsAccessor;
+import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;

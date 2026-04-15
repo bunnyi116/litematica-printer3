@@ -1,12 +1,11 @@
 package me.aleksilassila.litematica.printer.handler.handlers;
 
-import me.aleksilassila.litematica.printer.utils.BedrockUtils;
-import me.aleksilassila.litematica.printer.utils.BlockUtils;
+import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
-import me.aleksilassila.litematica.printer.utils.MessageUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import net.minecraft.core.BlockPos;
 
 import java.util.concurrent.atomic.AtomicReference;

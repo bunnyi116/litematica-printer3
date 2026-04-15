@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.options.ConfigBase;
 import me.aleksilassila.litematica.printer.mixin_extension.ConfigExtension;
-import me.aleksilassila.litematica.printer.utils.StringUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

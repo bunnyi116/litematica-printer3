@@ -1,9 +1,9 @@
 package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
-import me.aleksilassila.litematica.printer.utils.MessageUtils;
-import me.aleksilassila.litematica.printer.utils.ModLoadUtils;
-import me.aleksilassila.litematica.printer.utils.ShulkerUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
+import me.aleksilassila.litematica.printer.utils.mods.ShulkerUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin.printer.litematica.InventoryUtilsAccessor;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
