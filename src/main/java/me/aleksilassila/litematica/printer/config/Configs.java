@@ -457,6 +457,11 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 .setVisible(FILL_COMPOSTER::getBooleanValue)
                 .build();
 
+        // 农作物催熟
+        public static final ConfigBoolean BONEMEAL_CROPS = bool("printBonemealCrops")
+                .defaultValue(false)
+                .build();
+
         // 下落方块检查
         public static final ConfigBoolean FALLING_CHECK = bool("printFallingBlockCheck")
                 .defaultValue(true)
@@ -497,7 +502,8 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 NOTE_BLOCK_TUNING,
                 REPLACE_CORAL,
                 FILL_COMPOSTER,
-                FILL_COMPOSTER_WHITELIST
+                FILL_COMPOSTER_WHITELIST,
+                BONEMEAL_CROPS
         );
     }
 

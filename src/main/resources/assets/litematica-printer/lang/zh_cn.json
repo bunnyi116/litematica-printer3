@@ -251,5 +251,7 @@
   "litematica-printer.update.failed": "更新检查失败，请稍后重试。",
   "litematica-printer.update.password": "下载密码：%s",
   "litematica-printer.update.recommendation": "强烈建议升级至最新版本，以修复潜在的严重问题。",
-  "litematica-printer.update.repository": "代码仓库："
+  "litematica-printer.update.repository": "代码仓库：",
+  "litematica-printer.config.printBonemealCrops": "农作物催熟",
+  "litematica-printer.config.printBonemealCrops.desc": "使用骨粉催熟农作物。"
 }

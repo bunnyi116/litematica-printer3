@@ -251,5 +251,7 @@
   "litematica-printer.update.failed": "察新失利，請稍後再試。",
   "litematica-printer.update.password": "取章祕碼：%s",
   "litematica-printer.update.recommendation": "強薦升新章，以修潛藏之重弊。",
-  "litematica-printer.update.repository": "典庫："
+  "litematica-printer.update.repository": "典庫：",
+  "litematica-printer.config.printBonemealCrops": "糞肥催熟",
+  "litematica-printer.config.printBonemealCrops.desc": "以骨粉催熟農作物。"
 }

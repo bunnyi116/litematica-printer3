@@ -585,7 +585,7 @@ public class PlacementGuide extends PrinterUtils {
                             .setRequiresSupport();
                 }
             }
-            case STEM -> {
+            case CROPS -> {
                 String blockKey = BlockUtils.getKeyString(ctx.requiredState.getBlock());
                 if (blockKey.contains("pumpkin")) {
                     return new Action()
@@ -597,6 +597,7 @@ public class PlacementGuide extends PrinterUtils {
                             .setItem(Items.MELON_SEEDS)
                             .setRequiresSupport();
                 }
+                return new Action();
             }
             case SKIP -> {
                 return null;
@@ -799,6 +800,21 @@ public class PlacementGuide extends PrinterUtils {
                     InteractionUtils.INSTANCE.add(ctx);
                 }
             }
+            case CROPS -> {
+                if (!Configs.Print.BONEMEAL_CROPS.getBooleanValue()) {
+                    return null;
+                }
+                Block currentBlock = ctx.currentState.getBlock();
+                Block requiredBlock = ctx.requiredState.getBlock();
+                if (currentBlock == requiredBlock && InventoryUtils.playerHasAccessToItem(mc.player, Items.BONE_MEAL)) {
+                    int maxAge = requiredBlock instanceof BeetrootBlock ? 3 : 7;
+                    int requiredAge = ctx.requiredState.getValue(requiredBlock instanceof BeetrootBlock ? BeetrootBlock.AGE : StemBlock.AGE);
+                    int currentAge = ctx.currentState.getValue(requiredBlock instanceof BeetrootBlock ? BeetrootBlock.AGE : StemBlock.AGE);
+                    if (requiredAge == maxAge && currentAge < maxAge) {
+                        return new ClickAction().setItem(Items.BONE_MEAL);
+                    }
+                }
+            }
             case NOTE_BLOCK -> {
                 if (Configs.Print.NOTE_BLOCK_TUNING.getBooleanValue() && !Objects.equals(ctx.requiredState.getValue(NoteBlock.NOTE), ctx.currentState.getValue(NoteBlock.NOTE))) {
                     return new ClickAction();
@@ -998,7 +1014,7 @@ public class PlacementGuide extends PrinterUtils {
                     }
                 }
             }
-            case STEM -> {
+            case CROPS -> {
                 String requiredBlockKey = BlockUtils.getKeyString(ctx.requiredState.getBlock());
                 String currentBlockKey = BlockUtils.getKeyString(ctx.currentState.getBlock());
                 if (requiredBlockKey.contains("pumpkin_stem") && !currentBlockKey.contains("pumpkin_stem")) {
@@ -1069,7 +1085,7 @@ public class PlacementGuide extends PrinterUtils {
         ),
         BANNER(AbstractBannerBlock.class),      // 旗帜
         SKULL(AbstractSkullBlock.class),        // 头颅
-        STEM(AttachedStemBlock.class, StemBlock.class),          // 种子(茎)
+        CROPS(AttachedStemBlock.class, StemBlock.class, CropBlock.class, BeetrootBlock.class),          // 农作物(茎)
 
         // 点击
         FLOWER_POT(FlowerPotBlock.class),               // 花盆
