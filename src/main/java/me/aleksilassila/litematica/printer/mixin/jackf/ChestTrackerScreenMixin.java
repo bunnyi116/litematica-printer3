@@ -33,7 +33,7 @@ public abstract class ChestTrackerScreenMixin extends Screen {
     @Shadow(remap = false)
     private VerticalScrollWidget scroll;
     @Shadow(remap = false)
-    private List<ItemStack> items = Collections.emptyList();
+    private List<ItemStack> items;
     @Shadow(remap = false)
     private Identifier currentMemoryKey;
 
@@ -48,14 +48,15 @@ public abstract class ChestTrackerScreenMixin extends Screen {
     @Overwrite(remap = false)
     private void filter(String filter) {
         new Thread(() -> {
+            List<ItemStack> itemsSnapshot = new ArrayList<>(this.items);
             //濳影盒等搜索
-            List<ItemStack> filtered = new ArrayList<>(items.stream()
+            List<ItemStack> filtered = new ArrayList<>(itemsSnapshot.stream()
                     .filter(stack -> InventoryUtils
                             .getStoredItems(stack, -1)
                             .stream()
                             .anyMatch((stack2) -> ItemStacks.defaultPredicate(stack2, filter))).toList()
             );
-            filtered.addAll(SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase()));
+            filtered.addAll(SearchablesUtil.ITEM_STACK.filterEntries(itemsSnapshot, filter.toLowerCase()));
             filtered = filtered.stream().distinct().toList();
             this.itemList.setItems(filtered);
             ChestTrackerConfig.Gui guiConfig = ChestTrackerConfig.INSTANCE.instance().gui;
@@ -67,24 +68,6 @@ public abstract class ChestTrackerScreenMixin extends Screen {
     private void upDateItems(CallbackInfo ci) {
         MemoryUtils.currentMemoryKey = currentMemoryKey;
     }
-
-    //#if MC >= 12109
-    @Inject(at = @At("HEAD"), method = "keyPressed", cancellable = true)
-    public void keyPressed(net.minecraft.client.input.KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-        if (Minecraft.getInstance().options.keyInventory.matches(event) && !(this.getFocused() instanceof MultilineTextField)) {
-            this.onClose();
-            cir.setReturnValue(true);
-        }
-    }
-    //#else
-    //$$ @Inject(at = @At("HEAD"),method = "keyPressed", cancellable = true)
-    //$$ public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir){
-    //$$     if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode) && !(this.getFocused() instanceof MultilineTextField) ) {
-    //$$         this.onClose();
-    //$$         cir.setReturnValue(true);
-    //$$     }
-    //$$ }
-    //#endif
 }
 //#else
 //$$ import me.aleksilassila.litematica.printer.mixin_extension.Pointless;
