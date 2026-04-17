@@ -17,6 +17,8 @@ public class Guides {
         // 跳过指南应优先被注册, 当没有需要跳过的方块需要进行注释掉, 否者会拦截所有方块
         register(SkipGuide.class, SkullBlock.class, LiquidBlock.class, BubbleColumnBlock.class, LilyPadBlock.class);
 
+//        register(ObserverGuide.class, ObserverBlock.class);
+
         // 默认指南需要最后被注册, 它的作用是用于兜底
         register(DefaultGuide.class);
     }

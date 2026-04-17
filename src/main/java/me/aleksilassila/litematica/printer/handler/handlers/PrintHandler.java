@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.guide.Guides;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
 import me.aleksilassila.litematica.printer.interfaces.Implementation;
 import me.aleksilassila.litematica.printer.printer.*;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -77,9 +79,11 @@ public class PrintHandler extends ClientPlayerTickHandler {
                 return false;
             }
         }
-        Action action = guide.getAction(ctx);
-        if (action == null) return false;
-        this.action = action;
+//        Action action = guide.getAction(ctx);
+        Optional<Action> action = Guides.INSTANCE.buildAction(ctx);
+        if (action.isEmpty())
+            return false;
+        this.action = action.get();
         return true;
     }
 
