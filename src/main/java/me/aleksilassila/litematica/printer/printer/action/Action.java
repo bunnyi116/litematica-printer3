@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@SuppressWarnings("UnusedReturnValue")
 public class Action {
     protected Map<Direction, Vec3> sides;
 
@@ -94,6 +95,12 @@ public class Action {
 
     public Action setSides(Map<Direction, Vec3> sides) {
         this.sides = sides;
+        return this;
+    }
+
+    public Action setSides(Direction side, Vec3 offset) {
+        this.sides = new HashMap<>();
+        this.sides.put(side, offset);
         return this;
     }
 

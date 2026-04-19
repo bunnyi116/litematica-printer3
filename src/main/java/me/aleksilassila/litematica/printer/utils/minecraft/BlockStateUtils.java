@@ -113,8 +113,21 @@ public class BlockStateUtils extends BlockUtils {
     public static boolean isWaterBlock(BlockState blockState) {
         return blockState.is(Blocks.WATER) && blockState.getValue(LiquidBlock.LEVEL) == 0
                 || (blockState.getProperties().contains(BlockStateProperties.WATERLOGGED) && blockState.getValue(BlockStateProperties.WATERLOGGED))
-                || blockState.getBlock() instanceof BubbleColumnBlock
-                || blockState.getBlock() instanceof SeagrassBlock;
+                || blockState.getBlock() instanceof BubbleColumnBlock;
+    }
+
+    /**
+     * 判断该方块是否需要水中才能放置（水生植物等）。
+     * 这些方块虽然 canSurvive 可能返回 true（只检查支撑），但实际放置需要水。
+     * 没有水时跳过放置，避免死循环切换物品。
+     *
+     * @param block 要判断的方块
+     * @return 是否需要水环境
+     */
+    public static boolean requiresWaterToPlace(Block block) {
+        return block instanceof SeagrassBlock
+                || block instanceof net.minecraft.world.level.block.KelpBlock
+                || block instanceof net.minecraft.world.level.block.KelpPlantBlock;
     }
 
     public static boolean isCorrectWaterLevel(BlockState requiredState, BlockState currentState) {

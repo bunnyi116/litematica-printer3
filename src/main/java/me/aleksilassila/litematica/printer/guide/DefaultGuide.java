@@ -1,31 +1,30 @@
 package me.aleksilassila.litematica.printer.guide;
 
-import com.google.common.collect.ImmutableList;
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
-import me.aleksilassila.litematica.printer.utils.minecraft.DirectionUtils;
-import net.minecraft.core.BlockPos;
+import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * 通用兜底指南。
+ * 处理所有没有被专用 Guide 接管的方块。
+ *
+ * <p>优先级最低，应最后注册。
+ */
 public class DefaultGuide extends Guide {
-    private static final ImmutableList<Class<? extends Block>> NEED_SUPPORT_CENTER_BLOCKS = ImmutableList.of(
-            RodBlock.class, TorchBlock.class, FlowerBlock.class
-    );
-
-    private static final ImmutableList<Class<? extends Block>> NO_REVERSE_FACING_BLOCKS = ImmutableList.of(
-            ObserverBlock.class, StairBlock.class, FenceGateBlock.class
-    );
+    /** WRONG_STATE 破坏跳过列表：这些方块的连接状态由环境决定，破坏无意义 */
+    private static final Class<?>[] BREAK_SKIP_CLASSES = {
+            FenceBlock.class, WallBlock.class, IronBarsBlock.class, PressurePlateBlock.class
+    };
 
     public DefaultGuide(SchematicBlockContext context) {
         super(context);
@@ -35,42 +34,93 @@ public class DefaultGuide extends Guide {
     protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         Action action = new Action();
 
-        Optional<BedPart> bedPart = getProperty(requiredState, BlockStateProperties.BED_PART);
-        if (bedPart.isPresent() && bedPart.get() == BedPart.HEAD) {
-            return Optional.empty();
+        // 1. 附着面方块（按钮、拉杆等 FaceAttachedHorizontalDirectionalBlock）
+        if (requiredBlock instanceof FaceAttachedHorizontalDirectionalBlock && facing != null && attachFace != null) {
+            Direction sidePitch = attachFace == AttachFace.CEILING ? Direction.UP
+                    : attachFace == AttachFace.FLOOR ? Direction.DOWN
+                    : facing;
+            Direction clickSide = attachFace == AttachFace.WALL ? facing : facing.getOpposite();
+            return Optional.of(action.setSides(clickSide).setLookDirection(clickSide.getOpposite(), sidePitch));
         }
 
-        getProperty(requiredState, BlockStateProperties.FACING)
-                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING))
-                .or(() -> getProperty(requiredState, BlockStateProperties.VERTICAL_DIRECTION))
-                .or(() -> getProperty(requiredState, BlockStateProperties.FACING_HOPPER))
-                .ifPresent(facing -> {
-                    boolean noReverseFacing = NO_REVERSE_FACING_BLOCKS.stream()
-                            .anyMatch(clazz -> clazz.isInstance(requiredBlock));
-                    if (noReverseFacing) {
-                        action.setLookDirection(facing);
-                    } else {
-                        action.setLookDirection(facing.getOpposite());
+        // 2. 轴向方块（原木、锁链等）
+        if (axis != null) {
+            action.setSides(axis);
+        } else if (horizontalAxis != null) {
+            action.setSides(horizontalAxis);
+        }
+
+        // 3. 朝向方块
+        if (facing != null && axis == null && horizontalAxis == null) {
+            // 水平方向方块（HorizontalDirectionalBlock、石切机等）
+            if (requiredBlock instanceof HorizontalDirectionalBlock
+                    || requiredBlock instanceof StonecutterBlock
+                    //#if MC >= 11904
+                    || requiredBlock instanceof net.minecraft.world.level.block.FlowerBedBlock
+                    //#endif
+            ) {
+                // 栅栏门已由 FenceGateGuide 处理，这里不再特殊反向
+                action.setLookDirection(facing.getOpposite());
+            }
+            // BaseEntityBlock（营火、装饰盆等）
+            if (requiredBlock instanceof BaseEntityBlock) {
+                if (requiredState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                    Direction entityFacing = facing;
+                    //#if MC >= 11904
+                    if (requiredBlock instanceof DecoratedPotBlock || requiredBlock instanceof CampfireBlock) {
+                        entityFacing = entityFacing.getOpposite();
                     }
-                });
+                    //#endif
+                    action.setSides(entityFacing).setLookDirection(entityFacing.getOpposite());
+                }
+                if (requiredState.hasProperty(BlockStateProperties.FACING)) {
+                    Direction entityFacing = facing;
+                    if (requiredBlock instanceof ShulkerBoxBlock) {
+                        entityFacing = entityFacing.getOpposite();
+                        action.setShift();
+                    }
+                    action.setSides(entityFacing).setLookDirection(entityFacing.getOpposite());
+                }
+            }
+            // 普通观察器、楼梯、栅栏门：看正向
+            if (requiredBlock instanceof ObserverBlock
+                    || requiredBlock instanceof StairBlock
+                    || requiredBlock instanceof FenceGateBlock) {
+                action.setLookDirection(facing);
+            } else if (!(requiredBlock instanceof HorizontalDirectionalBlock)
+                    && !(requiredBlock instanceof BaseEntityBlock)) {
+                // 其余方块反向放置
+                action.setLookDirection(facing.getOpposite());
+            }
+        }
 
-        // 处理 AXIS 轴方块
-        getProperty(requiredState, BlockStateProperties.AXIS)
-                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_AXIS))
-                .ifPresent(action::setSides);
+        // 4. Half 属性兜底
+        if (half != null && facing == null) {
+            action.setSides(half == net.minecraft.world.level.block.state.properties.Half.BOTTOM
+                    ? Direction.DOWN : Direction.UP);
+        }
 
-
-        getProperty(requiredState, BlockStateProperties.HALF).ifPresent(half -> {
-            Direction side = half == Half.BOTTOM ? Direction.DOWN : Direction.UP;
-            action.setSides(side);
-        });
-
-        getProperty(requiredState, BlockStateProperties.SLAB_TYPE).ifPresent(slabType -> {
-            action.setSides(getSlabSides(context.level, context.blockPos, slabType));
-        });
-
-        if (NEED_SUPPORT_CENTER_BLOCKS.stream().anyMatch(clazz -> clazz.isInstance(requiredBlock))) {
+        // 5. 需要支撑的方块
+        if (requiredBlock instanceof RodBlock
+                || requiredBlock instanceof TorchBlock
+                || requiredBlock instanceof FlowerBlock) {
             action.setRequiresSupport();
+        }
+
+        // 6. 方块型珊瑚替换
+        if (Configs.Print.REPLACE_CORAL.getBooleanValue()
+                && requiredBlock.getDescriptionId().endsWith("_coral_block")) {
+            String type = requiredBlock.getDescriptionId()
+                    .replace("block.minecraft.dead_", "")
+                    .replace("_coral_block", "");
+            action.setRequiresSupport();
+            switch (type) {
+                case "tube" -> action.setItem(net.minecraft.world.item.Items.TUBE_CORAL_BLOCK);
+                case "brain" -> action.setItem(net.minecraft.world.item.Items.BRAIN_CORAL_BLOCK);
+                case "bubble" -> action.setItem(net.minecraft.world.item.Items.BUBBLE_CORAL_BLOCK);
+                case "fire" -> action.setItem(net.minecraft.world.item.Items.FIRE_CORAL_BLOCK);
+                case "horn" -> action.setItem(net.minecraft.world.item.Items.HORN_CORAL_BLOCK);
+            }
         }
 
         return Optional.of(action);
@@ -78,37 +128,33 @@ public class DefaultGuide extends Guide {
 
     @Override
     protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        Action action = new Action();
-        getProperty(requiredState, BlockStateProperties.SLAB_TYPE).ifPresent(requiredSlabType -> {
-            if (requiredSlabType == SlabType.DOUBLE) {
-                getProperty(currentState, BlockStateProperties.SLAB_TYPE).ifPresent(currentSlabType -> {
-                    action.setSides(currentSlabType == SlabType.BOTTOM ? Direction.UP : Direction.DOWN);
-                });
-            }
-        });
-
-        return super.onBuildActionWrongState(state, skipOtherGuide);
+        if (!Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
+            return Optional.empty();
+        }
+        if (Arrays.asList(BREAK_SKIP_CLASSES).contains(requiredBlock.getClass())) {
+            return Optional.empty();
+        }
+        InteractionUtils.INSTANCE.add(context);
+        return Optional.empty();
     }
 
-    public static Map<Direction, Vec3> getSlabSides(Level world, BlockPos pos, SlabType requiredHalf) {
-        if (requiredHalf == SlabType.DOUBLE) {
-            requiredHalf = SlabType.BOTTOM;
+    @Override
+    protected Optional<Action> onBuildActionWrongBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        if (Configs.Print.REPLACE_CORAL.getBooleanValue()
+                && requiredBlock.getDescriptionId().contains("coral")) {
+            return Optional.empty();
         }
-        Direction requiredDir = requiredHalf == SlabType.TOP ? Direction.UP : Direction.DOWN;
-        Map<Direction, Vec3> sides = new HashMap<>();
-        sides.put(requiredDir, new Vec3(0, 0, 0));
-        if (world.getBlockState(pos).hasProperty(SlabBlock.TYPE)) {
-            sides.put(requiredDir.getOpposite(), Vec3.atLowerCornerOf(DirectionUtils.getVector(requiredDir)).scale(0.5));
-        }
-        for (Direction side : Direction.Plane.HORIZONTAL) {
-            BlockState neighborCurrentState = world.getBlockState(pos.relative(side));
-            if (neighborCurrentState.hasProperty(SlabBlock.TYPE) && neighborCurrentState.getValue(SlabBlock.TYPE) != SlabType.DOUBLE) {
-                if (neighborCurrentState.getValue(SlabBlock.TYPE) != requiredHalf) {
-                    continue;
+        boolean printBreakWrongBlock = Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue();
+        boolean printBreakExtraBlock = Configs.Print.BREAK_EXTRA_BLOCK.getBooleanValue();
+        if (printBreakWrongBlock || printBreakExtraBlock) {
+            if (InteractionUtils.canBreakBlock(blockPos)) {
+                if (printBreakWrongBlock && !requiredState.isAir()) {
+                    InteractionUtils.INSTANCE.add(context);
+                } else if (printBreakExtraBlock && requiredState.isAir()) {
+                    InteractionUtils.INSTANCE.add(context);
                 }
             }
-            sides.put(side, Vec3.atLowerCornerOf(DirectionUtils.getVector(requiredDir)).scale(0.25));
         }
-        return sides;
+        return Optional.empty();
     }
 }

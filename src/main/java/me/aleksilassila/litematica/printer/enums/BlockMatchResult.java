@@ -3,7 +3,11 @@ package me.aleksilassila.litematica.printer.enums;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.SlabType;
+
+import java.util.Optional;
 
 public enum BlockMatchResult {
     /**
@@ -27,29 +31,25 @@ public enum BlockMatchResult {
     CORRECT;
 
 
-    public static BlockMatchResult compare(BlockState requiredState, BlockState currentState, Property<?>... propertiesToIgnore) {
+    public static BlockMatchResult compare(SchematicBlockContext context, Property<?>... propertiesToIgnore) {
         // 如果两个方块状态完全相同，则返回正确状态
-        if (requiredState == currentState) {
+        if (context.requiredState == context.currentState) {
             return CORRECT;
         }
         // 方块相同
-        if (requiredState.getBlock().equals(currentState.getBlock())) {
+        if (context.requiredState.getBlock().equals(context.currentState.getBlock())) {
             // 状态不同，则返回错误状态
-            if (BlockStateUtils.statesEqualIgnoreProperties(requiredState, currentState, propertiesToIgnore)) {
+            if (BlockStateUtils.statesEqualIgnoreProperties(context.requiredState, context.currentState, propertiesToIgnore)) {
                 return CORRECT;
             }
             return WRONG_STATE;
         }
         // 如果原理图中方块不为空，且实际方块为空，则返回缺失方块状态
-        if (!requiredState.isAir() && currentState.isAir()) {
+        if (!context.requiredState.isAir() && context.currentState.isAir()) {
             return MISSING;
 
         }
         return WRONG_BLOCK;
-    }
-
-    public static BlockMatchResult compare(SchematicBlockContext context, Property<?>... propertiesToIgnore) {
-        return compare(context.requiredState, context.currentState, propertiesToIgnore);
     }
 }
 
