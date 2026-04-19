@@ -43,9 +43,9 @@ repositories {
     strictMaven("https://maven.isxander.dev/releases")
     strictMaven("https://maven.shedaniel.me")  // Cloth API/Config 官方源
 
-    if (mcVersionInt <= 11904) {
-        strictMaven("https://server.bbkr.space/artifactory/libs-release")   // LibGui 依赖
-    }
+//    if (mcVersionInt <= 11904) {
+//        strictMaven("https://server.bbkr.space/artifactory/libs-release")   // LibGui 依赖
+//    }
     strictMaven("https://jitpack.io")
 }
 
