@@ -28,27 +28,27 @@ public class ConfigUtils {
     }
 
     public static boolean isPrintMode() {
-        return (Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI) && Configs.Core.PRINT.getBooleanValue())
+        return (isMultiMode() && Configs.Core.PRINT.getBooleanValue())
                 || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.PRINTER;
     }
 
     public static boolean isMineMode() {
-        return (Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI) && Configs.Core.MINE.getBooleanValue())
+        return (isMultiMode() && Configs.Core.MINE.getBooleanValue())
                 || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.MINE;
     }
 
     public static boolean isFillMode() {
-        return (Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI) && Configs.Core.FILL.getBooleanValue())
+        return (isMultiMode() && Configs.Core.FILL.getBooleanValue())
                 || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.FILL;
     }
 
     public static boolean isFluidMode() {
-        return (Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI) && Configs.Core.FLUID.getBooleanValue())
+        return (isMultiMode() && Configs.Core.FLUID.getBooleanValue())
                 || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.FLUID;
     }
 
     public static boolean isBedrockMode() {
-        return (Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI) && Configs.Hotkeys.BEDROCK.getBooleanValue())
+        return (isMultiMode() && Configs.Hotkeys.BEDROCK.getBooleanValue())
                 || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.BEDROCK;
     }
 

@@ -38,13 +38,18 @@ public class GuiHandler extends ClientPlayerTickHandler {
     }
 
     @Override
+    protected boolean isSchematicBlockHandler() {
+        return ConfigUtils.isPrintMode();
+    }
+
+    @Override
     protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         if (ConfigUtils.isPrintMode()) {
             WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
             if (schematic != null) {
                 SchematicBlockContext context = new SchematicBlockContext(client, level, schematic, blockPos);
                 if (!context.requiredState.isAir()) {
-                    if (BlockMatchResult.compare(context) == BlockMatchResult.CORRECT) {
+                    if (BlockMatchResult.compare(context) != BlockMatchResult.MISSING) {
                         printProgress.finished++;
                         totalProgress.finished++;
                     }
