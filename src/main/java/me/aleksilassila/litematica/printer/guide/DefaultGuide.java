@@ -55,8 +55,8 @@ public class DefaultGuide extends Guide {
             // 水平方向方块（HorizontalDirectionalBlock、石切机等）
             if (requiredBlock instanceof HorizontalDirectionalBlock
                     || requiredBlock instanceof StonecutterBlock
-                    //#if MC >= 11904
-                    || requiredBlock instanceof net.minecraft.world.level.block.FlowerBedBlock
+                    //#if MC >= 12105
+                    || requiredBlock instanceof FlowerBedBlock
                     //#endif
             ) {
                 // 栅栏门已由 FenceGateGuide 处理，这里不再特殊反向
