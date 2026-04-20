@@ -15,11 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 耕地/土径放置/交互指南。
- * 注册到：FarmlandBlock.class, DirtPathBlock.class
- *
- * <p>MISSING：用对应的泥土方块放置。
- * WRONG_BLOCK：从泥土/草方块用锄头/铲子转换。
+ * 耕地/土径
  */
 public class SoilGuide extends Guide {
 
@@ -59,6 +55,13 @@ public class SoilGuide extends Guide {
                 }
             }
         }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // MOISTURE 由灌溉/降雨决定，环境决定 → 跳过
+        skipOtherGuide.set(true);
         return Optional.empty();
     }
 }

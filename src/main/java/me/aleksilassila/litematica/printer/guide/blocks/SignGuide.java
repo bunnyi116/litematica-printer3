@@ -15,16 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 告示牌放置指南。
- * 注册到：AbstractSignBlock.class（覆盖站立/墙壁/悬挂三类）
- *
- * <p>放置规则：
- * <ul>
- *   <li>站立告示牌（StandingSignBlock）→ 点击下方，按 rotation 设置偏转角</li>
- *   <li>墙壁告示牌（WallSignBlock）→ 点击对应墙面，玩家朝向与面一致</li>
- *   <li>悬挂告示牌（WallHangingSignBlock）→ 按轴方向点击侧面</li>
- *   <li>天花板悬挂（CeilingHangingSignBlock）→ 点击上方，按 rotation 旋转</li>
- * </ul>
+ * 告示牌
  */
 public class SignGuide extends Guide {
 

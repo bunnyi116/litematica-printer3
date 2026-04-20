@@ -12,10 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 紫水晶芽放置指南。
- * 注册到：AmethystClusterBlock.class
- *
- * <p>规则：反向 facing 放置，需要支撑。
+ * 紫水晶芽
  */
 public class AmethystGuide extends Guide {
 

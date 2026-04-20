@@ -11,8 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 绊线钩放置指南。
- * 注册到：TripWireHookBlock.class
+ * 绊线钩
  */
 public class TripWireHookGuide extends Guide {
 
@@ -25,5 +24,12 @@ public class TripWireHookGuide extends Guide {
         var hookFacing = getProperty(requiredState, TripWireHookBlock.FACING).orElse(null);
         if (hookFacing == null) return Optional.empty();
         return Optional.of(new Action().setSides(hookFacing));
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // POWERED 由红石/绊线决定，ATTACHED 由绊线连接决定 → 环境决定，跳过
+        skipOtherGuide.set(true);
+        return Optional.empty();
     }
 }

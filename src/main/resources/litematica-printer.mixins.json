@@ -21,6 +21,7 @@
     "printer.mc.MixinBlockItem",
     "printer.mc.MixinConnection",
     "printer.mc.MixinGui",
+    "printer.mc.MixinPistonBaseBlock",
     "printer.mc.MixinServerboundMovePlayerPacket"
   ],
   "client": [

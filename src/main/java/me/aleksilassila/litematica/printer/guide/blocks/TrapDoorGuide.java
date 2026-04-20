@@ -14,14 +14,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 活板门放置指南。
- * 注册到：TrapDoorBlock.class
- *
- * <p>活板门放置规则：
- * <ul>
- *   <li>TOP — 点击上面，玩家朝 facing.opposite 看（方块朝 facing 打开）</li>
- *   <li>BOTTOM — 点击下面，玩家朝 facing.opposite 看</li>
- * </ul>
+ * 活板门
  */
 public class TrapDoorGuide extends Guide {
 

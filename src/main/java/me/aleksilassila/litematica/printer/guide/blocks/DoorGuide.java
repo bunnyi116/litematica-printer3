@@ -23,21 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 门放置 / 交互指南。
- * 注册到：DoorBlock.class
- *
- * <p>放置规则：
- * <ul>
- *   <li>只处理门的下半部分（LOWER），上半部分随下半自动生成</li>
- *   <li>根据铰链方向和周围方块占用情况确定放置侧面和点击偏移</li>
- * </ul>
- *
- * <p>交互规则（WRONG_STATE）：
- * <ul>
- *   <li>铁门不可交互</li>
- *   <li>开关状态不同时，发送右键点击使其改变</li>
- *   <li>朝向不同时，根据配置决定是否破坏</li>
- * </ul>
+ * 门放置
  */
 public class DoorGuide extends Guide {
 

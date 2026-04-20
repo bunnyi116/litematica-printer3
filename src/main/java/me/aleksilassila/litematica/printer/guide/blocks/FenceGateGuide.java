@@ -13,16 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 栅栏门放置 / 交互指南。
- * 注册到：FenceGateBlock.class
- *
- * <p>放置规则：栅栏门朝向需要反向（玩家朝 facing 看，门朝 facing.opposite 打开）
- *
- * <p>交互规则（WRONG_STATE）：
- * <ul>
- *   <li>朝向相反或开关状态不同时 → 发送点击交互</li>
- *   <li>其他情况按配置决定是否破坏</li>
- * </ul>
+ * 栅栏门
  */
 public class FenceGateGuide extends Guide {
 

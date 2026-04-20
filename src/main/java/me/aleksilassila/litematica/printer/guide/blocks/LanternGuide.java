@@ -11,10 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 灯笼放置指南。
- * 注册到：LanternBlock.class
- *
- * <p>规则：悬挂时朝上看，否则朝下看。
+ * 灯笼
  */
 public class LanternGuide extends Guide {
 

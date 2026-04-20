@@ -11,10 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 漏斗放置指南。
- * 注册到：HopperBlock.class
- *
- * <p>规则：点击 facing 方向的面放置。
+ * 漏斗
  */
 public class HopperGuide extends Guide {
 

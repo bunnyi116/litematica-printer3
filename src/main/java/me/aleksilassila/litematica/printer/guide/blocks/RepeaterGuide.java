@@ -13,10 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 红石中继器交互指南。
- * 注册到：RepeaterBlock.class
- *
- * <p>WRONG_STATE：延迟不同 → 右键调整
+ * 红石中继器
  */
 public class RepeaterGuide extends Guide {
 

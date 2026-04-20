@@ -14,48 +14,39 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 铁轨放置指南。
- * 注册到：BaseRailBlock.class
- *
- * <p>规则：根据铁轨形状确定玩家朝向。
+ * 铁轨。
  */
 public class RailGuide extends Guide {
-
-    /** 铁轨形状：RAIL_SHAPE / RAIL_SHAPE_STRAIGHT */
-    private final @Nullable RailShape railShape;
-
     public RailGuide(SchematicBlockContext context) {
         super(context);
-        this.railShape = getProperty(requiredState, BlockStateProperties.RAIL_SHAPE)
-                .or(() -> getProperty(requiredState, BlockStateProperties.RAIL_SHAPE_STRAIGHT))
-                .orElse(null);
     }
 
     @Override
     protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (railShape == null) return Optional.empty();
+        Optional<RailShape> railShape = getProperty(requiredState, BlockStateProperties.RAIL_SHAPE)
+                .or(() -> getProperty(requiredState, BlockStateProperties.RAIL_SHAPE_STRAIGHT));
+
+        if (railShape.isEmpty()) return Optional.empty();
 
         Action action = new Action();
-        if (requiredBlock instanceof RailBlock) {
-            // 普通铁轨
-            switch (railShape) {
-                case EAST_WEST, ASCENDING_EAST -> action.setLookDirection(Direction.EAST);
-                case NORTH_SOUTH, ASCENDING_NORTH -> action.setLookDirection(Direction.NORTH);
-                case ASCENDING_WEST -> action.setLookDirection(Direction.WEST);
-                case ASCENDING_SOUTH -> action.setLookDirection(Direction.SOUTH);
-                // SOUTH_EAST 等曲线铁轨暂不处理
-                default -> {}
-            }
-        } else {
-            // 充能铁轨/探测铁轨/激活铁轨
-            switch (railShape) {
-                case EAST_WEST, ASCENDING_EAST -> action.setLookDirection(Direction.EAST);
-                case NORTH_SOUTH, ASCENDING_NORTH -> action.setLookDirection(Direction.NORTH);
-                case ASCENDING_WEST -> action.setLookDirection(Direction.WEST);
-                case ASCENDING_SOUTH -> action.setLookDirection(Direction.SOUTH);
-                default -> {}
+        switch (railShape.get()) {
+            case EAST_WEST, ASCENDING_EAST -> action.setLookDirection(Direction.EAST);
+            case NORTH_SOUTH, ASCENDING_NORTH -> action.setLookDirection(Direction.NORTH);
+            case ASCENDING_WEST -> action.setLookDirection(Direction.WEST);
+            case ASCENDING_SOUTH -> action.setLookDirection(Direction.SOUTH);
+            default -> {
             }
         }
         return Optional.of(action);
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        if (currentState.hasProperty(BlockStateProperties.POWERED)
+                && !currentState.getValue(BlockStateProperties.POWERED).equals(requiredState.getValue(BlockStateProperties.POWERED))) {
+            skipOtherGuide.set(true);
+            return Optional.empty();
+        }
+        return Optional.empty();
     }
 }

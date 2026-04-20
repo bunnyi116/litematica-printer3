@@ -13,10 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 音符盒交互指南。
- * 注册到：NoteBlock.class
- *
- * <p>WRONG_STATE：音高不同 → 右键调音（配置开启时）。
+ * 音符盒
  */
 public class NoteBlockGuide extends Guide {
 

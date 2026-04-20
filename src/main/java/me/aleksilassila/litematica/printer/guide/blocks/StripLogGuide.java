@@ -17,11 +17,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 去皮原木放置/交互指南。
- * 注册到：RotatedPillarBlock.class
- *
- * <p>放置：按轴方向放置，配置开启后可同时接受原版/去皮版本。
- * WRONG_BLOCK：当前方块可去皮成目标时，使用斧头右键。
+ * 去皮原木
  */
 public class StripLogGuide extends Guide {
 

@@ -10,10 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 可可豆放置指南。
- * 注册到：CocoaBlock.class
- *
- * <p>规则：点击 HORIZONTAL_FACING 方向的面放置。
+ * 可可豆
  */
 public class CocoaGuide extends Guide {
 
@@ -26,5 +23,12 @@ public class CocoaGuide extends Guide {
         var cocoaFacing = getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING).orElse(null);
         if (cocoaFacing == null) return Optional.empty();
         return Optional.of(new Action().setSides(cocoaFacing));
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // AGE 由生长决定，环境决定 → 跳过
+        skipOtherGuide.set(true);
+        return Optional.empty();
     }
 }

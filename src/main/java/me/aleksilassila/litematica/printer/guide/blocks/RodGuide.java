@@ -13,15 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 末地烛/避雷针放置指南。
- * 注册到：RodBlock.class
- *
- * <p>末地烛需要特殊处理：
- * <ul>
- *   <li>如果前方有反向末地烛，需要点击 facing 方向放置</li>
- *   <li>如果前方有同向末地烛（在投影中），跳过等待</li>
- *   <li>默认：点击 facing.opposite 放置</li>
- * </ul>
+ * 末地烛/避雷针放置
  */
 public class RodGuide extends Guide {
 
@@ -39,28 +31,19 @@ public class RodGuide extends Guide {
             // 前面有反向末地烛 → 点击 facing 方向
             if (forwardState.is(requiredBlock)
                     && forwardState.getValue(EndRodBlock.FACING) == facing.getOpposite()) {
-                return Optional.of(new Action()
-                        .setSides(facing)
-                        .setRequiresSupport()
-                );
+                return Optional.of(new Action().setSides(facing));
             }
             // 投影中前面有同向末地烛 → 等待
             BlockState forwardSchematic = schematic.getBlockState(blockPos.relative(facing));
             if (forwardSchematic.is(requiredBlock)
                     && forwardSchematic.getValue(EndRodBlock.FACING) == facing) {
                 if (forwardSchematic == forwardState) {
-                    return Optional.of(new Action()
-                            .setSides(facing.getOpposite())
-                            .setRequiresSupport()
-                    );
+                    return Optional.of(new Action().setSides(facing.getOpposite()));
                 }
                 return Optional.empty();
             }
         }
 
-        return Optional.of(new Action()
-                .setSides(facing.getOpposite())
-                .setRequiresSupport()
-        );
+        return Optional.of(new Action().setSides(facing.getOpposite()));
     }
 }

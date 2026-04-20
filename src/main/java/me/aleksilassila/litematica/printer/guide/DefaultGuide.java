@@ -57,7 +57,7 @@ public class DefaultGuide extends Guide {
                 // 栅栏门已由 FenceGateGuide 处理，这里不再特殊反向
                 action.setLookDirection(facing.getOpposite());
             }
-            // BaseEntityBlock（营火、装饰盆等）
+            // BaseEntityBlock（篝火、装饰盆等）
             if (requiredBlock instanceof BaseEntityBlock) {
                 if (requiredState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                     Direction entityFacing = facing;
@@ -95,22 +95,6 @@ public class DefaultGuide extends Guide {
                     ? Direction.DOWN : Direction.UP);
         }
 
-        // 5. 方块型珊瑚替换
-        if (Configs.Print.REPLACE_CORAL.getBooleanValue()
-                && requiredBlock.getDescriptionId().endsWith("_coral_block")) {
-            String type = requiredBlock.getDescriptionId()
-                    .replace("block.minecraft.dead_", "")
-                    .replace("_coral_block", "");
-            action.setRequiresSupport();
-            switch (type) {
-                case "tube" -> action.setItem(net.minecraft.world.item.Items.TUBE_CORAL_BLOCK);
-                case "brain" -> action.setItem(net.minecraft.world.item.Items.BRAIN_CORAL_BLOCK);
-                case "bubble" -> action.setItem(net.minecraft.world.item.Items.BUBBLE_CORAL_BLOCK);
-                case "fire" -> action.setItem(net.minecraft.world.item.Items.FIRE_CORAL_BLOCK);
-                case "horn" -> action.setItem(net.minecraft.world.item.Items.HORN_CORAL_BLOCK);
-            }
-        }
-
         return Optional.of(action);
     }
 
@@ -125,10 +109,6 @@ public class DefaultGuide extends Guide {
 
     @Override
     protected Optional<Action> onBuildActionWrongBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (Configs.Print.REPLACE_CORAL.getBooleanValue()
-                && requiredBlock.getDescriptionId().contains("coral")) {
-            return Optional.empty();
-        }
         boolean printBreakWrongBlock = Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue();
         boolean printBreakExtraBlock = Configs.Print.BREAK_EXTRA_BLOCK.getBooleanValue();
         if (printBreakWrongBlock || printBreakExtraBlock) {

@@ -13,14 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 头颅放置指南。
- * 注册到：SkullBlock.class, WallSkullBlock.class
- *
- * <p>放置规则：
- * <ul>
- *   <li>站立头颅（SkullBlock）→ 点击下方，按反向 rotation 设置偏转角</li>
- *   <li>墙壁头颅（WallSkullBlock）→ 点击 facing.opposite 面，玩家朝向一致</li>
- * </ul>
+ * 头颅
  */
 public class SkullGuide extends Guide {
 

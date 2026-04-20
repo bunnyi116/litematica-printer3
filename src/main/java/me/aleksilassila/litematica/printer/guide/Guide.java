@@ -39,27 +39,37 @@ public abstract class Guide extends BlockStateUtils {
     // 通用朝向 / 旋转属性（从 requiredState 自动提取）
     // -------------------------------------------------------
 
-    /** 朝向：FACING / HORIZONTAL_FACING / VERTICAL_DIRECTION / FACING_HOPPER，取第一个命中的 */
+    /**
+     * 朝向：FACING / HORIZONTAL_FACING / VERTICAL_DIRECTION / FACING_HOPPER，取第一个命中的
+     */
     protected final @Nullable Direction facing;
 
-    /** 轴向：AXIS（原木/锁链/音符盒等） */
+    /**
+     * 轴向：AXIS（原木/锁链/音符盒等）
+     */
     protected final Direction.@Nullable Axis axis;
 
-    /** 水平轴：HORIZONTAL_AXIS */
+    /**
+     * 水平轴：HORIZONTAL_AXIS
+     */
     protected final Direction.@Nullable Axis horizontalAxis;
 
     // -------------------------------------------------------
     // 分层属性
     // -------------------------------------------------------
 
-    /** 楼梯/活板门的上/下半：HALF */
+    /**
+     * 楼梯/活板门的上/下半：HALF
+     */
     protected final @Nullable Half half;
 
     // -------------------------------------------------------
     // 附着面属性
     // -------------------------------------------------------
 
-    /** 附着面（按钮/拉杆/火把）：ATTACH_FACE */
+    /**
+     * 附着面（按钮/拉杆/火把）：ATTACH_FACE
+     */
     protected final @Nullable AttachFace attachFace;
 
     public Guide(SchematicBlockContext context) {
@@ -196,28 +206,45 @@ public abstract class Guide extends BlockStateUtils {
     // 子类钩子
     // -------------------------------------------------------
 
-    /** 所有状态均会先经过此钩子，可在此拦截任意状态 */
+    /**
+     * 所有状态均会先经过此钩子，可在此拦截任意状态
+     */
     protected Optional<Action> onBuildAction(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         return Optional.empty();
     }
 
-    /** 位置为空气 / 可替换方块：需要放置 */
+    /**
+     * 位置为空气 / 可替换方块：需要放置
+     */
     protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         return Optional.empty();
     }
 
-    /** 方块类型完全不同：需要先破坏再放置 */
+    /**
+     * 方块类型完全不同：需要先破坏再放置
+     */
     protected Optional<Action> onBuildActionWrongBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         return Optional.empty();
     }
 
-    /** 方块类型相同但状态不对：可能需要交互修正 */
+    /**
+     * 方块类型相同但状态不对：可能需要交互修正
+     */
     protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         return Optional.empty();
     }
 
-    /** 完全正确：通常无需操作 */
+    /**
+     * 完全正确：通常无需操作
+     */
     protected Optional<Action> onBuildActionCorrect(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         return Optional.empty();
+    }
+
+    protected Optional<Direction> getFacing() {
+        return getProperty(requiredState, BlockStateProperties.FACING)
+                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING))
+                .or(() -> getProperty(requiredState, BlockStateProperties.VERTICAL_DIRECTION))
+                .or(() -> getProperty(requiredState, BlockStateProperties.FACING_HOPPER));
     }
 }

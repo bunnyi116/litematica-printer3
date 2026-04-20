@@ -12,10 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 下界传送门放置指南。
- * 注册到：NetherPortalBlock.class
- *
- * <p>MISSING：检查是否有空传送门形状，有则用打火石/火焰弹点燃。
+ * 下界传送门
  */
 public class NetherPortalGuide extends Guide {
 
@@ -31,6 +28,13 @@ public class NetherPortalGuide extends Guide {
                     .setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE)
                     .setRequiresSupport());
         }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // AXIS 由传送门框架结构决定，环境决定 → 跳过
+        skipOtherGuide.set(true);
         return Optional.empty();
     }
 }

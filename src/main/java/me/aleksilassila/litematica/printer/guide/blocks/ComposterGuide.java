@@ -16,10 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 堆肥桶交互指南。
- * 注册到：ComposterBlock.class
- *
- * <p>WRONG_STATE：堆肥不满 → 右键放入可堆肥物品（配置开启时）。
+ * 堆肥桶
  */
 public class ComposterGuide extends Guide {
     private static List<String> compostWhitelistCache = new ArrayList<>();

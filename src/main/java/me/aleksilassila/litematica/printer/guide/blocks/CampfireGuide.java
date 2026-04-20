@@ -16,14 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 营火放置/交互指南。
- * 注册到：CampfireBlock.class
- *
- * <p>WRONG_STATE：
- * <ul>
- *   <li>需要熄灭且当前点燃 → 铲子右键</li>
- *   <li>需要点燃且当前熄灭 → 打火石/火焰弹</li>
- * </ul>
+ * 篝火
  */
 public class CampfireGuide extends Guide {
 

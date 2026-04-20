@@ -18,8 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 楼梯放置/交互指南。
- * 注册到：StairBlock.class
+ * 楼梯
  */
 public class StairGuide extends Guide {
 

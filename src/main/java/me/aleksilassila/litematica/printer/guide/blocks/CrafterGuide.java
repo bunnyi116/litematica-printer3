@@ -13,16 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 合成器放置指南（MC 1.21+）。
- * 注册到：CrafterBlock.class
- *
- * <p>合成器使用 ORIENTATION（FrontAndTop），需要同时确定 yaw 和 pitch 朝向。
- * 放置规则：
- * <ul>
- *   <li>front 朝上 → 看反向 front 的水平方向，俯视</li>
- *   <li>front 朝下 → 看反向 top 的水平方向，仰视</li>
- *   <li>front 水平 → 直接看 front 方向</li>
- * </ul>
+ * 合成器
  */
 public class CrafterGuide extends Guide {
 
@@ -49,5 +40,12 @@ public class CrafterGuide extends Guide {
         } else {
             return Optional.of(new Action().setLookDirection(facingDir, facingDir));
         }
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // CRAFTING/TRIGGERED 由合成器内部状态和红石决定，环境决定 → 跳过
+        skipOtherGuide.set(true);
+        return Optional.empty();
     }
 }

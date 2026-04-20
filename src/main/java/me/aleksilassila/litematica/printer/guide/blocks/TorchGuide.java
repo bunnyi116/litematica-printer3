@@ -11,10 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 火把放置指南。
- * 注册到：BaseTorchBlock.class
- *
- * <p>规则：反向 facing 放置，需要支撑。
+ * 火把
  */
 public class TorchGuide extends Guide {
 

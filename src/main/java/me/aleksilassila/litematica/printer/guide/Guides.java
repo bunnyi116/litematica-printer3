@@ -5,6 +5,7 @@ import me.aleksilassila.litematica.printer.guide.blocks.*;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.piston.PistonBaseBlock;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,8 +17,7 @@ public class Guides {
 
     private Guides() {
         // ============================================================
-        // 1. 跳过指南（最高优先级）
-        //    当没有需要跳过的方块时，请注释掉此行，否则会拦截所有方块
+        // 跳过指南（最高优先级）当没有需要跳过的方块时，请注释掉此行，否则会拦截所有方块
         // ============================================================
         register(SkipGuide.class,
                 LiquidBlock.class,
@@ -25,11 +25,7 @@ public class Guides {
                 LilyPadBlock.class
         );
 
-        // ============================================================
-        // 2. 放置指南（按特殊度排序，特殊方块优先）
-        // ============================================================
-
-        // 火把（附着面决定放置方向，需要支撑）
+        // 火把
         register(TorchGuide.class,
                 //#if MC > 12002
                 BaseTorchBlock.class
@@ -38,43 +34,43 @@ public class Guides {
                 //#endif
         );
 
-        // 紫水晶芽（附着面 + 支撑）
+        // 紫水晶芽
         register(AmethystGuide.class, AmethystClusterBlock.class);
 
-        // 花（需要底部支撑）
+        // 花
         register(FlowerGuide.class, FlowerBlock.class);
 
-        // 台阶（上/下半面精确点击 + DOUBLE 合并）
+        // 台阶
         register(SlabGuide.class, SlabBlock.class);
 
-        // 楼梯（Half + Facing）
+        // 楼梯
         register(StairGuide.class, StairBlock.class);
 
-        // 活板门（Half）
+        // 活板门
         register(TrapDoorGuide.class, TrapDoorBlock.class);
 
-        // 门（双格方块 + 铰链偏移 + 开关状态修正）
+        // 门
         register(DoorGuide.class, DoorBlock.class);
 
-        // 栅栏门（反向朝向 + 开关状态修正）
+        // 栅栏门
         register(FenceGateGuide.class, FenceGateBlock.class);
 
-        // 床（只放床尾）
+        // 床
         register(BedGuide.class, BedBlock.class);
 
-        // 铃铛（附着类型）
+        // 钟
         register(BellGuide.class, BellBlock.class);
 
-        // 侦测器（安全放置模式）
+        // 侦测器
         register(ObserverGuide.class, ObserverBlock.class);
 
-        // 活塞（安全放置检查侦测器链）
-        register(PistonGuide.class, net.minecraft.world.level.block.piston.PistonBaseBlock.class);
+        // 活塞
+        register(PistonGuide.class, PistonBaseBlock.class);
 
-        // 箱子（单/双，潜行控制）
+        // 箱子
         register(ChestGuide.class, ChestBlock.class, TrappedChestBlock.class);
 
-        // 告示牌（四类子型）
+        // 告示牌
         register(SignGuide.class,
                 StandingSignBlock.class,
                 WallSignBlock.class
@@ -84,10 +80,10 @@ public class Guides {
                 //#endif
         );
 
-        // 旗帜（站立/墙壁）
+        // 旗帜
         register(BannerGuide.class, AbstractBannerBlock.class);
 
-        // 头颅（站立/墙壁）
+        // 头颅
         register(SkullGuide.class, SkullBlock.class, WallSkullBlock.class);
 
         // 下界传送门
@@ -99,7 +95,7 @@ public class Guides {
         // 灯笼
         register(LanternGuide.class, LanternBlock.class);
 
-        // 末地烛/避雷针（反向检测）
+        // 末地烛/避雷针
         register(RodGuide.class, RodBlock.class);
 
         // 漏斗
@@ -108,7 +104,7 @@ public class Guides {
         // 铁砧
         register(AnvilGuide.class, AnvilBlock.class);
 
-        // 去皮原木（轴方向 + 斧头去皮交互）
+        // 去皮原木
         register(StripLogGuide.class, RotatedPillarBlock.class);
 
         // 可可豆
@@ -126,7 +122,7 @@ public class Guides {
         //#endif
 
         // ============================================================
-        // 3. 交互指南（WRONG_STATE 处理为主）
+        // 交互指南（WRONG_STATE 处理为主）
         // ============================================================
 
         // 蜡烛（添加/点燃/熄灭）
@@ -150,7 +146,7 @@ public class Guides {
         // 拉杆
         register(LeverGuide.class, LeverBlock.class);
 
-        // 营火（点燃/熄灭）
+        // 篝火
         register(CampfireGuide.class, CampfireBlock.class);
 
         // 农作物（骨粉催熟）
@@ -194,7 +190,7 @@ public class Guides {
         register(ComposterGuide.class, ComposterBlock.class);
 
         // ============================================================
-        // 4. 混合指南（放置 + 交互 + 破坏）
+        // 混合指南（放置 + 交互 + 破坏）
         // ============================================================
 
         // 耕地/土径
@@ -211,10 +207,10 @@ public class Guides {
                 TwistingVinesBlock.class, TwistingVinesPlantBlock.class);
 
         // 死珊瑚（需过滤非珊瑚方块）
-        register(CoralGuide.class, Block.class);
+        register(CoralGuide.class);
 
         // ============================================================
-        // 5. 默认指南（最低优先级，兜底所有未被上面接管的方块）
+        // 默认指南（最低优先级，兜底所有未被上面接管的方块）
         // ============================================================
         register(DefaultGuide.class);
     }

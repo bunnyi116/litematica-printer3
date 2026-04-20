@@ -13,10 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 花簇交互指南（MC 1.19.4+）。
- * 注册到：FlowerBedBlock.class / PinkPetalsBlock.class
- *
- * <p>WRONG_STATE：花数量不够 → 右键添加。
+ * 花簇
  */
 //#if MC >= 11904
 public class FlowerBedGuide extends Guide {

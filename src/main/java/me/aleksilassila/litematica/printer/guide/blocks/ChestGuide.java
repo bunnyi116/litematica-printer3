@@ -18,14 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 箱子放置指南。
- * 注册到：ChestBlock.class, TrappedChestBlock.class
- *
- * <p>放置规则：
- * <ul>
- *   <li>单箱子 → 如果周围有箱子，需要潜行放置；否则直接放置</li>
- *   <li>双箱子（LEFT/RIGHT）→ 先确保另一半已放置，点击对应方向，潜行/不潜行取决于是否有其他箱子</li>
- * </ul>
+ * 箱子
  */
 public class ChestGuide extends Guide {
 

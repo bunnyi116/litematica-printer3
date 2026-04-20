@@ -22,8 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 台阶放置/交互指南。
- * 注册到：SlabBlock.class
+ * 台阶
  */
 public class SlabGuide extends Guide {
 

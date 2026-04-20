@@ -14,10 +14,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 末地传送门框架交互指南。
- * 注册到：EndPortalFrameBlock.class
- *
- * <p>WRONG_STATE：需要嵌入末影之眼 → 右键嵌入。
+ * 末地传送门框架
  */
 public class EndPortalFrameGuide extends Guide {
 

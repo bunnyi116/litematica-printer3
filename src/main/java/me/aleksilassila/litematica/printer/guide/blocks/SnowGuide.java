@@ -18,10 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 雪层放置/交互指南。
- * 注册到：SnowLayerBlock.class
- *
- * <p>WRONG_STATE：层数不够 → 用雪球叠加（需要偏移点击位置）。
+ * 雪层
  */
 public class SnowGuide extends Guide {
 

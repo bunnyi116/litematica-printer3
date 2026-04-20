@@ -15,10 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 海泡菜放置/交互指南。
- * 注册到：SeaPickleBlock.class
- *
- * <p>海泡菜需要支撑方块（珊瑚块/海晶石等），放置时必须从支撑面点击。
+ * 海泡菜
  */
 public class SeaPickleGuide extends Guide {
 

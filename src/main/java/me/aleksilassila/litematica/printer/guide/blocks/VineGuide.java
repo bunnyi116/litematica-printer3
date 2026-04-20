@@ -16,11 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 藤蔓/发光地衣放置/交互指南。
- * 注册到：VineBlock.class, GlowLichenBlock.class
- *
- * <p>MISSING：找到第一个非 DOWN 的方向属性，点击对应面放置。
- * WRONG_STATE：同上逻辑放置来修正方向。
+ * 藤蔓/发光地衣
  */
 public class VineGuide extends Guide {
 

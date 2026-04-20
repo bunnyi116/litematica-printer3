@@ -9,10 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 花放置指南。
- * 注册到：FlowerBlock.class
- *
- * <p>花没有朝向属性，只需点击下方并确保底部有支撑方块。
+ * 花
  */
 public class FlowerGuide extends Guide {
 
@@ -23,5 +20,12 @@ public class FlowerGuide extends Guide {
     @Override
     protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         return Optional.of(new Action().setRequiresSupport());
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // 花没有可交互修正的状态属性 → 跳过
+        skipOtherGuide.set(true);
+        return Optional.empty();
     }
 }

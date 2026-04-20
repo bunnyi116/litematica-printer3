@@ -15,15 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 蜡烛放置/交互指南。
- * 注册到：CandleBlock.class
- *
- * <p>WRONG_STATE：
- * <ul>
- *   <li>数量不够 → 右键添加蜡烛</li>
- *   <li>需要点燃 → 打火石/火焰弹</li>
- *   <li>需要熄灭 → 右键</li>
- * </ul>
+ * 蜡烛
  */
 public class CandleGuide extends Guide {
 

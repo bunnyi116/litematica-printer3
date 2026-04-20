@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.ObserverBlock;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
@@ -20,11 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 侦测器放置指南。
- * 注册到：ObserverBlock.class
- *
- * <p>包含「安全放置」模式：
- * 检查输入端和输出端的方块状态，确保侦测链不会意外触发下游装置。
+ * 侦测器
  */
 public class ObserverGuide extends Guide {
 
@@ -126,5 +123,17 @@ public class ObserverGuide extends Guide {
         }
 
         return Optional.of(new Action().setLookDirection(facing));
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // POWERED 由红石信号决定，环境决定 → 跳过
+        if (currentState.hasProperty(BlockStateProperties.POWERED)
+                && !currentState.getValue(BlockStateProperties.POWERED).equals(requiredState.getValue(BlockStateProperties.POWERED))) {
+            skipOtherGuide.set(true);
+            return Optional.empty();
+        }
+        // FACING 不对 → 放置性错误，交给 DefaultGuide 破坏重放
+        return Optional.empty();
     }
 }

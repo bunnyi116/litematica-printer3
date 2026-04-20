@@ -14,11 +14,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 花盆放置/交互指南。
- * 注册到：FlowerPotBlock.class
- *
- * <p>MISSING：先放空花盆。
- * WRONG_BLOCK：已有花盆，放入对应植物。
+ * 花盆
  */
 public class FlowerPotGuide extends Guide {
 
@@ -39,6 +35,13 @@ public class FlowerPotGuide extends Guide {
                 return Optional.of(new ClickAction().setItem(content.asItem()));
             }
         }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // 花盆没有可交互修正的状态属性 → 跳过
+        skipOtherGuide.set(true);
         return Optional.empty();
     }
 }

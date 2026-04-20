@@ -2,6 +2,7 @@ package me.aleksilassila.litematica.printer.printer;
 
 import fi.dy.masa.litematica.world.WorldSchematic;
 import lombok.ToString;
+import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -36,6 +37,10 @@ public class SchematicBlockContext {
         return BlockStateUtils.getProperty(blockState, property);
     }
 
+    public SchematicBlockContext offset(Direction direction, int steps) {
+        return new SchematicBlockContext(client, level, schematic, blockPos.relative(direction,steps));
+    }
+
     public SchematicBlockContext offset(Direction direction) {
         return new SchematicBlockContext(client, level, schematic, blockPos.relative(direction));
     }
@@ -62,5 +67,9 @@ public class SchematicBlockContext {
 
     public MutableComponent currentBlockName() {
         return currentState.getBlock().getName();
+    }
+
+    public BlockMatchResult compare(Property<?>... propertiesToIgnore) {
+        return BlockMatchResult.compare(this);
     }
 }

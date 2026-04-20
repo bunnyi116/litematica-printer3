@@ -16,10 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 红石比较器交互指南。
- * 注册到：ComparatorBlock.class
- *
- * <p>WRONG_STATE：模式不同 → 右键切换；朝向相同时检查信号。
+ * 红石比较器
  */
 public class ComparatorGuide extends Guide {
 

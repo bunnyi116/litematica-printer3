@@ -10,12 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 攀爬植物放置指南。
- * 注册到：BigDripleafStemBlock, CaveVinesBlock, CaveVinesPlantBlock,
- *        WeepingVinesBlock, WeepingVinesPlantBlock,
- *        TwistingVinesBlock, TwistingVinesPlantBlock
- *
- * <p>MISSING：用对应物品放置。
+ * 攀爬植物
  */
 public class ClimbingPlantGuide extends Guide {
 
@@ -42,4 +37,12 @@ public class ClimbingPlantGuide extends Guide {
         }
         return Optional.empty();
     }
+
+    @Override
+    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+        // AGE/BERRIES 由生长决定，环境决定 → 跳过
+        skipOtherGuide.set(true);
+        return Optional.empty();
+    }
 }
+

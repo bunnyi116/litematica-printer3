@@ -11,17 +11,14 @@ import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.InventoryUtils;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.item.Items;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 农作物放置/交互指南。
- * 注册到：AttachedStemBlock.class, StemBlock.class, CropBlock.class, BeetrootBlock.class
- *
- * <p>MISSING：南瓜茎用南瓜种子，西瓜茎用西瓜种子。
- * WRONG_STATE：骨粉催熟（配置开启时）。
+ * 农作物
  */
 public class CropsGuide extends Guide {
 
@@ -45,10 +42,32 @@ public class CropsGuide extends Guide {
     protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         if (!Configs.Print.BONEMEAL_CROPS.getBooleanValue()) return Optional.empty();
 
+        // 茎类（StemBlock/AttachedStemBlock）：AGE 是生长阶段，facing 朝向不对应破坏重放
+        if (requiredBlock instanceof StemBlock || requiredBlock instanceof AttachedStemBlock) {
+            if (facing != null
+                    && currentState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
+                    && currentState.getValue(BlockStateProperties.HORIZONTAL_FACING) != facing) {
+                return Optional.empty(); // facing 不对 → 放置性错误，交给 DefaultGuide 破坏重放
+            }
+            // AGE 由生长决定，跳过
+            skipOtherGuide.set(true);
+            return Optional.empty();
+        }
+
+        // 农作物（CropBlock）和甜菜根（BeetrootBlock）：骨粉催熟
         if (currentBlock == requiredBlock
                 && InventoryUtils.playerHasAccessToItem(client.player, Items.BONE_MEAL)) {
-            int maxAge = requiredBlock instanceof BeetrootBlock ? 3 : 7;
-            var ageProp = requiredBlock instanceof BeetrootBlock ? BeetrootBlock.AGE : StemBlock.AGE;
+            IntegerProperty ageProp;
+            int maxAge;
+            if (requiredBlock instanceof BeetrootBlock) {
+                ageProp = BeetrootBlock.AGE;
+                maxAge = 3;
+            } else if (requiredBlock instanceof CropBlock cropBlock) {
+                ageProp = CropBlock.AGE;
+                maxAge = cropBlock.getMaxAge();
+            } else {
+                return Optional.empty();
+            }
             int requiredAge = requiredState.getValue(ageProp);
             int currentAge = currentState.getValue(ageProp);
             if (requiredAge == maxAge && currentAge < maxAge) {

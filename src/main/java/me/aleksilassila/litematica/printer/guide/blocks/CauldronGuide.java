@@ -14,11 +14,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 炼药锅交互指南。
- * 注册到：LayeredCauldronBlock.class
- *
- * <p>WRONG_STATE：水位不对时用玻璃瓶/Potion调整。
- * WRONG_BLOCK：不同类型炼药锅需要破坏。
+ * 炼药锅
  */
 public class CauldronGuide extends Guide {
 

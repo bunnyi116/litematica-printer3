@@ -13,11 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 海龟蛋放置/交互指南。
- * 注册到：TurtleEggBlock.class
- *
- * <p>海龟蛋需要支撑方块（沙子/红沙），可以叠加放置 1-4 个。
- * 放置时从下方（沙子面）点击，叠加时右键点击已有海龟蛋。
+ * 海龟蛋
  */
 public class TurtleEggGuide extends Guide {
 

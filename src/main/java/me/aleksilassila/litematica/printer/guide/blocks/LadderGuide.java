@@ -11,10 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 梯子放置指南。
- * 注册到：LadderBlock.class
- *
- * <p>规则：点击 facing 方向的面放置，玩家朝 facing.opposite 看。
+ * 梯子
  */
 public class LadderGuide extends Guide {
 
