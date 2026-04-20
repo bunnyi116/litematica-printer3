@@ -106,40 +106,24 @@ public abstract class Guide extends BlockStateUtils {
             return this.onBuildActionCorrect(state, skipOtherGuide);
         }
 
-        // 前置检查：液体方块（水/熔岩）不可通过放置物品来处理
-        // 如果用户没开 SKIP_WATERLOGGED_BLOCK，液体方块会走到 DefaultGuide MISSING，
-        // 而 Blocks.WATER.asItem() == Items.AIR，导致一直切空手死循环
+        // 液体方块（水/熔岩）无法通过放置物品来处理，直接跳过
         if (requiredBlock instanceof LiquidBlock) {
             return Optional.empty();
         }
 
-        // 前置检查：破冰放水
-        // isWaterBlock 匹配的是 waterlogged=true 的方块（含水楼梯、含水活板门等），
-        // 不是纯水方块。纯水方块已经被上面的 LiquidBlock 检查跳过了。
-        // 必须在 SKIP_WATERLOGGED_BLOCK 之前，否则含水方块会被含水跳过拦截
+        // 破冰放水：必须在 SKIP_WATERLOGGED_BLOCK 检查之前，
+        // 否则含水方块会被提前拦截
         Optional<Action> iceAction = handleIceForWater();
         if (iceAction.isPresent()) {
             return iceAction;
         }
 
-        // 破冰放水：水位正确时，当前方块是纯水，但 BlockMatchResult 是 WRONG_BLOCK（水≠楼梯），
-        // 如果不做修正，DefaultGuide.onBuildActionWrongBlock 会去破坏水，导致永远无法放置含水方块。
-        // 修正：当水位正确且当前是水时，将 WRONG_BLOCK 当作 MISSING 处理（水是可替换的）。
-        if (state == BlockMatchResult.WRONG_BLOCK
-                && Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()
-                && BlockStateUtils.isWaterBlock(requiredState)
-                && BlockStateUtils.isCorrectWaterLevel(requiredState, currentState)) {
-            state = BlockMatchResult.MISSING;
-        }
-
-        // 前置检查：方块无法在此位置存活
+        // 方块无法在此位置自然存活，跳过
         if (!requiredState.canSurvive(level, blockPos)) {
             return Optional.empty();
         }
 
-        // 前置检查：水生植物（海草等）需要水中才能放置
-        // canSurvive 只检查支撑，不检查水，但实际放置需要水
-        // 如果当前位置没有水，跳过避免死循环切换物品
+        // 水生植物（海草等）需要水环境才能放置
         if (BlockStateUtils.requiresWaterToPlace(requiredBlock)) {
             BlockPos waterPos = requiredState.hasProperty(BlockStateProperties.WATERLOGGED)
                     ? blockPos : blockPos.above();
@@ -148,8 +132,7 @@ public abstract class Guide extends BlockStateUtils {
             }
         }
 
-        // 前置检查：含水方块跳过
-        // 但如果启用了破冰放水，含水方块由 handleIceForWater 专门处理，不应被跳过
+        // 含水方块跳过（破冰放水模式下由 handleIceForWater 处理，此处不干预）
         if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue()
                 && BlockStateUtils.isWaterBlock(requiredState)
                 && !Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
@@ -176,16 +159,15 @@ public abstract class Guide extends BlockStateUtils {
     // -------------------------------------------------------
 
     /**
-     * 处理「破冰放水」逻辑。
-     * 匹配的是 isWaterBlock(requiredState)，即 waterlogged=true 的方块（含水楼梯、含水活板门等），
-     * 纯水方块（LiquidBlock）已被前置检查跳过，不会到达此处。
+     * 处理「破冰放水」逻辑（仅在启用 PRINT_ICE_FOR_WATER 且生存模式下生效）。
      *
-     * <p>流程（基于状态判断，不使用冷却）：
-     * 1. 当前是冰块 + 周围有水 → 破冰（水会流来）
-     * 2. 当前是冰块 + 周围没水 + 亮度≥12 → 跳过（冰会自然融化变水）
-     * 3. 当前是冰块 → 破冰（冰被破坏后会产生水，无需等待周围有水）
-     * 4. 水位不对且有方块 → 先破坏
-     * 5. 水位不对且位置空 → 放置冰块（冰融化/被破坏后变水）
+     * <p>目标方块为含水方块（waterlogged=true），纯水方块（LiquidBlock）已由上层跳过。
+     *
+     * <ul>
+     *   <li>当前是冰块 → 直接破冰；冰被破坏后 Minecraft 会原地生成水，后续再放置含水方块。</li>
+     *   <li>水位不对且当前有实体方块 → 若启用破坏则先破坏，否则跳过。</li>
+     *   <li>水位不对且当前位置为空或液体 → 放置冰块；冰融化后产生水。</li>
+     * </ul>
      */
     private Optional<Action> handleIceForWater() {
         if (!Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue() || !BlockStateUtils.isWaterBlock(requiredState)) {
@@ -195,10 +177,7 @@ public abstract class Guide extends BlockStateUtils {
             return Optional.empty();
         }
         if (currentBlock instanceof IceBlock) {
-            // 直接破冰：冰被破坏后会产生水（Minecraft 原版机制），
-            // 无需等待周围有水或冰自然融化，避免在亮度不足时永远卡住
             InteractionUtils.INSTANCE.add(context);
-            // 冰在位时返回 empty（不执行放置操作），破冰后水流入，走含水方块放置
             return Optional.empty();
         }
         if (!BlockStateUtils.isCorrectWaterLevel(requiredState, currentState)) {

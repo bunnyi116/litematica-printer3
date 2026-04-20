@@ -7,14 +7,11 @@ import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GuiHandler extends ClientPlayerTickHandler {
@@ -40,6 +37,16 @@ public class GuiHandler extends ClientPlayerTickHandler {
     @Override
     protected boolean isSchematicBlockHandler() {
         return ConfigUtils.isPrintMode();
+    }
+
+    /**
+     * 每 tick 迭代开始前重置本轮计数，确保进度值只反映当前 tick 的统计结果。
+     */
+    @Override
+    protected void preprocess() {
+        for (Progress progress : progresses) {
+            progress.reset();
+        }
     }
 
     @Override
@@ -84,15 +91,6 @@ public class GuiHandler extends ClientPlayerTickHandler {
         }
         for (Progress progress : progresses) {
             progress.calculateProgress();
-        }
-    }
-
-    @Override
-    protected void stopIteration(boolean interrupt) {
-        if (!interrupt) {
-            for (Progress progress : progresses) {
-                progress.reset();
-            }
         }
     }
 

@@ -3,12 +3,7 @@ package me.aleksilassila.litematica.printer.enums;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.block.state.properties.SlabType;
-
-import java.util.Optional;
 
 public enum BlockMatchResult {
     /**
@@ -33,20 +28,16 @@ public enum BlockMatchResult {
 
 
     public static BlockMatchResult compare(SchematicBlockContext context, Property<?>... propertiesToIgnore) {
-        // 如果两个方块状态完全相同，则返回正确状态
         if (context.requiredState == context.currentState) {
             return CORRECT;
         }
-        // 方块相同
         if (context.requiredState.getBlock().equals(context.currentState.getBlock())) {
-            // 状态不同，则返回错误状态
             if (BlockStateUtils.statesEqualIgnoreProperties(context.requiredState, context.currentState, propertiesToIgnore)) {
                 return CORRECT;
             }
             return WRONG_STATE;
         }
-        // 如果原理图中方块不为空，且实际方块为空或为液体（水/熔岩），则返回缺失方块状态
-        // 液体（LiquidBlock）是可替换的，大多数方块可以直接放置其中
+        // 液体（LiquidBlock）视为可替换，方块可直接放置其中
         if (!context.requiredState.isAir()
                 && (context.currentState.isAir() || context.currentState.getBlock() instanceof LiquidBlock)) {
             return MISSING;
