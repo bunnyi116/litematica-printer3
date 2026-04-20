@@ -51,6 +51,7 @@ tasks {
         outputs.upToDateWhen { false }
 
         from(rootProject.file("LICENSE"))
+        // 关键修复：从正确的临时目录读取文件打包
         from(layout.buildDirectory.dir("tmp/submods"))
     }
 
@@ -58,42 +59,48 @@ tasks {
     named<ProcessResources>("processResources") {
         outputs.upToDateWhen { false }
 
-        // 清理旧的构建产物
-        delete(layout.buildDirectory)
-
-        // 依赖所有子项目的 buildAndCollect 任务（各自会先清空自己的输出目录再复制）
+        // 依赖所有子项目的 buildAndCollect 任务
         dependsOn(fabricSubprojects.map { it.tasks.named("buildAndCollect") })
 
-        // 每次先清空临时目录，防止旧 JAR 混入
-        delete(layout.buildDirectory.dir("tmp/submods/META-INF/jars"))
-
-        copy {
-            // 从各子项目 buildAndCollect 的输出目录中收集 JAR
-            from(fabricSubprojects.map { it.tasks.named("buildAndCollect").get().outputs.files })
-            into(layout.buildDirectory.dir("tmp/submods/META-INF/jars"))
-            include("*.jar")
-            exclude("*-dev.jar", "*-sources.jar", "*-shadow.jar")
-        }
-
-        // 复制图标文件（优先使用包装器自身的，否则回退到根项目的）
-        val rootIcon = rootProject.file("src/main/resources/assets/$modId/icon.png")
-        val wrapperIconInResources =
-            layout.projectDirectory.file("src/main/resources/assets/$wrapperModId/icon.png").asFile
-        val wrapperIconInBuild = layout.buildDirectory.file("resources/main/assets/$wrapperModId/icon.png").get().asFile
-        if (!wrapperIconInResources.exists()) {
-            if (rootIcon.exists()) {
-                wrapperIconInBuild.parentFile.mkdirs()
-                rootIcon.copyTo(wrapperIconInBuild, overwrite = true)
-                println("✓ 图标已从根项目复制: ${rootIcon.name}")
-            } else {
-                println("⚠ 未找到图标文件，跳过复制")
-            }
-        }
-
+        // 关键修复：把 copy 操作放到 doLast 里，确保子项目构建完成后再复制
         doLast {
-            val jarsDir = layout.buildDirectory.dir("tmp/submods/META-INF/jars").get().asFile
-            val jars = if (jarsDir.exists() && jarsDir.isDirectory) {
-                jarsDir.listFiles { f ->
+            // 每次先清空临时目录，防止旧 JAR 混入
+            val targetDir = layout.buildDirectory.dir("tmp/submods/META-INF/jars").get().asFile
+            println("📁 目标JAR目录: ${targetDir.absolutePath}")
+
+            if (targetDir.exists()) {
+                targetDir.deleteRecursively()
+            }
+            targetDir.mkdirs()
+
+            // 复制所有子模块JAR
+            copy {
+                from(fabricSubprojects.map { it.tasks.named("buildAndCollect").get().outputs.files })
+                into(targetDir)
+                include("*.jar")
+                exclude("*-dev.jar", "*-sources.jar", "*-shadow.jar")
+                eachFile { println("📦 复制JAR: ${this.name}") }
+            }
+
+            // ====================== 下面是原有逻辑，保持不变 ======================
+            // 复制图标文件
+            val rootIcon = rootProject.file("src/main/resources/assets/$modId/icon.png")
+            val wrapperIconInResources =
+                layout.projectDirectory.file("src/main/resources/assets/$wrapperModId/icon.png").asFile
+            val wrapperIconInBuild = layout.buildDirectory.file("resources/main/assets/$wrapperModId/icon.png").get().asFile
+            if (!wrapperIconInResources.exists()) {
+                if (rootIcon.exists()) {
+                    wrapperIconInBuild.parentFile.mkdirs()
+                    rootIcon.copyTo(wrapperIconInBuild, overwrite = true)
+                    println("✓ 图标已从根项目复制: ${rootIcon.name}")
+                } else {
+                    println("⚠ 未找到图标文件，跳过复制")
+                }
+            }
+
+            // 读取并更新fabric.mod.json
+            val jars = if (targetDir.exists() && targetDir.isDirectory) {
+                targetDir.listFiles { f ->
                     f.isFile && f.name.endsWith(".jar")
                             && !f.name.endsWith("-dev.jar")
                             && !f.name.endsWith("-sources.jar")
