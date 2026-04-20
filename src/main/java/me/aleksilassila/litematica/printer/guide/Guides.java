@@ -41,6 +41,9 @@ public class Guides {
         // 紫水晶芽（附着面 + 支撑）
         register(AmethystGuide.class, AmethystClusterBlock.class);
 
+        // 花（需要底部支撑）
+        register(FlowerGuide.class, FlowerBlock.class);
+
         // 台阶（上/下半面精确点击 + DOUBLE 合并）
         register(SlabGuide.class, SlabBlock.class);
 

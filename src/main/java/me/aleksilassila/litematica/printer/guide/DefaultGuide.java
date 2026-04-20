@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -21,10 +20,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>优先级最低，应最后注册。
  */
 public class DefaultGuide extends Guide {
-    /** WRONG_STATE 破坏跳过列表：这些方块的连接状态由环境决定，破坏无意义 */
-    private static final Class<?>[] BREAK_SKIP_CLASSES = {
-            FenceBlock.class, WallBlock.class, IronBarsBlock.class, PressurePlateBlock.class
-    };
 
     public DefaultGuide(SchematicBlockContext context) {
         super(context);
@@ -100,14 +95,7 @@ public class DefaultGuide extends Guide {
                     ? Direction.DOWN : Direction.UP);
         }
 
-        // 5. 需要支撑的方块
-        if (requiredBlock instanceof RodBlock
-                || requiredBlock instanceof TorchBlock
-                || requiredBlock instanceof FlowerBlock) {
-            action.setRequiresSupport();
-        }
-
-        // 6. 方块型珊瑚替换
+        // 5. 方块型珊瑚替换
         if (Configs.Print.REPLACE_CORAL.getBooleanValue()
                 && requiredBlock.getDescriptionId().endsWith("_coral_block")) {
             String type = requiredBlock.getDescriptionId()
@@ -129,9 +117,6 @@ public class DefaultGuide extends Guide {
     @Override
     protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         if (!Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
-            return Optional.empty();
-        }
-        if (Arrays.asList(BREAK_SKIP_CLASSES).contains(requiredBlock.getClass())) {
             return Optional.empty();
         }
         InteractionUtils.INSTANCE.add(context);

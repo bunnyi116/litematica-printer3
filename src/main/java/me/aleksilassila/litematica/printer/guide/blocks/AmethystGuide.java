@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * 注册到：AmethystClusterBlock.class
  *
  * <p>规则：反向 facing 放置，需要支撑。
- * 使用 onBuildAction 拦截（在 canSurvive 检查之前），因为倒置放置时 canSurvive 可能返回 false。
  */
 public class AmethystGuide extends Guide {
 
@@ -25,14 +24,10 @@ public class AmethystGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildAction(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        // 只处理 MISSING：WRONG_STATE / WRONG_BLOCK 交给后续逻辑
-        if (state != BlockMatchResult.MISSING) return Optional.empty();
-
+    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
         Direction attachDirection = getProperty(requiredState, AmethystClusterBlock.FACING)
-                .orElse(Direction.UP).getOpposite();;
+                .orElse(Direction.UP).getOpposite();
 
-        skipOtherGuide.set(true);
         return Optional.of(new Action()
                 .setSides(attachDirection)
                 .setRequiresSupport());

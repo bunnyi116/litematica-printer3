@@ -39,19 +39,28 @@ public class RodGuide extends Guide {
             // 前面有反向末地烛 → 点击 facing 方向
             if (forwardState.is(requiredBlock)
                     && forwardState.getValue(EndRodBlock.FACING) == facing.getOpposite()) {
-                return Optional.of(new Action().setSides(facing));
+                return Optional.of(new Action()
+                        .setSides(facing)
+                        .setRequiresSupport()
+                );
             }
             // 投影中前面有同向末地烛 → 等待
             BlockState forwardSchematic = schematic.getBlockState(blockPos.relative(facing));
             if (forwardSchematic.is(requiredBlock)
                     && forwardSchematic.getValue(EndRodBlock.FACING) == facing) {
                 if (forwardSchematic == forwardState) {
-                    return Optional.of(new Action().setSides(facing.getOpposite()));
+                    return Optional.of(new Action()
+                            .setSides(facing.getOpposite())
+                            .setRequiresSupport()
+                    );
                 }
                 return Optional.empty();
             }
         }
 
-        return Optional.of(new Action().setSides(facing.getOpposite()));
+        return Optional.of(new Action()
+                .setSides(facing.getOpposite())
+                .setRequiresSupport()
+        );
     }
 }

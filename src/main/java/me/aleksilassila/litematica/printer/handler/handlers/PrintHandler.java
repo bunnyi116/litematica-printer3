@@ -30,8 +30,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class PrintHandler extends ClientPlayerTickHandler {
     public final static String NAME = "print";
 
-    private final PlacementGuide guide;
-
     @Getter
     @Setter
     private boolean pistonNeedFix;
@@ -46,7 +44,6 @@ public class PrintHandler extends ClientPlayerTickHandler {
 
     public PrintHandler() {
         super(NAME, PrintModeType.PRINTER, Configs.Core.PRINT, Configs.Print.PRINT_SELECTION_TYPE, true);
-        this.guide = new PlacementGuide(client);
     }
 
     public SchematicBlockContext getContext() {
