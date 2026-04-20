@@ -2,6 +2,7 @@ package me.aleksilassila.litematica.printer.enums;
 
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -44,10 +45,11 @@ public enum BlockMatchResult {
             }
             return WRONG_STATE;
         }
-        // 如果原理图中方块不为空，且实际方块为空，则返回缺失方块状态
-        if (!context.requiredState.isAir() && context.currentState.isAir()) {
+        // 如果原理图中方块不为空，且实际方块为空或为液体（水/熔岩），则返回缺失方块状态
+        // 液体（LiquidBlock）是可替换的，大多数方块可以直接放置其中
+        if (!context.requiredState.isAir()
+                && (context.currentState.isAir() || context.currentState.getBlock() instanceof LiquidBlock)) {
             return MISSING;
-
         }
         return WRONG_BLOCK;
     }
