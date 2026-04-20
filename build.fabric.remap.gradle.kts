@@ -161,9 +161,11 @@ loom {
 tasks {
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(remapJar.map { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/$modVersion"))
+        // 每次先清空目标目录，确保只保留当前构建产物
+        delete(project.layout.buildDirectory.dir("libs"))
         dependsOn("build")
+        from(remapJar.map { it.archiveFile })
+        into(rootProject.layout.buildDirectory.dir("libs"))
     }
 }
 

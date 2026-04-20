@@ -49,3 +49,9 @@ preprocess {
             ?.set("mcVersion", node.mcVersion)
     }
 }
+
+tasks.register<Delete>("clean") {
+    group = "build"
+    delete(rootProject.layout.buildDirectory)
+    dependsOn(rootProject.subprojects.map { it.tasks.named("clean") })
+}

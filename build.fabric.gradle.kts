@@ -101,9 +101,10 @@ loom {
 tasks {
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(jar.map { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/$modVersion"))
+        delete(project.layout.buildDirectory.dir("libs"))
         dependsOn("build")
+        from(jar.map { it.archiveFile })
+        into(rootProject.layout.buildDirectory.dir("libs"))
     }
 }
 
