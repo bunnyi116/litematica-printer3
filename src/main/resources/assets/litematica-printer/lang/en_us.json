@@ -253,5 +253,33 @@
   "litematica-printer.update.recommendation": "Strongly recommend upgrading to latest version to fix potential serious issues.",
   "litematica-printer.update.repository": "Code repository:",
   "litematica-printer.config.printBonemealCrops": "Bonemeal Crops",
-  "litematica-printer.config.printBonemealCrops.desc": "Use bone meal to grow crops."
+  "litematica-printer.config.printBonemealCrops.desc": "Use bone meal to grow crops.",
+
+  "litematica-printer.message.falling_block.no_support": "Block %s has no support below, skipping placement",
+  "litematica-printer.message.falling_block.mismatch": "Block %s has mismatched block below, skipping placement",
+
+  "litematica-printer.message.bedrock.creative_mode": "Cannot use Bedrock Breaking mode in Creative mode!",
+  "litematica-printer.message.bedrock.mod_not_loaded": "Fabric-Bedrock-Miner/Block-Miner mod not installed, cannot break bedrock!",
+
+  "litematica-printer.message.shulker.mod_not_loaded": "Quick Shulker mod not loaded!",
+
+  "litematica-printer.message.close_all_mode": "All modes have been disabled",
+
+  "litematica-printer.message.remote.server_error": "Server response error, ChestTracker inventory cannot be updated",
+  "litematica-printer.message.remote.auto_enabled": "Remote container interaction has been automatically enabled!!!",
+  "litematica-printer.message.remote.auto_disabled": "Remote container interaction has been automatically disabled",
+
+  "litematica-printer.message.inventory.add_complete": "Printer inventory setup complete",
+  "litematica-printer.message.inventory.adding": "Adding inventory...",
+  "litematica-printer.message.inventory.container_cannot_open": "Container cannot be opened",
+  "litematica-printer.message.inventory.not_container": "This is not a container, cannot sync",
+  "litematica-printer.message.inventory.sync_cancelled": "Sync cancelled",
+  "litematica-printer.message.inventory.too_far": "Too far away to open container",
+  "litematica-printer.message.inventory.sync_progress": "%d container(s) remaining. Press hotkey again to cancel sync",
+  "litematica-printer.message.inventory.sync_complete": "Sync complete",
+  "litematica-printer.message.inventory.full": "Inventory full, please clear first",
+  "litematica-printer.message.inventory.restore_failed": "Failed to restore inventory items",
+  "litematica-printer.message.inventory.shulker_occupied": "Shulker box is occupying the hotbar",
+  "litematica-printer.message.inventory.cleared": "Printer inventory cleared",
+  "litematica-printer.message.inventory.open_failed": "Failed to open container\nLocated at %s  %s"
 }

@@ -253,5 +253,33 @@
   "litematica-printer.update.recommendation": "强烈建议升级至最新版本，以修复潜在的严重问题。",
   "litematica-printer.update.repository": "代码仓库：",
   "litematica-printer.config.printBonemealCrops": "农作物催熟",
-  "litematica-printer.config.printBonemealCrops.desc": "使用骨粉催熟农作物。"
+  "litematica-printer.config.printBonemealCrops.desc": "使用骨粉催熟农作物。",
+
+  "litematica-printer.message.falling_block.no_support": "方块 %s 下方无支撑，跳过放置",
+  "litematica-printer.message.falling_block.mismatch": "方块 %s 下方方块不相符，跳过放置",
+
+  "litematica-printer.message.bedrock.creative_mode": "创造模式无法使用破基岩模式！",
+  "litematica-printer.message.bedrock.mod_not_loaded": "未安装 Fabric-Bedrock-Miner/Block-Miner 模组，无法破基岩！",
+
+  "litematica-printer.message.shulker.mod_not_loaded": "快捷潜影盒模组未加载！",
+
+  "litematica-printer.message.close_all_mode": "已关闭全部模式",
+
+  "litematica-printer.message.remote.server_error": "服务端回复异常，箱子追踪库存无法更新",
+  "litematica-printer.message.remote.auto_enabled": "已自动启用远程交互容器!!!",
+  "litematica-printer.message.remote.auto_disabled": "已自动关闭远程交互容器",
+
+  "litematica-printer.message.inventory.add_complete": "打印机库存添加完成",
+  "litematica-printer.message.inventory.adding": "添加库存中",
+  "litematica-printer.message.inventory.container_cannot_open": "容器无法打开",
+  "litematica-printer.message.inventory.not_container": "这不是容器 无法同步",
+  "litematica-printer.message.inventory.sync_cancelled": "已取消同步",
+  "litematica-printer.message.inventory.too_far": "距离过远无法打开容器",
+  "litematica-printer.message.inventory.sync_progress": "剩余 %d 个容器. 再次按下快捷键取消同步",
+  "litematica-printer.message.inventory.sync_complete": "同步完成",
+  "litematica-printer.message.inventory.full": "背包已满，请先清理",
+  "litematica-printer.message.inventory.restore_failed": "复原库存物品失败",
+  "litematica-printer.message.inventory.shulker_occupied": "潜影盒占用了预选栏",
+  "litematica-printer.message.inventory.cleared": "打印机库存已清空",
+  "litematica-printer.message.inventory.open_failed": "打开容器失败 \n位于 %s  %s"
 }

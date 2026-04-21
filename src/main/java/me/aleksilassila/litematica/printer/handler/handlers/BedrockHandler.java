@@ -4,6 +4,7 @@ import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import net.minecraft.core.BlockPos;
@@ -28,11 +29,11 @@ public class BedrockHandler extends ClientPlayerTickHandler {
     @Override
     protected boolean canExecute() {
         if (player.isCreative()) {
-            MessageUtils.setOverlayMessage("创造模式无法使用破基岩模式！");
+            MessageUtils.setOverlayMessage(I18n.BEDROCK_CREATIVE_MODE.getName());
             return false;
         }
         if (!ModLoadUtils.isBedrockMinerLoaded() && !ModLoadUtils.isBlockMinerLoaded()) {
-            MessageUtils.setOverlayMessage("未安装 Fabric-Bedrock-Miner/Block-Miner 模组，无法破基岩！");
+            MessageUtils.setOverlayMessage(I18n.BEDROCK_MOD_NOT_LOADED.getName());
             return false;
         }
         if (!BedrockUtils.isWorking()) {

@@ -21,6 +21,40 @@ public class I18n {
     public static final I18n UPDATE_RECOMMENDATION = of("update.recommendation");
     public static final I18n UPDATE_REPOSITORY = of("update.repository");
 
+    // 下落方块检查提示
+    public static final I18n FALLING_BLOCK_NO_SUPPORT = of("message.falling_block.no_support");
+    public static final I18n FALLING_BLOCK_MISMATCH = of("message.falling_block.mismatch");
+
+    // 破基岩模式提示
+    public static final I18n BEDROCK_CREATIVE_MODE = of("message.bedrock.creative_mode");
+    public static final I18n BEDROCK_MOD_NOT_LOADED = of("message.bedrock.mod_not_loaded");
+
+    // 快捷潜影盒提示
+    public static final I18n SHULKER_MOD_NOT_LOADED = of("message.shulker.mod_not_loaded");
+
+    // 关闭全部模式提示
+    public static final I18n CLOSE_ALL_MODE_NOTICE = of("message.close_all_mode");
+
+    // 远程交互容器提示
+    public static final I18n REMOTE_SERVER_ERROR = of("message.remote.server_error");
+    public static final I18n REMOTE_AUTO_ENABLED = of("message.remote.auto_enabled");
+    public static final I18n REMOTE_AUTO_DISABLED = of("message.remote.auto_disabled");
+
+    // 库存/同步相关提示
+    public static final I18n INVENTORY_ADD_COMPLETE = of("message.inventory.add_complete");
+    public static final I18n INVENTORY_ADDING = of("message.inventory.adding");
+    public static final I18n INVENTORY_CONTAINER_CANNOT_OPEN = of("message.inventory.container_cannot_open");
+    public static final I18n INVENTORY_NOT_CONTAINER = of("message.inventory.not_container");
+    public static final I18n INVENTORY_SYNC_CANCELLED = of("message.inventory.sync_cancelled");
+    public static final I18n INVENTORY_TOO_FAR = of("message.inventory.too_far");
+    public static final I18n INVENTORY_SYNC_PROGRESS = of("message.inventory.sync_progress");
+    public static final I18n INVENTORY_SYNC_COMPLETE = of("message.inventory.sync_complete");
+    public static final I18n INVENTORY_FULL = of("message.inventory.full");
+    public static final I18n INVENTORY_RESTORE_FAILED = of("message.inventory.restore_failed");
+    public static final I18n INVENTORY_SHULKER_OCCUPIED = of("message.inventory.shulker_occupied");
+    public static final I18n INVENTORY_CLEARED = of("message.inventory.cleared");
+    public static final I18n INVENTORY_OPEN_FAILED = of("message.inventory.open_failed");
+
     private static final String PREFIX_CONFIG = "config";
     private static final String PREFIX_COMMENT = "desc";
 

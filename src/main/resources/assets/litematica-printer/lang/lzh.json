@@ -253,5 +253,33 @@
   "litematica-printer.update.recommendation": "強薦升新章，以修潛藏之重弊。",
   "litematica-printer.update.repository": "典庫：",
   "litematica-printer.config.printBonemealCrops": "糞肥催熟",
-  "litematica-printer.config.printBonemealCrops.desc": "以骨粉催熟農作物。"
+  "litematica-printer.config.printBonemealCrops.desc": "以骨粉催熟農作物。",
+
+  "litematica-printer.message.falling_block.no_support": "磚 %s 下方無托，棄置",
+  "litematica-printer.message.falling_block.mismatch": "磚 %s 下方石不符，棄置",
+
+  "litematica-printer.message.bedrock.creative_mode": "創造之態，不可破基巖！",
+  "litematica-printer.message.bedrock.mod_not_loaded": "未修Fabric-Bedrock-Miner/Block-Miner之術，不可破基巖！",
+
+  "litematica-printer.message.shulker.mod_not_loaded": "速取潛影盒之術未修！",
+
+  "litematica-printer.message.close_all_mode": "已偃息諸態",
+
+  "litematica-printer.message.remote.server_error": "伺服異應，箱蹤庫藏無以更新",
+  "litematica-printer.message.remote.auto_enabled": "已自啟遠端容器交互！！！",
+  "litematica-printer.message.remote.auto_disabled": "已自斂遠端容器交互",
+
+  "litematica-printer.message.inventory.add_complete": "機巧庫藏錄入畢",
+  "litematica-printer.message.inventory.adding": "錄入庫藏中",
+  "litematica-printer.message.inventory.container_cannot_open": "容器不可開啟",
+  "litematica-printer.message.inventory.not_container": "此非容器，無以同步",
+  "litematica-printer.message.inventory.sync_cancelled": "已撤同步",
+  "litematica-printer.message.inventory.too_far": "距遠，不可開容器",
+  "litematica-printer.message.inventory.sync_progress": "餘 %d 容器待處。再按快鍵可撤同步",
+  "litematica-printer.message.inventory.sync_complete": "同步畢",
+  "litematica-printer.message.inventory.full": "囊中已滿，請先清",
+  "litematica-printer.message.inventory.restore_failed": "復原庫藏物失利",
+  "litematica-printer.message.inventory.shulker_occupied": "潛影盒佔據預選格",
+  "litematica-printer.message.inventory.cleared": "機巧庫藏已清空",
+  "litematica-printer.message.inventory.open_failed": "開容器失利 \n處於 %s  %s"
 }

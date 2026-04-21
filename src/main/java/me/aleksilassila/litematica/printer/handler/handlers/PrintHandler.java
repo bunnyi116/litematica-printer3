@@ -8,6 +8,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.guide.Guides;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.interfaces.Implementation;
 import me.aleksilassila.litematica.printer.printer.*;
 import me.aleksilassila.litematica.printer.printer.action.Action;
@@ -89,10 +90,10 @@ public class PrintHandler extends ClientPlayerTickHandler {
         if (Configs.Placement.FALLING_CHECK.getBooleanValue() && ctx.requiredState.getBlock() instanceof FallingBlock) {
             BlockPos downPos = blockPos.below();
             if (FallingBlock.isFree(level.getBlockState(downPos))) {
-                MessageUtils.setOverlayMessage("方块 " + ctx.requiredBlockName().getString() + " 下方无支撑，跳过放置");
+                MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_NO_SUPPORT.getName(ctx.requiredBlockName().getString()));
                 return;
             } else if (level.getBlockState(downPos) != ctx.schematic.getBlockState(downPos)) {
-                MessageUtils.setOverlayMessage("方块 " + ctx.requiredBlockName().getString() + " 下方方块不相符，跳过放置");
+                MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_MISMATCH.getName(ctx.requiredBlockName().getString()));
                 return;
             }
         }

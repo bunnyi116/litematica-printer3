@@ -3,6 +3,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 import fi.dy.masa.malilib.util.StringUtils;
 import io.netty.buffer.Unpooled;
 import me.aleksilassila.litematica.printer.config.Configs;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
@@ -180,14 +181,14 @@ public class OpenInventoryPacket {
                     client.execute(() -> openReturn(isOpen, state));
                 }
             } catch (Exception ignored) {
-                MessageUtils.setOverlayMessage("服务端回复异常，箱子追踪库存无法更新");
+                MessageUtils.setOverlayMessage(I18n.REMOTE_SERVER_ERROR.getName());
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(HELLO_REMOTE_INTERACTIONS_ID, (openInventoryPacket, context) -> {
             isRemote = true;
             client.execute(() -> {
                 if (Configs.Core.AUTO_INVENTORY.getBooleanValue()) {
-                    MessageUtils.setOverlayMessage("已自动启用远程交互容器!!!");
+                    MessageUtils.setOverlayMessage(I18n.REMOTE_AUTO_ENABLED.getName());
                     Configs.Core.CLOUD_INVENTORY.setBooleanValue(true);
                 }
             });
@@ -351,7 +352,7 @@ public class OpenInventoryPacket {
 
     public static void openReturn(boolean open, BlockState state) {
         if (clientTry) {
-            MessageUtils.setOverlayMessage("已自动启用远程交互容器!!!");
+            MessageUtils.setOverlayMessage(I18n.REMOTE_AUTO_ENABLED.getName());
             Configs.Core.CLOUD_INVENTORY.setBooleanValue(true);
             key = null;
             pos = null;
@@ -375,7 +376,7 @@ public class OpenInventoryPacket {
                 String translationKey = key.identifier().toLanguageKey();
                 String translate = StringUtils.translate(translationKey);
                 if (client.player != null)
-                    MessageUtils.addMessage("打开容器失败 \n位于" + translate + "  " + pos.getCenter());
+                    MessageUtils.addMessage(I18n.INVENTORY_OPEN_FAILED.getName(translate, pos.getCenter()));
                 //#endif
 
                 //#if MC >= 12001
@@ -425,7 +426,7 @@ public class OpenInventoryPacket {
             }
             clientTry = true;
             if (clientTryTime + 3000L < System.currentTimeMillis() && clientTry) {
-                MessageUtils.setOverlayMessage("已自动关闭远程交互容器");
+                MessageUtils.setOverlayMessage(I18n.REMOTE_AUTO_DISABLED.getName());
                 Configs.Core.CLOUD_INVENTORY.setBooleanValue(false);
                 remoteTime = 0;
                 clientTry = false;

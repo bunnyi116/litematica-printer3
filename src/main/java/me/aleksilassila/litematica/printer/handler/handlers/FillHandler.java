@@ -5,6 +5,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.FillBlockModeType;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
@@ -102,7 +103,7 @@ public class FillHandler extends ClientPlayerTickHandler {
                 item.getBlock() instanceof FallingBlock block &&
                 FallingBlock.isFree(level.getBlockState(blockPos.below()))
         ) {
-            MessageUtils.setOverlayMessage("方块 " + block.getName().getString() + " 下方无支撑，跳过放置");
+            MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_NO_SUPPORT.getName(block.getName().getString()));
             return;
         }
         boolean handheld = Configs.Fill.FILL_BLOCK_MODE.getOptionListValue() == FillBlockModeType.HANDHELD;

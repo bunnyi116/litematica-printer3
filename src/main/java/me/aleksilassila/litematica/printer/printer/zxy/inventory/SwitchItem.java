@@ -1,6 +1,7 @@
 package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
 import fi.dy.masa.malilib.util.InventoryUtils;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ShulkerUtils;
@@ -86,7 +87,7 @@ public class SwitchItem {
         if (itemStack != null) {
             reSwitchItem = itemStack;
             openInv(itemStack);
-        } else MessageUtils.setOverlayMessage(Component.nullToEmpty("背包已满，请先清理"), false);
+        } else MessageUtils.setOverlayMessage(I18n.INVENTORY_FULL.getName(), false);
     }
 
     public static void reSwitchItem() {
@@ -126,7 +127,7 @@ public class SwitchItem {
                 reSwitchItem = null;
                 player.closeContainer();
                 if (!reInv) {
-                    MessageUtils.setOverlayMessage(Component.nullToEmpty("复原库存物品失败"), false);
+                    MessageUtils.setOverlayMessage(I18n.INVENTORY_RESTORE_FAILED.getName(), false);
                 }
                 client.gameMode.handleContainerInput(sc.containerId, i, 0, ContainerInput.PICKUP, client.player);
                 return;

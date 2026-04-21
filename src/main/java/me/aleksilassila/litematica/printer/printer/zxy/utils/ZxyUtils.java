@@ -4,6 +4,7 @@ import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.selection.AreaSelection;
 import fi.dy.masa.litematica.selection.Box;
 import me.aleksilassila.litematica.printer.config.Configs;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.PrinterBox;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
@@ -78,10 +79,10 @@ public class ZxyUtils {
         if (printerMemoryAdding && !openIng && OpenInventoryPacket.key == null) {
             if (invBlockList.isEmpty()) {
                 printerMemoryAdding = false;
-                MessageUtils.setOverlayMessage(Component.nullToEmpty("打印机库存添加完成"), false);
+                MessageUtils.setOverlayMessage(I18n.INVENTORY_ADD_COMPLETE.getName(), false);
                 return;
             }
-            MessageUtils.setOverlayMessage(Component.nullToEmpty("添加库存中"), false);
+            MessageUtils.setOverlayMessage(I18n.INVENTORY_ADDING.getName(), false);
             for (BlockPos pos : invBlockList) {
                 if (client.level != null) {
                     //#if MC < 12001
@@ -131,13 +132,13 @@ public class ZxyUtils {
                                     //$$ !client.level.noCollision(Shulker.getProgressDeltaAabb(blockState.getValue(FACING), 0.0f, 0.5f).move(pos).deflate(1.0E-6)) &&
                                     //#endif
                                     entity.getAnimationStatus() == ShulkerBoxBlockEntity.AnimationStatus.CLOSED)) {
-                        MessageUtils.setOverlayMessage(Component.nullToEmpty("容器无法打开"), false);
+                        MessageUtils.setOverlayMessage(I18n.INVENTORY_CONTAINER_CANNOT_OPEN.getName(), false);
                     } else if (!isInventory) {
-                        MessageUtils.setOverlayMessage(Component.nullToEmpty("这不是容器 无法同步"), false);
+                        MessageUtils.setOverlayMessage(I18n.INVENTORY_NOT_CONTAINER.getName(), false);
                         return;
                     }
                 } catch (Exception e) {
-                    MessageUtils.setOverlayMessage(Component.nullToEmpty("这不是容器 无法同步"), false);
+                    MessageUtils.setOverlayMessage(I18n.INVENTORY_NOT_CONTAINER.getName(), false);
                     return;
                 }
             }
@@ -159,7 +160,7 @@ public class ZxyUtils {
             syncPosList = new LinkedList<>();
             if (client.player != null) client.player.clientSideCloseContainer();
             num = 0;
-            MessageUtils.setOverlayMessage(Component.nullToEmpty("已取消同步"), false);
+            MessageUtils.setOverlayMessage(I18n.INVENTORY_SYNC_CANCELLED.getName(), false);
         }
     }
 
@@ -170,7 +171,7 @@ public class ZxyUtils {
         } else {
             if (client.player != null && !ConfigUtils.canInteracted(pos)) {
                 if (!ignoreThePrompt)
-                    MessageUtils.setOverlayMessage(Component.nullToEmpty("距离过远无法打开容器"), false);
+                    MessageUtils.setOverlayMessage(I18n.INVENTORY_TOO_FAR.getName(), false);
                 return false;
             }
             if (client.gameMode != null) {
@@ -224,7 +225,7 @@ public class ZxyUtils {
                 //打开列表中的容器 只要容器同步列表不为空 就会一直执行此处
                 if (client.player == null) return;
                 playerItemsCount = new HashMap<>();
-                MessageUtils.setOverlayMessage(Component.nullToEmpty("剩余 " + syncPosList.size() + " 个容器. 再次按下快捷键取消同步"), false);
+                MessageUtils.setOverlayMessage(I18n.INVENTORY_SYNC_PROGRESS.getName(syncPosList.size()), false);
                 if (!client.player.containerMenu.equals(client.player.inventoryMenu)) return;
                 NonNullList<Slot> slots = client.player.inventoryMenu.slots;
                 slots.forEach(slot -> itemsCount(playerItemsCount, slot.getItem()));
@@ -246,7 +247,7 @@ public class ZxyUtils {
                 }
                 if (syncPosList.isEmpty()) {
                     num = 0;
-                    MessageUtils.setOverlayMessage(Component.nullToEmpty("同步完成"), false);
+                    MessageUtils.setOverlayMessage(I18n.INVENTORY_SYNC_COMPLETE.getName(), false);
                 }
             }
             case 3 -> {

@@ -1,6 +1,7 @@
 package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ShulkerUtils;
@@ -161,7 +162,7 @@ public class InventoryUtils {
                             int c = Integer.parseInt(s) - 1;
                             if (BuiltInRegistries.ITEM.getKey(player.getInventory().getItem(c).getItem()).toString().contains("shulker_box") &&
                                     Configs.Placement.QUICK_SHULKER.getBooleanValue()) {
-                                MessageUtils.setOverlayMessage(Component.nullToEmpty("濳影盒占用了预选栏"), false);
+                                MessageUtils.setOverlayMessage(I18n.INVENTORY_SHULKER_OCCUPIED.getName(), false);
                                 continue;
                             }
                             if (OpenInventoryPacket.key != null) {
@@ -185,7 +186,7 @@ public class InventoryUtils {
                             lastNeedItemList = new HashSet<>();
                             return;
                         } catch (Exception e) {
-                            System.out.println("切换物品异常");
+                            System.out.println("Item switch error");
                         }
                     }
                 }

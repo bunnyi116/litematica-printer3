@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.utils.mods;
 
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -84,7 +85,7 @@ public class BedrockUtils {
 
     public static void setWorking(boolean running, boolean showMessage) {
         if (client.player != null && client.player.isCreative() && running) {
-            MessageUtils.setOverlayMessage("创造模式下不支持破基岩！");
+            MessageUtils.setOverlayMessage(I18n.BEDROCK_CREATIVE_MODE.getName());
             return;
         }
         if (taskManagerInstance == null) return; // 提前检查实例

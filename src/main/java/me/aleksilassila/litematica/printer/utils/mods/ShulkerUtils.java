@@ -3,6 +3,7 @@ package me.aleksilassila.litematica.printer.utils.mods;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.QuickShulkerModeType;
+import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import net.kyrptonaught.quickshulker.client.ClientUtil;
 import net.minecraft.client.Minecraft;
@@ -22,7 +23,7 @@ public class ShulkerUtils {
                 try {
                     ClientUtil.CheckAndSend(stack, shulkerBoxSlot);
                 } catch (Exception ignored) {}
-            } else MessageUtils.addMessage("快捷潜影盒模组未加载！");
+            } else MessageUtils.addMessage(I18n.SHULKER_MOD_NOT_LOADED.getName());
         }
     }
 }

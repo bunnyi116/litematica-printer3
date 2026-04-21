@@ -44,7 +44,7 @@ public class UpdateCheckerUtils {
             SemanticVersion latestSemVer = SemanticVersion.parse(latestOfficialVersion);
             // 版本解析失败则跳过
             if (localSemVer == null || latestSemVer == null) {
-                Debug.alwaysWrite("版本号解析失败，本地版本：" + LOCAL_VERSION + "，最新版本：" + latestOfficialVersion);
+                Debug.alwaysWrite("Version parsing failed, local: " + LOCAL_VERSION + ", latest: " + latestOfficialVersion);
                 return;
             }
             // 仅当最新正式版 > 本地版本时，触发更新提示
@@ -107,7 +107,7 @@ public class UpdateCheckerUtils {
                 }
             }
         } catch (Exception exception) {
-            Debug.alwaysWrite("无法检查更新: " + exception.getMessage());
+            Debug.alwaysWrite("Failed to check update: " + exception.getMessage());
             Minecraft.getInstance().execute(() -> MessageUtils.addMessage(I18n.UPDATE_FAILED.getName()));
             exception.printStackTrace();
         }
@@ -123,7 +123,7 @@ public class UpdateCheckerUtils {
                 .orElseThrow(() -> new IllegalStateException("未找到对应 mod: litematica-printer"));
         Optional<Path> modPathOptional = container.findPath("fabric.mod.json");
         if (modPathOptional.isEmpty()) {
-            System.out.println("无法找到 fabric.mod.json 文件");
+            System.out.println("Cannot find fabric.mod.json file");
             return "unknown";
         }
         Path modPath = modPathOptional.get();
@@ -132,7 +132,7 @@ public class UpdateCheckerUtils {
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             return json.get("version").getAsString();
         } catch (Exception e) {
-            System.out.println("无法读取 mod 版本: ");
+            System.out.println("Cannot read mod version: ");
             e.printStackTrace();
             return "unknown";
         }

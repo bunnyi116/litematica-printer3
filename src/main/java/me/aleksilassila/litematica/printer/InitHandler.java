@@ -41,7 +41,7 @@ public class InitHandler implements IInitializationHandler {
                 Core.FLUID.setBooleanValue(false);
                 Core.WORK_SWITCH.setBooleanValue(false);
                 Core.WORK_MODE_TYPE.setOptionListValue(PrintModeType.PRINTER);
-                MessageUtils.setOverlayMessage("已关闭全部模式");
+                MessageUtils.setOverlayMessage(I18n.CLOSE_ALL_MODE_NOTICE.getName());
             }
             return true;
         });
