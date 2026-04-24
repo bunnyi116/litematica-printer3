@@ -5,6 +5,7 @@ import me.aleksilassila.litematica.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
+import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,34 +24,6 @@ public class PistonGuide extends Guide {
 
     @Override
     protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        for (Direction direction : Direction.values()) {
-            SchematicBlockContext neighborCtx = context.offset(direction);
-            if (neighborCtx.compare() != BlockMatchResult.CORRECT) {
-                return Optional.empty();
-            }
-            if (schematic.hasNeighborSignal(neighborCtx.blockPos) != level.hasNeighborSignal(neighborCtx.blockPos)) {
-                return Optional.empty();
-            }
-            if (direction == Direction.UP) {
-                SchematicBlockContext neighborCtx2 = neighborCtx.offset(Direction.UP);
-                if (neighborCtx2.compare() != BlockMatchResult.CORRECT) {
-                    return Optional.empty();
-                }
-                if (schematic.hasNeighborSignal(neighborCtx2.blockPos) != level.hasNeighborSignal(neighborCtx2.blockPos)) {
-                    return Optional.empty();
-                }
-            }
-
-            if (direction.getAxis().isHorizontal()) {
-                SchematicBlockContext neighborCtx2 = neighborCtx.offset(Direction.UP);
-                if (neighborCtx2.compare() != BlockMatchResult.CORRECT) {
-                    return Optional.empty();
-                }
-                if (schematic.hasNeighborSignal(neighborCtx2.blockPos) != level.hasNeighborSignal(neighborCtx2.blockPos)) {
-                    return Optional.empty();
-                }
-            }
-        }
         return getFacing().map(direction -> new Action().setLookDirection(direction.getOpposite()));
     }
 
