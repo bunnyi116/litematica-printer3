@@ -7,11 +7,9 @@ import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.CrossCollisionBlock;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.ObserverBlock;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
-import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
@@ -43,25 +41,21 @@ public class ObserverGuide extends Guide {
 
         // 获取输入端方块需要忽略的属性
         List<Property<?>> inputPropertiesToIgnore = new ArrayList<>();
-        if (input.requiredState.getBlock() instanceof WallBlock) {
-            BlockStateUtils.getWallFacingProperty(facing.getOpposite()).ifPresent(inputPropertiesToIgnore::add);
-        }
-        if (output.requiredState.getBlock() instanceof CrossCollisionBlock) {
-            BlockStateUtils.getCrossCollisionBlock(facing.getOpposite()).ifPresent(inputPropertiesToIgnore::add);
-        }
+
+        BlockStateUtils.getWallFacingProperty(facing.getOpposite()).ifPresent(inputPropertiesToIgnore::add);
+        BlockStateUtils.getCrossCollisionBlock(facing.getOpposite()).ifPresent(inputPropertiesToIgnore::add);
 
         BlockMatchResult inputState = BlockMatchResult.compare(input, inputPropertiesToIgnore.toArray(new Property<?>[0]));
         BlockMatchResult outputState = BlockMatchResult.compare(output);
 
         // 输入端与输出端均正确
         if (inputState == BlockMatchResult.CORRECT && outputState == BlockMatchResult.CORRECT) {
-            // 检查输入端是否是侦测器链
+            // 输入端
             SchematicBlockContext temp = input;
             while (temp.requiredState.getBlock() instanceof ObserverBlock) {
-                Direction tempFacing = temp.requiredState.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING)
-                        ? temp.requiredState.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING) : null;
-                if (tempFacing != null) {
-                    SchematicBlockContext offset = temp.offset(tempFacing);
+                Optional<Direction> tempFacing = getFacing();
+                if (tempFacing.isPresent()) {
+                    SchematicBlockContext offset = temp.offset(tempFacing.orElse(null));
                     if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
                         return Optional.empty();
                     }
@@ -77,7 +71,7 @@ public class ObserverGuide extends Guide {
         if (inputState == BlockMatchResult.CORRECT) {
             // 检查输入端后面的落地方块链
             SchematicBlockContext temp = input;
-            while (temp.requiredState.getBlock() instanceof net.minecraft.world.level.block.FallingBlock) {
+            while (temp.requiredState.getBlock() instanceof FallingBlock) {
                 SchematicBlockContext offset = temp.offset(Direction.DOWN);
                 if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
                     return Optional.empty();
