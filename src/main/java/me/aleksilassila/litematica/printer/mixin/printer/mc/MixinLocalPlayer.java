@@ -101,6 +101,7 @@ public class MixinLocalPlayer extends AbstractClientPlayer {
     //$$ }
     //#endif
 
+    @Unique
     public void openEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
         getTargetSignEntity(sign).ifPresent(signBlockEntity ->
         {

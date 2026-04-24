@@ -3,8 +3,8 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
-import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.core.Direction;
@@ -12,8 +12,6 @@ import net.minecraft.world.level.block.ComparatorBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 红石比较器
@@ -25,13 +23,13 @@ public class ComparatorGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (requiredState.getValue(ComparatorBlock.MODE) != currentState.getValue(ComparatorBlock.MODE)) {
-            return Optional.of(new ClickAction());
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
+        if (!getProperty(requiredState, ComparatorBlock.MODE).equals(getProperty(currentState, ComparatorBlock.MODE))) {
+            return Result.success(new ClickAction());
         }
         // 模式相同但状态不对 → 检查信号和输入端
-        if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue() && facing != null) {
-            Direction requiredFacing = facing;
+        Direction requiredFacing = getProperty(requiredState, ComparatorBlock.FACING).orElse(null);
+        if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue() && requiredFacing != null) {
             Direction currentFacing = getProperty(currentState, BlockStateProperties.FACING).orElse(null);
             if (requiredFacing == currentFacing) {
                 SchematicBlockContext facingFirstBlockCtx = context.offset(requiredFacing);
@@ -39,7 +37,7 @@ public class ComparatorGuide extends Guide {
                 if (level.getSignal(blockPos, requiredFacing) != schematic.getSignal(blockPos, requiredFacing)) {
                     // 检验输入端是否为"能输出比较器信号方块"
                     if (facingFirstBlockCtx.requiredState.hasAnalogOutputSignal()) {
-                        return Optional.empty();
+                        return Result.PASS;
                     }
                     // 检验输入端非透明方块
                     if (facingFirstBlockCtx.requiredState.isRedstoneConductor(facingFirstBlockCtx.level, facingFirstBlockCtx.blockPos)) {
@@ -53,17 +51,17 @@ public class ComparatorGuide extends Guide {
                         );
                         // 隔非透明方块检验容器
                         if (facingSecondBlockCtx.requiredState.hasAnalogOutputSignal()) {
-                            return Optional.empty();
+                            return Result.PASS;
                         }
                         // 隔非透明方块检验物品展示框
                         if (!itemFrameList.isEmpty()) {
-                            return Optional.empty();
+                            return Result.PASS;
                         }
                     }
                 }
             }
             InteractionUtils.INSTANCE.add(context);
         }
-        return Optional.empty();
+        return Result.SKIP;
     }
 }

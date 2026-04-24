@@ -3,6 +3,7 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
@@ -14,8 +15,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 箱子
@@ -27,8 +26,8 @@ public class ChestGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (facing == null) return Optional.empty();
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        Direction facing = getProperty(requiredState, ChestBlock.FACING).orElseThrow();
 
         Direction facingOpposite = facing.getOpposite();
         ChestType chestType = getProperty(requiredState, BlockStateProperties.CHEST_TYPE).orElse(ChestType.SINGLE);
@@ -47,9 +46,9 @@ public class ChestGuide extends Guide {
             boolean hasChestNeighbor = Direction.Plane.HORIZONTAL.stream()
                     .anyMatch(s -> !noChestSides.containsKey(s));
             if (hasChestNeighbor) {
-                return Optional.of(new Action().setLookDirection(facingOpposite).setShift());
+                return Result.success(new Action().setLookDirection(facingOpposite).setShift());
             }
-            return Optional.of(new Action().setSides(noChestSides).setLookDirection(facingOpposite));
+            return Result.success(new Action().setSides(noChestSides).setLookDirection(facingOpposite));
         }
 
         // 双箱子：不潜行放置，让 Minecraft 自动合并
@@ -61,29 +60,18 @@ public class ChestGuide extends Guide {
         Map<Direction, Vec3> clickSides = new HashMap<>(noChestSides);
         clickSides.put(partnerDir, Vec3.ZERO);  // 也允许从另一半方向点击
 
-        return Optional.of(new Action()
+        return Result.success(new Action()
                 .setSides(clickSides)
                 .setLookDirection(facingOpposite)
                 .setShift(false));
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        ChestType requiredType = getProperty(requiredState, BlockStateProperties.CHEST_TYPE).orElse(ChestType.SINGLE);
-
-        // 只处理双箱子状态不匹配（当前 SINGLE 但需要 LEFT/RIGHT，或反过来）
-        if (requiredType == ChestType.SINGLE) {
-            // 目标是单箱但当前不是 → 破坏重放（潜行放单箱）
-            if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
-                InteractionUtils.INSTANCE.add(context);
-            }
-            return Optional.empty();
-        }
-
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
         // 目标是双箱子：当前箱子类型不对，需要破坏后重新放置来触发自动合并
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Optional.empty();
+        return Result.SKIP;
     }
 }

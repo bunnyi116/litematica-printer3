@@ -39,16 +39,6 @@ public class GuiHandler extends ClientPlayerTickHandler {
         return ConfigUtils.isPrintMode();
     }
 
-    /**
-     * 每 tick 迭代开始前重置本轮计数，确保进度值只反映当前 tick 的统计结果。
-     */
-    @Override
-    protected void preprocess() {
-        for (Progress progress : progresses) {
-            progress.reset();
-        }
-    }
-
     @Override
     protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         if (ConfigUtils.isPrintMode()) {
@@ -91,6 +81,15 @@ public class GuiHandler extends ClientPlayerTickHandler {
         }
         for (Progress progress : progresses) {
             progress.calculateProgress();
+        }
+    }
+
+    @Override
+    protected void stopIteration(boolean interrupt) {
+        if (!interrupt) {
+            for (Progress progress : progresses) {
+                progress.reset();
+            }
         }
     }
 

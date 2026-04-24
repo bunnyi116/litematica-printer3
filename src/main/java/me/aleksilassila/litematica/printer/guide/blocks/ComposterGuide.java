@@ -4,8 +4,8 @@ import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
-import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -27,16 +27,16 @@ public class ComposterGuide extends Guide {
     }
 
     @Override
-    protected java.util.Optional<Action> onBuildActionWrongState(BlockMatchResult state, java.util.concurrent.atomic.AtomicReference<Boolean> skipOtherGuide) {
-        if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return java.util.Optional.empty();
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
+        if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return Result.PASS;
         if (!currentState.hasProperty(ComposterBlock.LEVEL) || !requiredState.hasProperty(ComposterBlock.LEVEL)) {
-            return java.util.Optional.empty();
+            return Result.SKIP;
         }
 
-        int currentLevel = currentState.getValue(ComposterBlock.LEVEL);
-        int requiredLevel = requiredState.getValue(ComposterBlock.LEVEL);
+        int currentLevel = getProperty(currentState, ComposterBlock.LEVEL).orElse(0);
+        int requiredLevel = getProperty(requiredState, ComposterBlock.LEVEL).orElse(0);
 
-        if (currentLevel >= requiredLevel) return java.util.Optional.empty();
+        if (currentLevel >= requiredLevel) return Result.PASS;
 
         List<String> whitelist = Configs.Print.FILL_COMPOSTER_WHITELIST.getStrings();
         if (!whitelist.equals(compostWhitelistCache)) {
@@ -55,8 +55,8 @@ public class ComposterGuide extends Guide {
 
         Item[] finalItems = whitelistItemsCache.length > 0 ? whitelistItemsCache : Reference.COMPOSTABLE_ITEMS;
         if (finalItems.length > 0) {
-            return java.util.Optional.of(new ClickAction().setItems(finalItems));
+            return Result.success(new ClickAction().setItems(finalItems));
         }
-        return java.util.Optional.empty();
+        return Result.SKIP;
     }
 }

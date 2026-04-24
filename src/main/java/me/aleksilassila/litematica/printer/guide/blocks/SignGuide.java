@@ -2,6 +2,7 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
@@ -11,8 +12,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 告示牌
@@ -24,21 +23,21 @@ public class SignGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        Block block = requiredBlock;
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        Direction facing = getProperty(requiredState, HorizontalDirectionalBlock.FACING).orElse(null);
 
         // 站立告示牌
-        if (block instanceof StandingSignBlock) {
-            int rotation = requiredState.getValue(StandingSignBlock.ROTATION);
-            return Optional.of(new Action()
+        if (requiredBlock instanceof StandingSignBlock) {
+            int rotation = getProperty(requiredState, StandingSignBlock.ROTATION).orElseThrow();
+            return Result.success(new Action()
                     .setSides(Direction.DOWN)
                     .setLookRotation(rotation)
                     .setRequiresSupport());
         }
 
         // 墙壁告示牌
-        if (block instanceof WallSignBlock && facing != null) {
-            return Optional.of(new Action()
+        if (requiredBlock instanceof WallSignBlock && facing != null) {
+            return Result.success(new Action()
                     .setSides(facing.getOpposite())
                     .setLookDirection(facing.getOpposite())
                     .setRequiresSupport());
@@ -46,21 +45,21 @@ public class SignGuide extends Guide {
 
         //#if MC >= 12002
         // 墙壁悬挂告示牌（WallHangingSignBlock）
-        if (block instanceof WallHangingSignBlock && facing != null) {
+        if (requiredBlock instanceof WallHangingSignBlock && facing != null) {
             List<Direction> sides = facing.getAxis() == Direction.Axis.X
                     ? List.of(Direction.NORTH, Direction.SOUTH)
                     : List.of(Direction.EAST, Direction.WEST);
-            return Optional.of(new Action()
+            return Result.success(new Action()
                     .setSides(sides.toArray(new Direction[0]))
                     .setLookDirection(facing.getOpposite())
                     .setRequiresSupport());
         }
 
         // 天花板悬挂告示牌（CeilingHangingSignBlock）
-        if (block instanceof CeilingHangingSignBlock) {
-            int rotation = requiredState.getValue(CeilingHangingSignBlock.ROTATION);
-            boolean attached = requiredState.getValue(BlockStateProperties.ATTACHED);
-            return Optional.of(new Action()
+        if (requiredBlock instanceof CeilingHangingSignBlock) {
+            int rotation = getProperty(requiredState, CeilingHangingSignBlock.ROTATION).orElse((int) 0);
+            boolean attached = getProperty(requiredState, BlockStateProperties.ATTACHED).orElse(false);
+            return Result.success(new Action()
                     .setShift(attached)
                     .setSides(Direction.UP)
                     .setLookRotation(rotation)
@@ -68,11 +67,11 @@ public class SignGuide extends Guide {
         }
         //#endif
 
-        return Optional.empty();
+        return Result.SKIP;
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue() && InteractionUtils.canBreakBlock(blockPos)) {
             boolean isLegitimateSign = currentBlock instanceof StandingSignBlock
                     || currentBlock instanceof WallSignBlock
@@ -85,6 +84,6 @@ public class SignGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Optional.empty();
+        return Result.SKIP;
     }
 }

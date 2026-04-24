@@ -9,9 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import net.minecraft.world.level.block.state.properties.Half;
 
 /**
  * 通用兜底指南。
@@ -26,8 +24,20 @@ public class DefaultGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Action action = new Action();
+
+        // 获取属性
+        Direction facing = getProperty(requiredState, BlockStateProperties.FACING)
+                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING))
+                .or(() -> getProperty(requiredState, BlockStateProperties.VERTICAL_DIRECTION))
+                .or(() -> getProperty(requiredState, BlockStateProperties.FACING_HOPPER))
+                .orElse(null);
+        Direction.Axis axis = getProperty(requiredState, BlockStateProperties.AXIS)
+                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_AXIS))
+                .orElse(null);
+        Half half = getProperty(requiredState, BlockStateProperties.HALF).orElse(null);
+        AttachFace attachFace = getProperty(requiredState, BlockStateProperties.ATTACH_FACE).orElse(null);
 
         // 1. 附着面方块（按钮、拉杆等 FaceAttachedHorizontalDirectionalBlock）
         if (requiredBlock instanceof FaceAttachedHorizontalDirectionalBlock && facing != null && attachFace != null) {
@@ -35,18 +45,16 @@ public class DefaultGuide extends Guide {
                     : attachFace == AttachFace.FLOOR ? Direction.DOWN
                     : facing;
             Direction clickSide = attachFace == AttachFace.WALL ? facing : facing.getOpposite();
-            return Optional.of(action.setSides(clickSide).setLookDirection(clickSide.getOpposite(), sidePitch));
+            return Result.success(action.setSides(clickSide).setLookDirection(clickSide.getOpposite(), sidePitch));
         }
 
         // 2. 轴向方块（原木、锁链等）
         if (axis != null) {
             action.setSides(axis);
-        } else if (horizontalAxis != null) {
-            action.setSides(horizontalAxis);
         }
 
         // 3. 朝向方块
-        if (facing != null && axis == null && horizontalAxis == null) {
+        if (facing != null && axis == null) {
             // 水平方向方块（HorizontalDirectionalBlock、石切机等）
             if (requiredBlock instanceof HorizontalDirectionalBlock
                     || requiredBlock instanceof StonecutterBlock
@@ -91,24 +99,24 @@ public class DefaultGuide extends Guide {
 
         // 4. Half 属性兜底
         if (half != null && facing == null) {
-            action.setSides(half == net.minecraft.world.level.block.state.properties.Half.BOTTOM
+            action.setSides(half == Half.BOTTOM
                     ? Direction.DOWN : Direction.UP);
         }
 
-        return Optional.of(action);
+        return Result.success(action);
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
         if (!Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
-            return Optional.empty();
+            return Result.PASS;
         }
         InteractionUtils.INSTANCE.add(context);
-        return Optional.empty();
+        return Result.PASS;
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
         boolean printBreakWrongBlock = Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue();
         boolean printBreakExtraBlock = Configs.Print.BREAK_EXTRA_BLOCK.getBooleanValue();
         if (printBreakWrongBlock || printBreakExtraBlock) {
@@ -120,6 +128,6 @@ public class DefaultGuide extends Guide {
                 }
             }
         }
-        return Optional.empty();
+        return Result.PASS;
     }
 }

@@ -7,13 +7,13 @@ import me.aleksilassila.litematica.printer.printer.action.Action;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Guides {
     public static final Guides INSTANCE = new Guides();
     private final List<GuideRegistration> registrations = new ArrayList<>();
-    private final AtomicReference<Boolean> skipOtherGuide = new AtomicReference<>();
 
     private Guides() {
         // ============================================================
@@ -238,7 +238,7 @@ public class Guides {
                     Guide guide = reg.guideClass
                             .getConstructor(SchematicBlockContext.class)
                             .newInstance(context);
-                    if (guide.canExecute(this.skipOtherGuide)) {
+                    if (guide.canExecute()) {
                         guides.add(guide);
                     }
                 } catch (Exception e) {
@@ -250,15 +250,14 @@ public class Guides {
     }
 
     public final Optional<Action> buildAction(SchematicBlockContext context) {
-        this.skipOtherGuide.set(false);
         BlockMatchResult blockMatchResult = BlockMatchResult.compare(context);
         List<Guide> guides = this.getGuides(context);
         for (Guide guide : guides) {
-            Optional<Action> action = guide.buildAction(blockMatchResult, this.skipOtherGuide);
-            if (action.isPresent()) {
-                return action;
+            Result result = guide.buildAction(blockMatchResult);
+            if (result.hasAction()) {
+                return result.toOptional();
             }
-            if (this.skipOtherGuide.get()) {    // 跳过其他指南
+            if (result.skipOtherGuide()) {
                 break;
             }
         }

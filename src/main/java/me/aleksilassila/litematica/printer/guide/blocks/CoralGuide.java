@@ -3,22 +3,18 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.IdentifierUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.BaseCoralWallFanBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 死珊瑚
@@ -33,12 +29,12 @@ public class CoralGuide extends Guide {
     }
 
     @Override
-    public boolean canExecute(AtomicReference<Boolean> skipOtherGuide) {
+    protected boolean canExecute() {
         return blockId.toString().contains("coral");
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         List<Item> items = new ArrayList<>();
         items.add(requiredBlock.asItem());
 
@@ -58,6 +54,6 @@ public class CoralGuide extends Guide {
             action.setRequiresSupport();
         }
 
-        return Optional.of(action);
+        return Result.success(action);
     }
 }

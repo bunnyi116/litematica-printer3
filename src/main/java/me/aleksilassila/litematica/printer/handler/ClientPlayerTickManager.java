@@ -38,7 +38,8 @@ public class ClientPlayerTickManager {
         if (isOpenHandler || switchItem() || InteractionUtils.INSTANCE.isNeedHandle()) {
             return;
         }
-        if (ActionManager.INSTANCE.sendQueue(mc.player).needWaitModifyLook) {
+        if (ActionManager.INSTANCE.needWaitModifyLook) {
+            ActionManager.INSTANCE.sendQueue(mc.player);
             return;
         }
         if (Configs.Core.LAG_CHECK.getBooleanValue()) {

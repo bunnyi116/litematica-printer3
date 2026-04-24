@@ -2,15 +2,13 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 合成器
@@ -26,26 +24,25 @@ public class CrafterGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (orientation == null) return Optional.empty();
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        if (orientation == null) return Result.PASS;
 
         FrontAndTop ft = orientation;
         Direction facingDir = ft.front().getOpposite();
         Direction topDir = ft.top().getOpposite();
 
         if (ft.front() == Direction.UP) {
-            return Optional.of(new Action().setLookDirection(topDir, Direction.UP));
+            return Result.success(new Action().setLookDirection(topDir, Direction.UP));
         } else if (ft.front() == Direction.DOWN) {
-            return Optional.of(new Action().setLookDirection(topDir.getOpposite(), Direction.DOWN));
+            return Result.success(new Action().setLookDirection(topDir.getOpposite(), Direction.DOWN));
         } else {
-            return Optional.of(new Action().setLookDirection(facingDir, facingDir));
+            return Result.success(new Action().setLookDirection(facingDir, facingDir));
         }
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
         // CRAFTING/TRIGGERED 由合成器内部状态和红石决定，环境决定 → 跳过
-        skipOtherGuide.set(true);
-        return Optional.empty();
+        return Result.SKIP;
     }
 }

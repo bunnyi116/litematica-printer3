@@ -2,14 +2,13 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.WallBannerBlock;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import net.minecraft.world.level.block.WallTorchBlock;
 
 /**
  * 旗帜。
@@ -21,20 +20,22 @@ public class BannerGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        Direction facing = getProperty(requiredState, WallTorchBlock.FACING).orElse(null);
+
         if (requiredBlock instanceof BannerBlock) {
-            int rotation = requiredState.getValue(BannerBlock.ROTATION);
-            return Optional.of(new Action()
+            int rotation = getProperty(requiredState, BannerBlock.ROTATION).orElseThrow();
+            return Result.success(new Action()
                     .setSides(Direction.DOWN)
                     .setLookRotation(rotation)
                     .setRequiresSupport());
         }
         if (requiredBlock instanceof WallBannerBlock && facing != null) {
-            return Optional.of(new Action()
+            return Result.success(new Action()
                     .setSides(facing.getOpposite())
                     .setLookDirection(facing.getOpposite())
                     .setRequiresSupport());
         }
-        return Optional.empty();
+        return Result.SKIP;
     }
 }

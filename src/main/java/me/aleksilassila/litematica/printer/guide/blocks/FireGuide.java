@@ -2,6 +2,7 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.PrinterUtils;
@@ -9,9 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.SoulFireBlock;
 import net.minecraft.world.item.Items;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 火焰
@@ -23,28 +21,26 @@ public class FireGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        return Optional.of(new Action()
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        return Result.success(new Action()
                 .setSides(findFireDirection())
                 .setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE)
                 .setRequiresSupport());
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
         // AGE 不同 → 环境决定，无法修正，跳过
-        if (!requiredState.getValue(FireBlock.AGE).equals(currentState.getValue(FireBlock.AGE))) {
-            skipOtherGuide.set(true);
-            return Optional.empty();
+        if (!getProperty(requiredState, FireBlock.AGE).equals(getProperty(currentState, FireBlock.AGE))) {
+            return Result.SKIP;
         }
         // SoulFire 没有方向属性，AGE 相同即可
         if (requiredBlock instanceof SoulFireBlock) {
-            skipOtherGuide.set(true);
-            return Optional.empty();
+            return Result.SKIP;
         }
 
         // 方向属性不对 → 放置性错误，破坏重放
-        return Optional.empty();
+        return Result.PASS;
     }
 
     /**

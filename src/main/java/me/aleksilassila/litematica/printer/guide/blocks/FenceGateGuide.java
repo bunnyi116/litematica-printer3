@@ -2,15 +2,14 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.config.Configs;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 栅栏门
@@ -22,15 +21,14 @@ public class FenceGateGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (facing == null) return Optional.empty();
-        // 栅栏门：玩家朝 facing 看（反向）
-        return Optional.of(new Action().setLookDirection(facing));
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        Direction facing = getProperty(requiredState, net.minecraft.world.level.block.FenceGateBlock.FACING).orElse(null);
+        return Result.success(new Action().setLookDirection(facing));
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        if (facing == null) return Optional.empty();
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
+        Direction facing = getProperty(requiredState, FenceGateBlock.FACING).orElseThrow();
 
         Direction currentFacing = getProperty(currentState, BlockStateProperties.HORIZONTAL_FACING).orElse(null);
         boolean openMismatch = getProperty(requiredState, BlockStateProperties.OPEN)
@@ -38,13 +36,13 @@ public class FenceGateGuide extends Guide {
                 .orElse(false);
 
         if (facing.getOpposite() == currentFacing || openMismatch) {
-            return Optional.of(new ClickAction()
+            return Result.success(new ClickAction()
                     .setSides(facing.getOpposite())
                     .setLookDirection(facing));
         }
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             me.aleksilassila.litematica.printer.utils.InteractionUtils.INSTANCE.add(context);
         }
-        return Optional.empty();
+        return Result.SKIP;
     }
 }

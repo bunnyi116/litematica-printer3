@@ -2,12 +2,11 @@ package me.aleksilassila.litematica.printer.guide.blocks;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
+import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 可可豆
@@ -19,16 +18,14 @@ public class CocoaGuide extends Guide {
     }
 
     @Override
-    protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        var cocoaFacing = getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING).orElse(null);
-        if (cocoaFacing == null) return Optional.empty();
-        return Optional.of(new Action().setSides(cocoaFacing));
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        var cocoaFacing = getProperty(requiredState, CocoaBlock.FACING).orElseThrow();
+        return Result.success(new Action().setSides(cocoaFacing));
     }
 
     @Override
-    protected Optional<Action> onBuildActionWrongState(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
         // AGE 由生长决定，环境决定 → 跳过
-        skipOtherGuide.set(true);
-        return Optional.empty();
+        return Result.SKIP;
     }
 }
