@@ -5,6 +5,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
+import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
@@ -105,27 +106,23 @@ public abstract class Guide extends BlockStateUtils {
 
     /**
      * 构建 Action 的入口方法。
-     * <p>
-     * 先做全局前置检查（含水跳过、破冰放水、canSurvive），然后分发给子类钩子。
-     *
-     * @return Optional.empty() 表示此 Guide 不处理，交给下一个
      */
     public final Optional<Action> buildAction(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        // 前置检查：CORRECT 直接返回
+        // 前置检查: 完全一致
         if (state == BlockMatchResult.CORRECT) {
             return this.onBuildActionCorrect(state, skipOtherGuide);
         }
 
-        // 液体方块（水/熔岩）无法通过放置物品来处理，直接跳过
+        // 液体方块: 破冰放水或跳过
         if (requiredBlock instanceof LiquidBlock) {
+            if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue() && requiredState.is(Blocks.WATER)) {
+                Optional<Action> iceAction = handleIceForWater();
+                if (iceAction.isPresent()) {
+                    return iceAction;
+                }
+            }
+            skipOtherGuide.set(true);
             return Optional.empty();
-        }
-
-        // 破冰放水：必须在 SKIP_WATERLOGGED_BLOCK 检查之前，
-        // 否则含水方块会被提前拦截
-        Optional<Action> iceAction = handleIceForWater();
-        if (iceAction.isPresent()) {
-            return iceAction;
         }
 
         // 方块无法在此位置自然存活，跳过
@@ -142,12 +139,6 @@ public abstract class Guide extends BlockStateUtils {
             }
         }
 
-        // 含水方块跳过（破冰放水模式下由 handleIceForWater 处理，此处不干预）
-        if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue()
-                && BlockStateUtils.isWaterBlock(requiredState)
-                && !Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
-            return Optional.empty();
-        }
 
         // 交给子类的 onBuildAction 拦截钩子
         Optional<Action> result = this.onBuildAction(state, skipOtherGuide);
@@ -170,14 +161,6 @@ public abstract class Guide extends BlockStateUtils {
 
     /**
      * 处理「破冰放水」逻辑（仅在启用 PRINT_ICE_FOR_WATER 且生存模式下生效）。
-     *
-     * <p>目标方块为含水方块（waterlogged=true），纯水方块（LiquidBlock）已由上层跳过。
-     *
-     * <ul>
-     *   <li>当前是冰块 → 直接破冰；冰被破坏后 Minecraft 会原地生成水，后续再放置含水方块。</li>
-     *   <li>水位不对且当前有实体方块 → 若启用破坏则先破坏，否则跳过。</li>
-     *   <li>水位不对且当前位置为空或液体 → 放置冰块；冰融化后产生水。</li>
-     * </ul>
      */
     private Optional<Action> handleIceForWater() {
         if (!Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue() || !BlockStateUtils.isWaterBlock(requiredState)) {

@@ -98,14 +98,14 @@ public class BlockStateUtils extends BlockUtils {
     }
 
     /**
-     * 判断该方块是否需要水
+     * 判断该方块是否是含水方块
      *
      * @param blockState 要判断的方块
      * @return 是否含水（是水）
      */
     public static boolean isWaterBlock(BlockState blockState) {
         return blockState.is(Blocks.WATER) && blockState.getValue(LiquidBlock.LEVEL) == 0
-                || (blockState.getProperties().contains(BlockStateProperties.WATERLOGGED) && blockState.getValue(BlockStateProperties.WATERLOGGED))
+                || (blockState.hasProperty(BlockStateProperties.WATERLOGGED) && blockState.getValue(BlockStateProperties.WATERLOGGED))
                 || blockState.getBlock() instanceof BubbleColumnBlock;
     }
 

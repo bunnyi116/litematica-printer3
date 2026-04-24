@@ -399,11 +399,6 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 .defaultValue(true)
                 .build();
 
-        // 跳过含水方块
-        public static final ConfigBoolean SKIP_WATERLOGGED_BLOCK = bool("printSkipWaterlogged")
-                .defaultValue(false)
-                .build();
-
         // 跳过放置
         public static final ConfigBoolean PRINT_SKIP = bool("printSkip")
                 .defaultValue(false)
@@ -495,7 +490,6 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 PRINT_SKIP_LIST,
                 PRINT_REPLACE,
                 REPLACEABLE_LIST,
-                SKIP_WATERLOGGED_BLOCK,
                 PRINT_ICE_FOR_WATER,
                 SAFELY_OBSERVER,
                 STRIP_LOGS,
