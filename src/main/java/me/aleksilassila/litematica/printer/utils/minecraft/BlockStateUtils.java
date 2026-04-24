@@ -13,18 +13,11 @@ import java.util.Optional;
 
 @SuppressWarnings("EnhancedSwitchMigration")
 public class BlockStateUtils extends BlockUtils {
-    private final static BooleanProperty wallUpProperty = WallBlock.UP;
-    //#if MC > 12104
-    private final static EnumProperty<WallSide> wallNorthProperty = WallBlock.NORTH;
-    private final static EnumProperty<WallSide> wallSouthProperty = WallBlock.SOUTH;
-    private final static EnumProperty<WallSide> wallWestProperty = WallBlock.WEST;
-    private final static EnumProperty<WallSide> wallEastProperty = WallBlock.EAST;
-    //#else
-    //$$ private final static EnumProperty<WallSide> wallNorthProperty = WallBlock.NORTH_WALL;
-    //$$ private final static EnumProperty<WallSide> wallSouthProperty = WallBlock.SOUTH_WALL;
-    //$$ private final static EnumProperty<WallSide> wallWestProperty = WallBlock.WEST_WALL;
-    //$$ private final static EnumProperty<WallSide> wallEastProperty = WallBlock.EAST_WALL;
-    //#endif
+    private final static BooleanProperty wallUpProperty = BlockStateProperties.UP;
+    private final static EnumProperty<WallSide> wallNorthProperty = BlockStateProperties.NORTH_WALL;
+    private final static EnumProperty<WallSide> wallSouthProperty = BlockStateProperties.SOUTH_WALL;
+    private final static EnumProperty<WallSide> wallWestProperty = BlockStateProperties.WEST_WALL;
+    private final static EnumProperty<WallSide> wallEastProperty = BlockStateProperties.EAST_WALL;
 
     public static boolean statesEqualIgnoreProperties(BlockState state1, BlockState state2, Property<?>... propertiesToIgnore) {
         if (state1.getBlock() != state2.getBlock()) {
@@ -126,8 +119,8 @@ public class BlockStateUtils extends BlockUtils {
      */
     public static boolean requiresWaterToPlace(Block block) {
         return block instanceof SeagrassBlock
-                || block instanceof net.minecraft.world.level.block.KelpBlock
-                || block instanceof net.minecraft.world.level.block.KelpPlantBlock;
+                || block instanceof KelpBlock
+                || block instanceof KelpPlantBlock;
     }
 
     public static boolean isCorrectWaterLevel(BlockState requiredState, BlockState currentState) {
