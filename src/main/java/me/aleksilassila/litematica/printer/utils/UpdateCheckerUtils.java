@@ -56,26 +56,15 @@ public class UpdateCheckerUtils {
                             .withStyle(ChatFormatting.RED));
                     MessageUtils.addMessage(I18n.UPDATE_REPOSITORY.getName()
                             .withStyle(ChatFormatting.WHITE));
-                    MessageUtils.addMessage(StringUtils.literal("https://github.com/BiliXWhite/litematica-printer")
+                    MessageUtils.addMessage(StringUtils.literal("https://github.com/bunnyi116/litematica-printer3")
                             .setStyle(Style.EMPTY
                                     //#if MC >= 12105
-                                    .withClickEvent(new ClickEvent.OpenUrl(URI.create("https://github.com/BiliXWhite/litematica-printer")))
+                                    .withClickEvent(new ClickEvent.OpenUrl(URI.create("https://github.com/bunnyi116/litematica-printer3")))
                                     //#else
-                                    //$$ .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/BiliXWhite/litematica-printer"))
+                                    //$$ .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/bunnyi116/litematica-printer3"))
                                     //#endif
                                     .withUnderlined(true)
                                     .withColor(ChatFormatting.BLUE)));
-                    MessageUtils.addMessage(I18n.UPDATE_DOWNLOAD.getName()
-                            .setStyle(Style.EMPTY
-                                    //#if MC >= 12105
-                                    .withClickEvent(new ClickEvent.OpenUrl(URI.create("https://xeno.lanzoue.com/b00l1v20vi")))
-                                    //#else
-                                    //$$ .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://xeno.lanzoue.com/b00l1v20vi"))
-                                    //#endif
-                                    .withBold(true)
-                                    .withColor(ChatFormatting.GREEN)));
-                    MessageUtils.addMessage(I18n.UPDATE_PASSWORD.getName("cgxw")
-                            .withStyle(ChatFormatting.WHITE));
                     MessageUtils.addMessage(
                             StringUtils.literal("------------------------").withStyle(ChatFormatting.GRAY));
                 });
@@ -90,7 +79,7 @@ public class UpdateCheckerUtils {
      */
     public static String getLatestOfficialPrinterVersion() {
         try {
-            URI uri = URI.create("https://api.github.com/repos/BiliXWhite/litematica-printer/releases/latest");
+            URI uri = URI.create("https://api.github.com/repos/bunnyi116/litematica-printer3/releases/latest");
             HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
             conn.setConnectTimeout(20000);
             conn.setReadTimeout(20000);
