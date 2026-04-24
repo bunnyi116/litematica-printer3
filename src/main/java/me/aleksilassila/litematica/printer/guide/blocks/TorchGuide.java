@@ -5,6 +5,7 @@ import me.aleksilassila.litematica.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Optional;
@@ -21,13 +22,9 @@ public class TorchGuide extends Guide {
 
     @Override
     protected Optional<Action> onBuildActionMissingBlock(BlockMatchResult state, AtomicReference<Boolean> skipOtherGuide) {
-        // 火把 FACING 表示附着面方向（UP=地面向上，NORTH=北墙等）
-        Direction attachDirection = facing != null
-                ? facing
-                : getProperty(requiredState, BlockStateProperties.FACING).orElse(Direction.UP);
+        Direction facing = getProperty(requiredState, WallTorchBlock.FACING).orElse(Direction.UP);
         return Optional.of(new Action()
-                .setSides(attachDirection)
-                .setLookDirection(attachDirection.getOpposite())
+                .setSides(facing.getOpposite())
                 .setRequiresSupport());
     }
 }
