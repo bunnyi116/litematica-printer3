@@ -1,7 +1,7 @@
 package me.aleksilassila.litematica.printer.guide;
 
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
-import me.aleksilassila.litematica.printer.guide.blocks.*;
+import me.aleksilassila.litematica.printer.guide.guides.*;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import net.minecraft.world.level.block.*;
