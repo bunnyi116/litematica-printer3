@@ -68,8 +68,6 @@
   "litematica-printer.config.excavateListMode.tweakeroo": "Tweakeroo預設",
   "litematica-printer.config.excavateWhitelist": "自定允採冊",
   "litematica-printer.config.excavateWhitelist.desc": "僅採此冊所列之石。格式同禁採冊。",
-  "litematica-printer.config.fastBreak": "速破",
-  "litematica-printer.config.fastBreak.desc": "直发破方之始止报文，以速毁方块\n(报文之法，暂未可预度挖掘之度)",
   "litematica-printer.config.fill": "填方",
   "litematica-printer.config.fill.desc": "於選界之內，置§6§l填方石冊§r所列之石。",
   "litematica-printer.config.fillBlockList": "填方石冊",

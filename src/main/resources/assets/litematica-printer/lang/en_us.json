@@ -68,8 +68,6 @@
   "litematica-printer.config.excavateListMode.tweakeroo": "Tweakeroo Preset",
   "litematica-printer.config.excavateWhitelist": "Custom Whitelist",
   "litematica-printer.config.excavateWhitelist.desc": "Only allow mining blocks in this list.\nCan input item ID or translated name in current language, example: §bminecraft:stone§r §bsandstone§r.\nPrefix §b#§r for tag matching, example: §l#minecraft:logs§r.\nInput text and filter conditions simultaneously (separated by English comma), example: §lglazed_terracotta,c§r.\nWhere \"c\" represents contains matching, prioritizing pinyin or direct matching.",
-  "litematica-printer.config.fastBreak": "Fast Break",
-  "litematica-printer.config.fastBreak.desc": "Quickly destroy blocks by directly sending START_DESTROY and STOP_DESTROY packets.\n(Packet-based type; local progress prediction is not yet supported)",
   "litematica-printer.config.fill": "Filling",
   "litematica-printer.config.fill.desc": "Within the selection range, place blocks configured in §6Fill Block List§r.",
   "litematica-printer.config.fillBlockList": "Block List",

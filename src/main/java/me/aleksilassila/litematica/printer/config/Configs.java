@@ -306,24 +306,17 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
     }
 
     public static class Break {
-        public static final ConfigBoolean FAST_BREAK = bool("fastBreak")
-                .defaultValue(false)
-                .build();
-
         public static final ConfigBoolean BREAK_USE_PACKET = bool("breakUsePacket")
                 .defaultValue(false)
-                .setVisible(() -> !FAST_BREAK.getBooleanValue())
                 .build();
 
         public static final ConfigBoolean BREAK_USE_DELAYED_DESTROY = bool("breakUseDelayedDestroy")
                 .defaultValue(false)
-                .setVisible(() -> !FAST_BREAK.getBooleanValue())
                 .build();
 
         public static final ConfigInteger BREAK_PROGRESS_THRESHOLD = integer("breakProgressThreshold")
                 .defaultValue(100)
                 .range(70, 100)
-                .setVisible(() -> !FAST_BREAK.getBooleanValue())
                 .build();
 
         public static final ConfigInteger BREAK_INTERVAL = integer("breakInterval")
@@ -368,7 +361,6 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
         public static final ImmutableList<IConfigBase> OPTIONS = ImmutableList.of(
                 BREAK_CHECK_HARDNESS,
-                FAST_BREAK,
                 BREAK_USE_DELAYED_DESTROY,
                 BREAK_USE_PACKET,
                 BREAK_INTERVAL,

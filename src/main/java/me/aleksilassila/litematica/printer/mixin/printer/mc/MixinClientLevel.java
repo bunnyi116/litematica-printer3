@@ -16,7 +16,7 @@ public abstract class MixinClientLevel implements NetworkUtils.SequenceExtension
 
     @Override
     public int litematica_printer3$getSequence() {
-        try (net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler pendingUpdateManager = blockStatePredictionHandler) {
+        try (net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler pendingUpdateManager = this.blockStatePredictionHandler.startPredicting()) {
             return pendingUpdateManager.currentSequence();
         }
     }

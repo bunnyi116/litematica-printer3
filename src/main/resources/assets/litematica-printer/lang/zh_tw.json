@@ -68,8 +68,6 @@
   "litematica-printer.config.excavateListMode.tweakeroo": "Tweakeroo預設",
   "litematica-printer.config.excavateWhitelist": "自訂白名單",
   "litematica-printer.config.excavateWhitelist.desc": "僅允許挖掘此列表中的方塊。\n可輸入物品ID或當前語言的翻譯名稱，範例：§bminecraft:stone§r §b砂岩§r。\n前綴新增§b#§r表示標籤匹配，範例：§l#minecraft:logs§r。\n同時輸入文字和過濾條件(英文逗號分隔)，範例：§l帶釉陶瓦,c§r。\n其中「c」表示包含匹配，優先嘗試拼音或直接匹配。",
-  "litematica-printer.config.fastBreak": "快速破壞",
-  "litematica-printer.config.fastBreak.desc": "直接傳送開始與停止破壞封包以實現快速破壞\n(屬於封包類型，暫不支援本機預測挖掘進度)",
   "litematica-printer.config.fill": "填充",
   "litematica-printer.config.fill.desc": "在選區範圍內，放置§6填充方塊列表§r中配置的方塊。",
   "litematica-printer.config.fillBlockList": "方塊列表",

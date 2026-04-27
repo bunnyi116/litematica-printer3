@@ -24,6 +24,7 @@
     "printer.mc.MixinServerboundMovePlayerPacket"
   ],
   "client": [
+    "MinecraftAccessor",
     "MixinClientPacketListener",
     "jackf.ChestTrackerScreenMixin",
     "jackf.EditMemoryBankScreenMixin",
