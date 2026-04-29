@@ -18,9 +18,11 @@ public class TripWireHookGuide extends Guide {
 
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
-        var hookFacing = getProperty(requiredState, TripWireHookBlock.FACING).orElse(null);
-        if (hookFacing == null) return Result.PASS;
-        return Result.success(new Action().setSides(hookFacing));
+        var facing = getProperty(requiredState, TripWireHookBlock.FACING).orElseThrow();
+        return Result.success(new Action()
+                .setSides(facing.getOpposite())
+                .setRequiresSupport()
+        );
     }
 
     @Override
