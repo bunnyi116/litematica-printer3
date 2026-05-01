@@ -78,7 +78,6 @@ public class MixinLocalPlayer extends AbstractClientPlayer {
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo ci) {
-        ClientPlayerTickManager.updateTickHandlerTime();
         CooldownUtils.INSTANCE.tick();
         InventoryUtils.tick();
         ZxyUtils.tick();

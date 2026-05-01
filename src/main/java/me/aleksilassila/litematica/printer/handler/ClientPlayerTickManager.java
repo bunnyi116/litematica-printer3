@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.handler.handlers.*;
+import me.aleksilassila.litematica.printer.mixin.MinecraftAccessor;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.client.Minecraft;
@@ -26,8 +27,6 @@ public class ClientPlayerTickManager {
     @Getter
     @Setter
     private static int packetTick;
-    @Getter
-    private static long currentHandlerTime;
 
     public static final ImmutableList<ClientPlayerTickHandler> VALUES = ImmutableList.of(
             GUI, PRINT, FILL, FLUID, MINE, BEDROCK
@@ -63,7 +62,7 @@ public class ClientPlayerTickManager {
         }
     }
 
-    public static void updateTickHandlerTime() {
-        currentHandlerTime++;
+    public static long getCurrentHandlerTime() {
+        return ((MinecraftAccessor) Minecraft.getInstance()).getClientTickCount();
     }
 }
