@@ -37,9 +37,7 @@ public enum BlockMatchResult {
             }
             return WRONG_STATE;
         }
-        // 液体（LiquidBlock）视为可替换，方块可直接放置其中
-        if (!context.requiredState.isAir()
-                && (context.currentState.isAir() || context.currentState.getBlock() instanceof LiquidBlock)) {
+        if (!context.requiredState.isAir() && BlockStateUtils.isReplaceable(context.currentState)) {
             return MISSING;
         }
         return WRONG_BLOCK;
