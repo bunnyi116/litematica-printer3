@@ -13,16 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * 水源/含水方块处理指南。
- *
- * <p>处理「破冰放水」逻辑：当 schematic 要求水源方块时，使用冰块放置后融化的方式生成水。
- * 同时处理现有冰块破碎放水、错误方块破坏等场景。</p>
- *
- * <p>仅处理 {@link Blocks#WATER} 方块，对其他液体（如熔岩）交由 {@link me.aleksilassila.litematica.printer.guide.SkipGuide} 跳过。</p>
  */
 public class WaterGuide extends Guide {
 
@@ -37,47 +31,25 @@ public class WaterGuide extends Guide {
 
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
-        // 生存模式检查
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
             return Result.SKIP;
         }
-
-        // 未启用破冰放水 → 跳过水源方块
         if (!Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
             return Result.SKIP;
         }
-
-        // 当前是冰块 → 破冰放水
         if (currentBlock instanceof IceBlock) {
             InteractionUtils.INSTANCE.add(context);
             return Result.SKIP;
         }
-
-        // 当前水源等级正确 → 无需操作
         if (BlockStateUtils.isCorrectWaterLevel(requiredState, currentState)) {
             return Result.PASS;
         }
-
-        // 当前是错误方块（非空气、非液体）→ 按配置破坏
-        if (!currentState.isAir() && !(currentBlock instanceof LiquidBlock)) {
-            if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
-                InteractionUtils.INSTANCE.add(context);
-            }
-            return Result.SKIP;
-        }
-
-        // 当前是空气或流动水 → 放置冰块（冰块融化后形成水源）
-        // 放置前检查水流动安全性
         if (!canWaterFlowSafely()) {
             return Result.SKIP;
         }
 
         return Result.success(new Action().setItem(Items.ICE));
     }
-
-    // ============================================================
-    // 水流动安全检测
-    // ============================================================
 
     /**
      * 检查水流动是否安全（周围的方块是否都已放置成功）。

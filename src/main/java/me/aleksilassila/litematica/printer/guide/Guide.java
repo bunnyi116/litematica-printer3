@@ -60,7 +60,7 @@ public abstract class Guide extends BlockStateUtils {
 
         // 交给子类的 onBuildAction 拦截钩子
         Result result = this.onBuildAction(state);
-        if (!result.passToNext()) {
+        if (!result.passToNext() || result.skipOtherGuide()) {
             return result;
         }
 
