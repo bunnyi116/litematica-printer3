@@ -138,9 +138,17 @@ public class InteractionUtils {
                     break;
                 }
             }
-        } else if (continueDestroyBlock(breakPos, Direction.DOWN) != BlockBreakResult.IN_PROGRESS) {
-            breakPos = null;
-            onTick();
+        } else {
+            // 检查当前目标是否仍可破坏（如冰挖掘后生成水/流体，流体不可破坏）
+            if (!canBreakBlock(breakPos)) {
+                breakPos = null;
+                onTick();
+                return;
+            }
+            if (continueDestroyBlock(breakPos, Direction.DOWN) != BlockBreakResult.IN_PROGRESS) {
+                breakPos = null;
+                onTick();
+            }
         }
     }
 
