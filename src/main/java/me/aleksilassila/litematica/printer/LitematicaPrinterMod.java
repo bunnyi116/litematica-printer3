@@ -6,6 +6,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPa
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayerGameMode;
 
 public class LitematicaPrinterMod implements ModInitializer, ClientModInitializer {
     @Override

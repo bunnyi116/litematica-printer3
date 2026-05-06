@@ -8,7 +8,7 @@ import fi.dy.masa.litematica.selection.SelectionMode;
 import fi.dy.masa.litematica.util.EasyPlaceProtocol;
 import fi.dy.masa.litematica.util.PlacementHandler;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.printer.PrinterBox;
+import me.aleksilassila.litematica.printer.printer.WorkBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -80,7 +80,7 @@ public class LitematicaUtils {
 
     static boolean comparePos(Box box, BlockPos pos) {
         if (box == null || box.getPos1() == null || box.getPos2() == null || pos == null) return false;
-        PrinterBox printerBox = new PrinterBox(box.getPos1(), box.getPos2());
-        return printerBox.contains(pos);
+        WorkBox workBox = new WorkBox(box.getPos1(), box.getPos2());
+        return workBox.contains(pos);
     }
 }

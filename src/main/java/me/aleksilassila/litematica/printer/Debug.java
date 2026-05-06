@@ -1,6 +1,8 @@
 package me.aleksilassila.litematica.printer;
 
 import me.aleksilassila.litematica.printer.config.Configs;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * 调试日志输出类
@@ -26,5 +28,16 @@ public class Debug {
 
     public static void write() {
         write("");
+    }
+
+    public static String pos(BlockPos pos) {
+        if (pos == null) {
+            return "null";
+        }
+        return pos.getX() + "," + pos.getY() + "," + pos.getZ();
+    }
+
+    public static String describeState(BlockState state) {
+        return state.getBlock() + " " + state;
     }
 }

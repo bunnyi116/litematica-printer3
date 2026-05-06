@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class ClientPlayerTickHandler extends ConfigUtils {
     @Getter
     @Nullable
-    public final AtomicReference<PrinterBox> playerInteractionBox;
+    public final AtomicReference<WorkBox> playerInteractionBox;
     @Getter
     private final String id;
     @Getter
@@ -58,7 +58,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
     @Nullable
     protected BlockHitResult blockHitResult;
     @Nullable
-    private PrinterBox lastPlayerInteractionBox;
+    private WorkBox lastPlayerInteractionBox;
 
     @Nullable
     private BlockPos lastPlayerPos;
@@ -124,27 +124,28 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         if (this.playerInteractionBox != null) {
             BlockPos playerPos = this.player.blockPosition();
             double threshold = getWorkRange() * 0.7; // 玩家移动阈值：工作范围的70%
-            @Nullable PrinterBox playerInteractionBox = this.playerInteractionBox.get();
+            @Nullable WorkBox playerInteractionBox = this.playerInteractionBox.get();
             if (playerInteractionBox == null
                     || !playerInteractionBox.equals(this.lastPlayerInteractionBox)
                     || this.lastPlayerPos == null
                     || !this.lastPlayerPos.closerThan(playerPos, threshold)
             ) {
                 this.lastPlayerPos = playerPos;
-                PrinterBox box = new PrinterBox(playerPos);
+                int workRange;
                 if (Configs.Core.CHECK_PLAYER_INTERACTION_RANGE.getBooleanValue()) {
-                    playerInteractionBox = box.expand((int) Math.ceil(PlayerUtils.getPlayerBlockInteractionRange(5) + 3));
+                    workRange = (int) Math.ceil(PlayerUtils.getPlayerBlockInteractionRange(5) + 3);
                 } else {
-                    playerInteractionBox = box.expand(getWorkRange());
+                    workRange = getWorkRange();
                 }
+                playerInteractionBox = new WorkBox(playerPos, workRange);
                 this.lastPlayerInteractionBox = playerInteractionBox;
                 this.playerInteractionBox.set(playerInteractionBox);
             }
             // 同步交互盒的迭代配置：从全局配置读取迭代顺序、方向等
-            playerInteractionBox.iterationMode = (IterationOrderType) Configs.Core.ITERATION_ORDER.getOptionListValue();
-            playerInteractionBox.xIncrement = !Configs.Core.X_REVERSE.getBooleanValue();
-            playerInteractionBox.yIncrement = !Configs.Core.Y_REVERSE.getBooleanValue();
-            playerInteractionBox.zIncrement = !Configs.Core.Z_REVERSE.getBooleanValue();
+            playerInteractionBox.setIterationMode((IterationOrderType) Configs.Core.ITERATION_ORDER.getOptionListValue());
+            playerInteractionBox.setXIncrement(!Configs.Core.X_REVERSE.getBooleanValue());
+            playerInteractionBox.setYIncrement(!Configs.Core.Y_REVERSE.getBooleanValue());
+            playerInteractionBox.setZIncrement(!Configs.Core.Z_REVERSE.getBooleanValue());
         }
         this.preprocess(); // 运行前处理的事情
         if (!this.isConfigAllowExecute()) {
@@ -154,7 +155,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         boolean interrupt = false;
         // 执行迭代业务任务：基于玩家交互盒的方块迭代处理（防主线程阻塞）
         if (this.playerInteractionBox != null && this.canExecute()) {
-            PrinterBox playerInteractionBox = this.playerInteractionBox.get();
+            WorkBox playerInteractionBox = this.playerInteractionBox.get();
             // 交互盒非空且满足迭代执行条件时，执行迭代逻辑
             if (playerInteractionBox != null && canIterate()) {
                 int maxEffectiveExec = this.getMaxEffectiveExecutionsPerTick();

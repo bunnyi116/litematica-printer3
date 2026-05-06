@@ -95,6 +95,16 @@ public class InteractionUtils {
         this.add(ctx.blockPos);
     }
 
+    public boolean contains(BlockPos pos) {
+        if (pos == null) return false;
+        return breakQueue.contains(pos);
+    }
+
+    public boolean contains(SchematicBlockContext ctx) {
+        if (ctx == null) return false;
+        return this.contains(ctx.blockPos);
+    }
+
     public void preprocess() {
         if (!ConfigUtils.isEnable()) {
             if (!breakQueue.isEmpty()) {

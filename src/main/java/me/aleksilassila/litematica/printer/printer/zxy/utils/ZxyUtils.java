@@ -5,7 +5,7 @@ import fi.dy.masa.litematica.selection.AreaSelection;
 import fi.dy.masa.litematica.selection.Box;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.I18n;
-import me.aleksilassila.litematica.printer.printer.PrinterBox;
+import me.aleksilassila.litematica.printer.printer.WorkBox;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.SwitchItem;
@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.player.Inventory;
@@ -351,8 +350,8 @@ public class ZxyUtils {
         boxes = i.getAllSubRegionBoxes();
         for (Box box : boxes) {
             if (box.getPos1() == null || box.getPos2() == null) continue;
-            PrinterBox printerBox = new PrinterBox(box.getPos1(), box.getPos2());
-            for (BlockPos pos : printerBox) {
+            WorkBox workBox = new WorkBox(box.getPos1(), box.getPos2());
+            for (BlockPos pos : workBox) {
                 BlockState state = null;
                 if (client.level != null) {
                     state = client.level.getBlockState(pos);

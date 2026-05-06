@@ -25,6 +25,7 @@
   ],
   "client": [
     "MinecraftAccessor",
+    "MinecraftMixin",
     "MixinClientPacketListener",
     "jackf.ChestTrackerScreenMixin",
     "jackf.EditMemoryBankScreenMixin",

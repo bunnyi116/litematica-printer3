@@ -6,7 +6,9 @@ import me.aleksilassila.litematica.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
+import me.aleksilassila.litematica.printer.utils.CooldownUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
+import me.aleksilassila.litematica.printer.utils.InventoryUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,11 +17,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 水源/含水方块处理指南。
  */
 public class WaterGuide extends Guide {
-
     public WaterGuide(SchematicBlockContext context) {
         super(context);
     }
@@ -32,21 +36,25 @@ public class WaterGuide extends Guide {
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
-            return Result.SKIP;
+            return Result.PASS;
         }
-        if (!Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
-            return Result.SKIP;
+        if (!Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue() || !InventoryUtils.playerHasAccessToItem(client.player, Items.ICE)) {
+            return Result.PASS;
         }
         if (currentBlock instanceof IceBlock) {
-            InteractionUtils.INSTANCE.add(context);
+            if (!CooldownUtils.INSTANCE.isOnCooldown(context.level, getClass().getSimpleName(), context.blockPos)) {
+                InteractionUtils.INSTANCE.add(context);
+                CooldownUtils.INSTANCE.setCooldown(context.level, getClass().getSimpleName(), context.blockPos, 10);
+            }
             return Result.SKIP;
         }
         if (BlockStateUtils.isCorrectWaterLevel(requiredState, currentState)) {
             return Result.PASS;
         }
-        if (!canWaterFlowSafely()) {
-            return Result.SKIP;
-        }
+        // 可能导致无法放置
+        // if (!canWaterFlowSafely()) {
+        //     return Result.SKIP;
+        // }
 
         return Result.success(new Action().setItem(Items.ICE));
     }

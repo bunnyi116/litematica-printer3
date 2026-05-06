@@ -76,19 +76,6 @@ public class MixinLocalPlayer extends AbstractClientPlayer {
         //#endif
     }
 
-    @Inject(at = @At("HEAD"), method = "tick")
-    public void tick(CallbackInfo ci) {
-        CooldownUtils.INSTANCE.tick();
-        InventoryUtils.tick();
-        ZxyUtils.tick();
-        InteractionUtils.INSTANCE.preprocess();
-        if (InteractionUtils.INSTANCE.isNeedHandle()) {
-            InteractionUtils.INSTANCE.onTick();
-        } else {
-            ClientPlayerTickManager.tick();
-        }
-    }
-
     @Inject(method = "openTextEdit", at = @At("HEAD"), cancellable = true)
     //#if MC > 11904
     public void openTextEdit(SignBlockEntity sign, boolean front, CallbackInfo ci) {
