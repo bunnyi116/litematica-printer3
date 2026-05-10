@@ -42,9 +42,6 @@ public class Render2D {
      * 注意：调用前必须已通过 Render2DUtils.initGuiGraphics 或 initMatrix 设置好渲染上下文。
      */
     public void render(float scaledWidth, float scaledHeight) {
-        // 确保底层渲染工具已初始化
-        Render2DUtils.ensureInitialized();
-
 //        ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
 //        sword.setDamageValue(100);
 //        sword.setCount(64);
