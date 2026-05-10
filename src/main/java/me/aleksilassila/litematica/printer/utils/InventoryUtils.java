@@ -79,7 +79,7 @@ public class InventoryUtils {
 
     public static boolean playerHasAccessToItems(LocalPlayer playerEntity, Item... items) {
         if (items == null || items.length == 0) return true;
-        if (PlayerUtils.getAbilities(playerEntity).mayBuild) return true;
+        if (PlayerUtils.getAbilities(playerEntity).instabuild) return true;
         if (!playerEntity.containerMenu.equals(playerEntity.inventoryMenu)) return false;
         Inventory inventory = playerEntity.getInventory();
         for (Item item : items) {

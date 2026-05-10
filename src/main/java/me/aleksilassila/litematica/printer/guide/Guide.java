@@ -3,6 +3,7 @@ package me.aleksilassila.litematica.printer.guide;
 import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
+import me.aleksilassila.litematica.printer.utils.CooldownUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 
 import net.minecraft.client.Minecraft;
@@ -76,15 +77,12 @@ public abstract class Guide extends BlockStateUtils {
     /**
      * 检查此 Guide 是否应该处理当前方块
      * 可被子类覆盖以实现更细粒度的过滤
+     *
      * @return true 表示应该执行此 Guide
      */
     protected boolean canExecute() {
         return true;
     }
-
-    // -------------------------------------------------------
-    // 子类钩子
-    // -------------------------------------------------------
 
     /**
      * 所有状态均会先经过此钩子，可在此拦截任意状态
@@ -121,4 +119,18 @@ public abstract class Guide extends BlockStateUtils {
         return Result.PASS;
     }
 
+    /**
+     * 该指南方块是否正在冷却（范围：指南隔离）
+     */
+    protected boolean isOnCooldown() {
+        return CooldownUtils.INSTANCE.isOnCooldown(context.level, getClass().getSimpleName(), context.blockPos);
+    }
+
+    /**
+     * 设置指南方坤是否正在冷却（范围：指南隔离）
+     */
+    protected Guide setCooldown(int cooldown) {
+        CooldownUtils.INSTANCE.setCooldown(context.level, getClass().getSimpleName(), context.blockPos, cooldown);
+        return this;
+    }
 }
