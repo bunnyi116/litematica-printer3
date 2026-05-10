@@ -1,18 +1,18 @@
 package me.aleksilassila.litematica.printer.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.WorkingModeType;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
 import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.handler.GuiBlockInfo;
 import me.aleksilassila.litematica.printer.handler.handlers.GuiHandler;
+import me.aleksilassila.litematica.printer.handler.handlers.PrintHandler;
+import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.render.Render2DUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -240,24 +240,32 @@ public class Render2D {
         int centerY = (int) (scaledHeight / 2);
         GuiHandler guiHandler = ClientPlayerTickManager.GUI;
 
-        // 延迟过大警告
+        // ====================== 统一 Y 基准（核心改动） ======================
+        int y = centerY;
+
+        // 1. 延迟过大警告（向上偏移）
         if (Configs.Core.LAG_CHECK.getBooleanValue() &&
                 ClientPlayerTickManager.getPacketTick() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
-            Render2DUtils.drawString("延迟过大，已暂停运行", centerX, centerY - 22, Color.ORANGE, true, true);
+            y += 22;
+            Render2DUtils.drawString("延迟过大，已暂停运行", centerX, y - 22, Color.ORANGE, true, true);
         }
 
-        // 单模式进度条
+        // 2. 单模式进度百分比（向下偏移）
         WorkingModeType workMode = (WorkingModeType) Configs.Core.WORK_MODE.getOptionListValue();
         if (workMode.equals(WorkingModeType.SINGLE)) {
+            y += 22; // 百分比位置
             double progress = guiHandler.getTotalProgress().getProgress();
-            Render2DUtils.drawString((int) (progress * 100) + "%", centerX, centerY + 22, Color.WHITE, true, true);
-            drawProgressBar(centerX, centerY + 36, 40, 6, progress, new Color(0, 0, 0, 150), new Color(0, 255, 0, 255));
+            Render2DUtils.drawString((int) (progress * 100) + "%", centerX, y, Color.WHITE, true, true);
+
+            y += 14; // 进度条偏移
+            drawProgressBar(centerX, y, 40, 6, progress, new Color(0, 0, 0, 150), new Color(0, 255, 0, 255));
         }
 
-        // 模式名称显示
+        // 3. 模式名称（向下偏移）
+        y += 16;
         if (ConfigUtils.isSingleMode()) {
             String modeName = Configs.Core.WORK_MODE_TYPE.getOptionListValue().getDisplayName();
-            Render2DUtils.drawString(modeName, centerX, centerY + 52, Color.WHITE, true, true);
+            Render2DUtils.drawString(modeName, centerX, y, Color.WHITE, true, true);
         } else {
             HashSet<String> modeNames = new HashSet<>();
             for (ClientPlayerTickHandler handler : ClientPlayerTickManager.VALUES) {
@@ -268,7 +276,20 @@ public class Render2D {
                 }
                 modeNames.add(handler.getEnableConfig().getPrettyName());
             }
-            Render2DUtils.drawString(String.join(", ", modeNames), centerX, centerY + 52, Color.WHITE, true, true);
+            Render2DUtils.drawString(String.join(", ", modeNames), centerX, y, Color.WHITE, true, true);
+        }
+
+
+        PrintHandler printHandler = ClientPlayerTickManager.PRINT;
+        SchematicBlockContext printContext = printHandler.getContext();
+        if (printContext != null) {
+            Minecraft mc = Minecraft.getInstance();
+            ClientLevel level = mc.level;
+            if (level != null) {
+                y += 24;
+                ItemStack itemStack = printContext.requiredState.getBlock().asItem().getDefaultInstance();
+                Render2DUtils.drawItem(itemStack, centerX - 8, y - 8);
+            }
         }
     }
 

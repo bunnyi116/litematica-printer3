@@ -11,6 +11,7 @@ import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.LiquidBlock;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,7 +29,11 @@ public class GuiHandler extends ClientPlayerTickHandler {
     @Getter
     private final Progress mineProgress = new Progress(Configs.Core.MINE);
 
+    @Getter
+    private @Nullable BlockPos blockPos = null;
+
     private final Progress[] progresses = new Progress[]{totalProgress, printProgress, fluidProgress, fillProgress, mineProgress};
+    private boolean lastTickInterrupted = false;
 
     public GuiHandler() {
         super(NAME, null, Configs.Core.RENDER_HUD, null, true);
@@ -40,55 +45,50 @@ public class GuiHandler extends ClientPlayerTickHandler {
     }
 
     @Override
+    protected void preprocess() {
+        // 只有上一帧正常完成了（没中断），这一帧才重置统计
+        if (!lastTickInterrupted) {
+            for (Progress progress : progresses) {
+                progress.reset();
+            }
+        }
+    }
+
+    @Override
     protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+        this.blockPos = blockPos;
         if (ConfigUtils.isPrintMode()) {
             WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
             if (schematic != null) {
                 SchematicBlockContext context = new SchematicBlockContext(client, level, schematic, blockPos);
-                if (!context.requiredState.isAir()) {
-                    if (BlockMatchResult.compare(context) != BlockMatchResult.MISSING) {
-                        printProgress.finished++;
-                        totalProgress.finished++;
-                    }
-                    printProgress.total++;
-                    totalProgress.total++;
-                }
+                boolean isDone = BlockMatchResult.compare(context) != BlockMatchResult.MISSING;
+                printProgress.add(isDone);
+                totalProgress.add(isDone);
             }
         }
         if (isFluidMode()) {
-            if (!(level.getBlockState(blockPos).getBlock() instanceof LiquidBlock)) {
-                fluidProgress.finished++;
-                totalProgress.finished++;
-            }
-            fluidProgress.total++;
-            totalProgress.total++;
+            boolean isDone = level.getBlockState(blockPos).getBlock() instanceof LiquidBlock;
+            fluidProgress.add(!isDone);
+            totalProgress.add(!isDone);
         }
         if (isFillMode()) {
-            if (!level.getBlockState(blockPos).isAir()) {
-                fillProgress.finished++;
-                totalProgress.finished++;
-            }
-            fillProgress.total++;
-            totalProgress.total++;
+            boolean isDone = !level.getBlockState(blockPos).isAir();
+            fillProgress.add(isDone);
+            totalProgress.add(isDone);
         }
         if (isMineMode()) {
-            if (level.getBlockState(blockPos).isAir()) {
-                mineProgress.finished++;
-                totalProgress.finished++;
-            }
-            mineProgress.total++;
-            totalProgress.total++;
-        }
-        for (Progress progress : progresses) {
-            progress.calculateProgress();
+            boolean isDone = level.getBlockState(blockPos).isAir();
+            mineProgress.add(isDone);
+            totalProgress.add(isDone);
         }
     }
 
     @Override
     protected void stopIteration(boolean interrupt) {
+        this.lastTickInterrupted = interrupt;
         if (!interrupt) {
             for (Progress progress : progresses) {
-                progress.reset();
+                progress.calculateProgress();
             }
         }
     }
@@ -108,19 +108,28 @@ public class GuiHandler extends ClientPlayerTickHandler {
             this.progress = 0.0;
         }
 
+        public void add(boolean finished) {
+            this.total++;
+            if (finished) this.finished++;
+            calculateProgress(); // 实时计算，保持平滑
+        }
+
         public double getProgress() {
             return progress <= 0 ? lastProgress : progress;
         }
 
         public void calculateProgress() {
-            progress = total < 1 ? lastProgress : (float) finished / total;
+            if (total <= 0) {
+                progress = lastProgress;
+                return;
+            }
+            progress = (double) finished / total;
             lastProgress = progress;
         }
 
         public void reset() {
             this.total = 0;
             this.finished = 0;
-            this.progress = 0.0;
         }
     }
 }
