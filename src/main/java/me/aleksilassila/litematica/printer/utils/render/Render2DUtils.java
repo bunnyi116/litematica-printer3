@@ -5,8 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 //#if MC >= 12106
 import net.minecraft.client.renderer.RenderPipelines;
@@ -169,7 +167,7 @@ public class Render2DUtils {
     /**
      * 物品图标 + 右侧文字
      */
-    public static void drawItemWithLabel(ItemStack stack, int x, int y, String text, Color color, boolean shadow) {
+    public static void drawItemWithText(ItemStack stack, int x, int y, String text, Color color, boolean shadow) {
         drawItem(stack, x, y);
         drawString(text, x + 20, y + 5, color, shadow);
     }
@@ -177,23 +175,11 @@ public class Render2DUtils {
     /**
      * 纹理图标 + 右侧文字（可指定图标尺寸）
      */
-    public static void drawIconWithLabel(Identifier texture, int x, int y,
-                                         int iconWidth, int iconHeight,
-                                         String text, Color color, boolean shadow) {
+    public static void drawIconWithText(Identifier texture, int x, int y,
+                                        int iconWidth, int iconHeight,
+                                        String text, Color color, boolean shadow) {
         drawTexture(texture, x, y, iconWidth, iconHeight);
         int textY = y + (iconHeight - client.font.lineHeight) / 2;
         drawString(text, x + iconWidth + 4, textY, color, shadow);
-    }
-
-    public static void drawBlock(Block block, int x, int y) {
-        drawItem(block.asItem().getDefaultInstance(), x, y);
-    }
-
-    public static void drawBlockWithDecorations(Block block, int x, int y) {
-        drawItemWithDecorations(block.asItem().getDefaultInstance(), x, y);
-    }
-
-    public static void drawBlockState(BlockState state, int x, int y) {
-        drawBlock(state.getBlock(), x, y);
     }
 }
