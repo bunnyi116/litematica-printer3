@@ -112,7 +112,7 @@ public class UpdateCheckerUtils {
                 .orElseThrow(() -> new IllegalStateException("未找到对应 mod: litematica-printer"));
         Optional<Path> modPathOptional = container.findPath("fabric.mod.json");
         if (modPathOptional.isEmpty()) {
-            System.out.println("Cannot find fabric.mod.json file");
+            Debug.write("Cannot find fabric.mod.json file");
             return "unknown";
         }
         Path modPath = modPathOptional.get();
@@ -121,7 +121,7 @@ public class UpdateCheckerUtils {
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             return json.get("version").getAsString();
         } catch (Exception e) {
-            System.out.println("Cannot read mod version: ");
+            Debug.write("Cannot read mod version: ");
             e.printStackTrace();
             return "unknown";
         }

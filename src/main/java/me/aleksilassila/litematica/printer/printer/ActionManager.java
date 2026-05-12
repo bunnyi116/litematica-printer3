@@ -1,6 +1,7 @@
 package me.aleksilassila.litematica.printer.printer;
 
 import lombok.Setter;
+import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
@@ -45,7 +46,7 @@ public class ActionManager {
     public void queueClick(@NotNull BlockPos target, @NotNull Direction side, @NotNull Vec3 hitModifier, boolean useShift) {
         if (Configs.Placement.PLACE_INTERVAL.getIntegerValue() != 0) {
             if (this.target != null) {
-                System.out.println("Was not ready yet.");
+                Debug.write("Was not ready yet.");
                 return;
             }
         }

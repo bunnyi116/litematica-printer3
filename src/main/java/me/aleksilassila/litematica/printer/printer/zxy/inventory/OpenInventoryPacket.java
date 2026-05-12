@@ -2,6 +2,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
 import fi.dy.masa.malilib.util.StringUtils;
 import io.netty.buffer.Unpooled;
+import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
@@ -286,7 +287,7 @@ public class OpenInventoryPacket {
                 //$$ !client.level.noCollision(Shulker.getProgressDeltaAabb(blockState.getValue(BlockStateProperties.FACING), 0.0f, 0.5f).move(pos).deflate(1.0E-6)) &&
                 //#endif
                 entity.getAnimationStatus() == ShulkerBoxBlockEntity.AnimationStatus.CLOSED)) {
-            System.out.println("openFail" + pos);
+            Debug.write("openFail: {}", pos);
             openReturn(player, blockState, false);
             return;
         }
@@ -313,7 +314,7 @@ public class OpenInventoryPacket {
                 && !r.equals(InteractionResult.SUCCESS)
                 //#endif
         ))) {
-            System.out.println("openFail" + pos);
+            Debug.write("openFail: {}", pos);
             openReturn(player, blockState, false);
             return;
         }
