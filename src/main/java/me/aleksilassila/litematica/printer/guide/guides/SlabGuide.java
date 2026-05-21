@@ -4,7 +4,6 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.guide.Result;
-import me.aleksilassila.litematica.printer.printer.PrinterUtils;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
@@ -12,6 +11,7 @@ import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.DirectionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -43,8 +43,8 @@ public class SlabGuide extends Guide {
 
         // DOUBLE：MISSING 时当前位置是空气，需要先放一个单层台阶（BOTTOM）
         if (slabType == SlabType.DOUBLE && state == BlockMatchResult.MISSING) {
-            // 使用 PrinterUtils.getSlabSides 确保只在有支撑的面放置
-            Map<Direction, Vec3> slabSides = PrinterUtils.getSlabSides(level, blockPos, SlabType.BOTTOM);
+            // 确保只在有支撑的面放置
+            Map<Direction, Vec3> slabSides = getSlabSides(level, blockPos, SlabType.BOTTOM);
             return Result.success(new Action().setSides(slabSides));
         }
 
@@ -100,5 +100,25 @@ public class SlabGuide extends Guide {
             InteractionUtils.INSTANCE.add(context);
         }
         return Result.SKIP;
+    }
+
+    public static Map<Direction, Vec3> getSlabSides(Level world, BlockPos pos, SlabType requiredHalf) {
+        if (requiredHalf == SlabType.DOUBLE) requiredHalf = SlabType.BOTTOM;
+        Direction requiredDir = requiredHalf == SlabType.TOP ? Direction.UP : Direction.DOWN;
+        Map<Direction, Vec3> sides = new HashMap<>();
+        sides.put(requiredDir, new Vec3(0, 0, 0));
+        if (world.getBlockState(pos).hasProperty(SlabBlock.TYPE)) {
+            sides.put(requiredDir.getOpposite(), Vec3.atLowerCornerOf(DirectionUtils.getVector(requiredDir)).scale(0.5));
+        }
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockState neighborCurrentState = world.getBlockState(pos.relative(side));
+            if (neighborCurrentState.hasProperty(SlabBlock.TYPE) && neighborCurrentState.getValue(SlabBlock.TYPE) != SlabType.DOUBLE) {
+                if (neighborCurrentState.getValue(SlabBlock.TYPE) != requiredHalf) {
+                    continue;
+                }
+            }
+            sides.put(side, Vec3.atLowerCornerOf(DirectionUtils.getVector(requiredDir)).scale(0.25));
+        }
+        return sides;
     }
 }

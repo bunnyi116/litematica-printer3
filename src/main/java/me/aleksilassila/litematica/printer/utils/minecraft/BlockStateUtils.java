@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.utils.minecraft;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -18,6 +19,15 @@ public class BlockStateUtils extends BlockUtils {
     private final static EnumProperty<WallSide> wallSouthProperty = BlockStateProperties.SOUTH_WALL;
     private final static EnumProperty<WallSide> wallWestProperty = BlockStateProperties.WEST_WALL;
     private final static EnumProperty<WallSide> wallEastProperty = BlockStateProperties.EAST_WALL;
+
+    public static Comparable<?> getPropertyByName(BlockState state, String name) {
+        for (Property<?> prop : state.getProperties()) {
+            if (prop.getName().equalsIgnoreCase(name)) {
+                return state.getValue(prop);
+            }
+        }
+        return null;
+    }
 
     public static boolean statesEqualIgnoreProperties(BlockState state1, BlockState state2, Property<?>... propertiesToIgnore) {
         if (state1.getBlock() != state2.getBlock()) {

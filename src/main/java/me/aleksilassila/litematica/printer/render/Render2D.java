@@ -2,9 +2,9 @@ package me.aleksilassila.litematica.printer.render;
 
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.WorkingModeType;
+import me.aleksilassila.litematica.printer.module.GuiDebugBlockInfo;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.module.Modules;
-import me.aleksilassila.litematica.printer.module.GuiBlockInfo;
 import me.aleksilassila.litematica.printer.module.modules.GuiModule;
 import me.aleksilassila.litematica.printer.module.modules.PrintModule;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
@@ -60,7 +60,7 @@ public class Render2D {
 
         // 1. 收集有效 Handler 并计算全局最大宽度
         for (Module handler : Modules.VALUES) {
-            GuiBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
+            GuiDebugBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
             if (guiInfo == null) continue;
 
             validHandlers.add(handler);
@@ -118,7 +118,7 @@ public class Render2D {
 
         for (int i = startIndex; i < handlers.size(); i++) {
             Module handler = handlers.get(i);
-            GuiBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
+            GuiDebugBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
             if (guiInfo == null) continue;
 
             List<String> debugLines = buildHandlerDebugLines(handler, guiInfo);
@@ -190,7 +190,7 @@ public class Render2D {
         return startY + bgHeight;
     }
 
-    private List<String> buildHandlerDebugLines(Module handler, GuiBlockInfo guiInfo) {
+    private List<String> buildHandlerDebugLines(Module handler, GuiDebugBlockInfo guiInfo) {
         List<String> lines = new ArrayList<>();
         lines.add("处理类型: " + handler.getId());
         lines.add("当前位置: " + guiInfo.pos.toShortString());

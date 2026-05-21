@@ -10,7 +10,7 @@ import me.aleksilassila.litematica.printer.guide.Guides;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.interfaces.Implementation;
-import me.aleksilassila.litematica.printer.printer.*;
+import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
@@ -52,7 +52,7 @@ public class PrintModule extends Module {
     }
 
     @Override
-    protected int getTickInterval() {
+    protected int getTickWorkInterval() {
         return Configs.Placement.PLACE_INTERVAL.getIntegerValue();
     }
 

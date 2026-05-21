@@ -1,6 +1,5 @@
 package me.aleksilassila.litematica.printer.utils.mods;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +11,7 @@ public class TweakerooUtils {
     private static @Nullable Method getBooleanValueMethod;
 
     static {
-        if (FabricLoader.getInstance().isModLoaded("tweakeroo")) {
+        if (ModLoadUtils.isTweakerooLoaded()) {
             try {
                 Class<?> featureToggleClass = Class.forName("fi.dy.masa.tweakeroo.config.FeatureToggle");
                 tweakToolSwitchEnum = featureToggleClass.getField("TWEAK_TOOL_SWITCH").get(null);

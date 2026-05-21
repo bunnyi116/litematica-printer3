@@ -5,7 +5,6 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.interfaces.Implementation;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.PlayerLook;
-import me.aleksilassila.litematica.printer.printer.PrinterUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,7 +115,7 @@ public class Action {
             ) {
                 return side;
             }
-            if (PrinterUtils.canBeClicked(world, neighborPos) && !BlockUtils.isReplaceable(neighborState)) {
+            if (canBeClicked(world, neighborPos) && !BlockUtils.isReplaceable(neighborState)) {
                 validSides.add(side);
             }
         }
@@ -177,5 +177,9 @@ public class Action {
             );
         }
         return this;
+    }
+
+    public static boolean canBeClicked(ClientLevel world, BlockPos pos) {
+        return world.getBlockState(pos).getShape(world, pos) != Shapes.empty();
     }
 }

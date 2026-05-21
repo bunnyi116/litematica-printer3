@@ -37,7 +37,7 @@ public class FillModule extends Module {
     }
 
     @Override
-    protected int getTickInterval() {
+    protected int getTickWorkInterval() {
         return Configs.Placement.PLACE_INTERVAL.getIntegerValue();
     }
 

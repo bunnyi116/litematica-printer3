@@ -6,8 +6,8 @@ import me.aleksilassila.litematica.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
-import me.aleksilassila.litematica.printer.printer.PrinterUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.core.Direction;
 
 /**
@@ -23,7 +23,7 @@ public class VineGuide extends Guide {
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         for (Direction direction : Direction.values()) {
             if (direction == Direction.DOWN && requiredBlock instanceof net.minecraft.world.level.block.VineBlock) continue;
-            Object value = PrinterUtils.getPropertyByName(requiredState, direction.name());
+            Object value = BlockStateUtils.getPropertyByName(requiredState, direction.name());
             if (value instanceof Boolean && (Boolean) value) {
                 return Result.success(new Action().setSides(direction));
             }
@@ -35,7 +35,7 @@ public class VineGuide extends Guide {
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         for (Direction direction : Direction.values()) {
             if (direction == Direction.DOWN && requiredBlock instanceof net.minecraft.world.level.block.VineBlock) continue;
-            Object value = PrinterUtils.getPropertyByName(requiredState, direction.name());
+            Object value = BlockStateUtils.getPropertyByName(requiredState, direction.name());
             if (value instanceof Boolean && (Boolean) value) {
                 return Result.success(new Action().setSides(direction).setLookDirection(direction));
             }

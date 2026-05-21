@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class GuiBlockInfo {
+public class GuiDebugBlockInfo {
     public final ClientLevel level;
     public final Identifier world;
     public final @Nullable WorldSchematic schematic;
@@ -22,7 +22,7 @@ public class GuiBlockInfo {
     public boolean execute = false;
     public boolean posInSelectionRange = false;
 
-    public GuiBlockInfo(ClientLevel level, @Nullable WorldSchematic schematic, BlockPos pos) {
+    public GuiDebugBlockInfo(ClientLevel level, @Nullable WorldSchematic schematic, BlockPos pos) {
         this.level = level;
         this.world = level.dimension().identifier();
         this.schematic = schematic;
@@ -38,7 +38,7 @@ public class GuiBlockInfo {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        GuiBlockInfo that = (GuiBlockInfo) o;
+        GuiDebugBlockInfo that = (GuiDebugBlockInfo) o;
         return Objects.equals(level, that.level) && Objects.equals(world, that.world) && Objects.equals(pos, that.pos) && Objects.equals(currentState, that.currentState);
     }
 
@@ -49,7 +49,7 @@ public class GuiBlockInfo {
 
     @Override
     public String toString() {
-        return "GuiBlockInfo{" +
+        return "GuiDebugBlockInfo{" +
                 "level=" + level +
                 ", world=" + world +
                 ", pos=" + pos +

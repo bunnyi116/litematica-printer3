@@ -58,7 +58,7 @@ public class MineModule extends Module {
     }
 
     @Override
-    protected int getTickInterval() {
+    protected int getTickWorkInterval() {
         return Configs.Break.BREAK_INTERVAL.getIntegerValue();
     }
 

@@ -29,7 +29,7 @@ public class Modules {
     private static int packetTick;
 
     public static final ImmutableList<Module> VALUES = ImmutableList.of(
-            GUI, PRINT, FILL, FLUID, MINE, BEDROCK
+            GUI, PRINT, FILL, MINE, FLUID, BEDROCK
     );
 
     public static void tick() {
@@ -47,16 +47,15 @@ public class Modules {
             }
             packetTick++;
         }
+        GUI.tick();
         for (Module handler : VALUES) {
-            if (!(handler instanceof GuiModule)) {
-                // 同TICK不同处理程序进行二次迭代检查, 避免独立的处理程序修改了内容没有及时跳出导致出现资源抢占问题
-                if (isOpenHandler || switchItem() || InteractionUtils.INSTANCE.isNeedHandle()) {
-                    return;
-                }
-                // 有任务需要修改视角强制退出
-                if (ActionManager.INSTANCE.needWaitModifyLook) {
-                    return;
-                }
+            // 同TICK不同处理程序进行二次迭代检查, 避免独立的处理程序修改了内容没有及时跳出导致出现资源抢占问题
+            if (isOpenHandler || switchItem() || InteractionUtils.INSTANCE.isNeedHandle()) {
+                return;
+            }
+            // 有任务需要修改视角强制退出
+            if (ActionManager.INSTANCE.needWaitModifyLook) {
+                return;
             }
             handler.tick();
         }
