@@ -11,6 +11,7 @@ import me.aleksilassila.litematica.printer.printer.*;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
+import me.aleksilassila.litematica.printer.utils.SimpleCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.minecraft.client.Minecraft;
@@ -45,7 +46,7 @@ public abstract class Module extends ConfigUtils {
     @Nullable
     private final ConfigOptionList selectionType;
     private final AtomicReference<Boolean> skipIteration = new AtomicReference<>(false);
-    private final Queue<GuiBlockInfo> guiBlockInfoQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<GuiBlockInfo> debugGuiBlockInfoQueue = new ConcurrentLinkedQueue<>();
 
     protected Minecraft mc;
     protected ClientLevel level;
@@ -66,7 +67,6 @@ public abstract class Module extends ConfigUtils {
     private long lastTickTime = -1L;
     @Getter
     private int renderIndex = 0;
-    private int guiBlockPosCacheTicks;
 
     protected Module(String id, @Nullable PrintModeType printMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
         this.id = id;
@@ -93,13 +93,11 @@ public abstract class Module extends ConfigUtils {
     }
 
     public void tick() {
-        // GUI迭代信息缓存处理：每Tick递减缓存计数，计数为0时清空队列
-        if (this.guiBlockPosCacheTicks > 0) {
-            this.guiBlockPosCacheTicks--;
-        } else {
-            this.guiBlockInfoQueue.clear(); // 缓存时间到，清空队列
-            this.renderIndex = 0; // 重置渲染索引
+        if (!SimpleCooldownUtils.INSTANCE.isOnCooldown("debug_gui_block_info")) {
+            this.debugGuiBlockInfoQueue.clear();
+            this.renderIndex = 0;
         }
+
         int tickInterval = this.getTickInterval(); // 工作间隔
         if (tickInterval > 0) {
             long currentTickTime = Modules.getCurrentHandlerTime();
@@ -163,7 +161,7 @@ public abstract class Module extends ConfigUtils {
                 int totalIterCount = 0;
                 int effectiveExecCount = 0;
                 this.skipIteration.set(false);
-                this.guiBlockInfoQueue.clear(); // 重置渲染信息
+                this.debugGuiBlockInfoQueue.clear(); // 重置渲染信息
                 this.renderIndex = 0;   // 重置渲染信息
                 for (BlockPos pos : playerInteractionBox) {
                     // 单Tick迭代次数限制：达到最大次数则终止循环（防主线程阻塞）
@@ -185,7 +183,7 @@ public abstract class Module extends ConfigUtils {
                     }
                     // 仅调试时候加入队列, 避免队列储存无用位置信息
                     if (Configs.Core.DEBUG_OUTPUT.getBooleanValue()) {
-                        this.addGuiBlockInfoToQueue(gui);
+                        this.addDebugGuiBlockInfoToQueue(gui);
                     }
                     if (ConfigUtils.canInteracted(pos)) {
                         gui.interacted = true;
@@ -233,19 +231,19 @@ public abstract class Module extends ConfigUtils {
     }
 
 
-    private void addGuiBlockInfoToQueue(GuiBlockInfo guiBlockInfo) {
+    private void addDebugGuiBlockInfoToQueue(GuiBlockInfo guiBlockInfo) {
         if (guiBlockInfo != null) {
-            this.guiBlockInfoQueue.add(guiBlockInfo);
-            this.guiBlockPosCacheTicks = 20; // 重置缓存Tick数为20
+            this.debugGuiBlockInfoQueue.add(guiBlockInfo);
+            SimpleCooldownUtils.INSTANCE.setCooldown("debug_gui_block_info", 20);
         }
     }
 
     @Nullable
     public GuiBlockInfo getCurrentRenderGuiBlockInfo() {
-        if (guiBlockInfoQueue.isEmpty()) {
+        if (debugGuiBlockInfoQueue.isEmpty()) {
             return null;
         }
-        GuiBlockInfo[] infoArray = guiBlockInfoQueue.toArray(new GuiBlockInfo[0]);
+        GuiBlockInfo[] infoArray = debugGuiBlockInfoQueue.toArray(new GuiBlockInfo[0]);
         // 渲染索引超出队列长度时，返回最后一个元素并重置索引
         if (renderIndex >= infoArray.length) {
             renderIndex = 0; // 循环展示（可选：也可返回null）
@@ -259,19 +257,19 @@ public abstract class Module extends ConfigUtils {
 
     @Nullable
     public GuiBlockInfo getGuiBlockInfo() {
-        if (guiBlockInfoQueue.isEmpty()) {
+        if (debugGuiBlockInfoQueue.isEmpty()) {
             return null;
         }
         // 返回队列最后一个元素（兼容原有逻辑）
-        return ((GuiBlockInfo[]) guiBlockInfoQueue.toArray(new GuiBlockInfo[0]))[guiBlockInfoQueue.size() - 1];
+        return ((GuiBlockInfo[]) debugGuiBlockInfoQueue.toArray(new GuiBlockInfo[0]))[debugGuiBlockInfoQueue.size() - 1];
     }
 
     public void setGuiBlockInfo(@Nullable GuiBlockInfo guiBlockInfo) {
-        this.addGuiBlockInfoToQueue(guiBlockInfo);
+        this.addDebugGuiBlockInfoToQueue(guiBlockInfo);
     }
 
     public int getGuiBlockInfoQueueSize() {
-        return guiBlockInfoQueue.size();
+        return debugGuiBlockInfoQueue.size();
     }
 
     private boolean isConfigAllowExecute() {

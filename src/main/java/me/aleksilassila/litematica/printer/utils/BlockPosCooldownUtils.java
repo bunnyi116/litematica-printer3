@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-public class CooldownUtils {
-    public static CooldownUtils INSTANCE = new CooldownUtils();
+public class BlockPosCooldownUtils {
+    public static BlockPosCooldownUtils INSTANCE = new BlockPosCooldownUtils();
 
     private final Map<Info, Integer> cooldownMap = new HashMap<>();
 
