@@ -20,8 +20,4 @@ public class LitematicaPrinterMod implements ModInitializer, ClientModInitialize
         OpenInventoryPacket.registerClientReceivePacket();
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
     }
-
-    public long getClientTickCount() {
-        return ((MinecraftAccessor) Minecraft.getInstance()).getClientTickCount();
-    }
 }
