@@ -5,8 +5,8 @@ import io.netty.buffer.Unpooled;
 import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.I18n;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.IdentifierUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -291,12 +291,12 @@ public class OpenInventoryPacket {
             openReturn(player, blockState, false);
             return;
         }
-//        NamedScreenHandlerFactory handler = null;
+//        NamedScreenHandlerFactory module = null;
 //        try {
 //            //#if MC < 12005
-//            handler = ((BlockWithEntity) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
+//            module = ((BlockWithEntity) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
 //            //#else
-//            //$$ handler = ((me.aleksilassila.litematica.printer.mixin.openinv.BlockWithEntityMixin) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
+//            //$$ module = ((me.aleksilassila.litematica.printer.mixin.openinv.BlockWithEntityMixin) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
 //            //#endif
 //        } catch (Exception ignored) {
 //            openReturn(player, blockState, false);
@@ -328,8 +328,8 @@ public class OpenInventoryPacket {
         OpenInventoryPacket.key = null;
         //避免箱子追踪重复保存，
         //#if MC >= 12001
-        //$$ //避免箱子追踪胡乱记录，若不清空，则会吧打开容器前右键的方块视为目标容器
-        //$$ InteractionTracker.INSTANCE.clear();
+        //避免箱子追踪胡乱记录，若不清空，则会吧打开容器前右键的方块视为目标容器
+        InteractionTracker.INSTANCE.clear();
         //#endif
         if (client.player != null && !client.player.containerMenu.equals(client.player.inventoryMenu))
             client.player.closeContainer();
@@ -393,7 +393,7 @@ public class OpenInventoryPacket {
             ModLoadUtils.closeScreen--;
             openIng = false;
             isOpenHandler = false;
-            ClientPlayerTickManager.PRINT.setPrinterMemorySync(false);
+            Modules.PRINT.setPrinterMemorySync(false);
             key = null;
             pos = null;
         }

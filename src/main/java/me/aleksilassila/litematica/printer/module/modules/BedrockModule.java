@@ -1,9 +1,9 @@
-package me.aleksilassila.litematica.printer.handler.handlers;
+package me.aleksilassila.litematica.printer.module.modules;
 
 import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
@@ -11,8 +11,8 @@ import net.minecraft.core.BlockPos;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class BedrockHandler extends ClientPlayerTickHandler {
-    public BedrockHandler() {
+public class BedrockModule extends Module {
+    public BedrockModule() {
         super("bedrock", PrintModeType.BEDROCK, Configs.Hotkeys.BEDROCK, null, true);
     }
 

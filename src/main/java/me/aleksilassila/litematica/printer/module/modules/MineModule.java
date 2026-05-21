@@ -1,12 +1,12 @@
-package me.aleksilassila.litematica.printer.handler.handlers;
+package me.aleksilassila.litematica.printer.module.modules;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.restrictions.UsageRestriction;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.ExcavateListMode;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
-import me.aleksilassila.litematica.printer.utils.CooldownUtils;
+import me.aleksilassila.litematica.printer.module.Module;
+import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
@@ -20,10 +20,10 @@ import static fi.dy.masa.tweakeroo.config.Configs.Lists.BLOCK_TYPE_BREAK_RESTRIC
 import static fi.dy.masa.tweakeroo.config.Configs.Lists.BLOCK_TYPE_BREAK_RESTRICTION_WHITELIST;
 import static fi.dy.masa.tweakeroo.tweaks.PlacementTweaks.BLOCK_TYPE_BREAK_RESTRICTION;
 
-public class MineHandler extends ClientPlayerTickHandler {
+public class MineModule extends Module {
     public final static String NAME = "mine";
 
-    public MineHandler() {
+    public MineModule() {
         super(NAME, PrintModeType.MINE, Configs.Core.MINE, Configs.Mine.MINE_SELECTION_TYPE, true);
     }
 
@@ -69,7 +69,7 @@ public class MineHandler extends ClientPlayerTickHandler {
 
     @Override
     public boolean canIterationBlockPos(BlockPos pos) {
-        if (isBlockPosOnCooldown(pos) || CooldownUtils.INSTANCE.isOnCooldown(level, FluidHandler.NAME, pos)) {
+        if (isBlockPosOnCooldown(pos) || BlockPosCooldownUtils.INSTANCE.isOnCooldown(level, FluidModule.NAME, pos)) {
             return false;
         }
         return InteractionUtils.canBreakBlock(pos) && mineRestriction(level.getBlockState(pos));

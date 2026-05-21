@@ -1,6 +1,6 @@
 package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
@@ -13,7 +13,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerInput;
@@ -111,7 +110,7 @@ public class InventoryUtils {
                     if (SearchItem.search(true)) {
                         ModLoadUtils.closeScreen++;
                         isOpenHandler = true;
-                        ClientPlayerTickManager.PRINT.setPrinterMemorySync(true);
+                        Modules.PRINT.setPrinterMemorySync(true);
                         return true;
                     }
                     //#elseif MC < 12001
@@ -127,7 +126,7 @@ public class InventoryUtils {
                         //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registries.DIMENSION, dimension));
                         //#endif
                     //$$                if(ModLoadUtils.closeScreen == 0) ModLoadUtils.closeScreen++;
-                    //$$                me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager.PRINT.setPrinterMemorySync(true);
+                    //$$                me.aleksilassila.litematica.printer.module.Modules.PRINT.setPrinterMemorySync(true);
                     //$$                isOpenHandler = true;
                     //$$                return true;
                     //$$            }

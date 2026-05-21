@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.handler.handlers;
+package me.aleksilassila.litematica.printer.module.modules;
 
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.config.options.ConfigBase;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import net.minecraft.core.BlockPos;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GuiHandler extends ClientPlayerTickHandler {
+public class GuiModule extends Module {
     public final static String NAME = "gui";
 
     @Getter
@@ -35,7 +35,7 @@ public class GuiHandler extends ClientPlayerTickHandler {
     private final Progress[] progresses = new Progress[]{totalProgress, printProgress, fluidProgress, fillProgress, mineProgress};
     private boolean lastTickInterrupted = false;
 
-    public GuiHandler() {
+    public GuiModule() {
         super(NAME, null, Configs.Core.RENDER_HUD, null, true);
     }
 

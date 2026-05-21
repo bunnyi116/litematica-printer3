@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.handler;
+package me.aleksilassila.litematica.printer.module;
 
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
@@ -10,7 +10,7 @@ import me.aleksilassila.litematica.printer.enums.*;
 import me.aleksilassila.litematica.printer.printer.*;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
-import me.aleksilassila.litematica.printer.utils.CooldownUtils;
+import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.minecraft.client.Minecraft;
@@ -29,7 +29,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class ClientPlayerTickHandler extends ConfigUtils {
+public abstract class Module extends ConfigUtils {
     @Getter
     @Nullable
     public final AtomicReference<WorkBox> playerInteractionBox;
@@ -68,7 +68,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
     private int renderIndex = 0;
     private int guiBlockPosCacheTicks;
 
-    protected ClientPlayerTickHandler(String id, @Nullable PrintModeType printMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
+    protected Module(String id, @Nullable PrintModeType printMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
         this.id = id;
         this.printMode = printMode;
         this.enableConfig = enableConfig;
@@ -102,7 +102,7 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
         }
         int tickInterval = this.getTickInterval(); // 工作间隔
         if (tickInterval > 0) {
-            long currentTickTime = ClientPlayerTickManager.getCurrentHandlerTime();
+            long currentTickTime = Modules.getCurrentHandlerTime();
             if (this.lastTickTime != -1L) {
                 // 非首次执行
                 if (currentTickTime - this.lastTickTime < tickInterval) {
@@ -327,22 +327,22 @@ public abstract class ClientPlayerTickHandler extends ConfigUtils {
 
     public boolean isBlockPosOnCooldown(@Nullable BlockPos pos) {
         if (this.level == null || pos == null) return true;
-        return CooldownUtils.INSTANCE.isOnCooldown(this.level, this.getId(), pos);
+        return BlockPosCooldownUtils.INSTANCE.isOnCooldown(this.level, this.getId(), pos);
     }
 
     public boolean isBlockPosOnCooldown(String name, @Nullable BlockPos pos) {
         if (this.level == null || pos == null) return true;
-        return CooldownUtils.INSTANCE.isOnCooldown(this.level, this.getId() + "_" + name, pos);
+        return BlockPosCooldownUtils.INSTANCE.isOnCooldown(this.level, this.getId() + "_" + name, pos);
     }
 
     public void setBlockPosCooldown(@Nullable BlockPos pos, int cooldownTicks) {
         if (this.level == null || pos == null || cooldownTicks < 1) return;
-        CooldownUtils.INSTANCE.setCooldown(this.level, this.getId(), pos, cooldownTicks);
+        BlockPosCooldownUtils.INSTANCE.setCooldown(this.level, this.getId(), pos, cooldownTicks);
     }
 
     public void setBlockPosCooldown(String name, @Nullable BlockPos pos, int cooldownTicks) {
         if (this.level == null || pos == null || cooldownTicks < 1) return;
-        CooldownUtils.INSTANCE.setCooldown(this.level, this.getId() + "_" + name, pos, cooldownTicks);
+        BlockPosCooldownUtils.INSTANCE.setCooldown(this.level, this.getId() + "_" + name, pos, cooldownTicks);
     }
 
     protected Direction[] getPlayerOrderedByNearest() {

@@ -4,11 +4,11 @@ import com.mojang.authlib.GameProfile;
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
-import me.aleksilassila.litematica.printer.utils.CooldownUtils;
+import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.UpdateCheckerUtils;
@@ -61,7 +61,7 @@ public class MixinLocalPlayer extends AbstractClientPlayer {
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo ci) {
-        CooldownUtils.INSTANCE.tick();
+        BlockPosCooldownUtils.INSTANCE.tick();
         InventoryUtils.tick();
         ZxyUtils.tick();
         if (minecraft.gameMode instanceof MultiPlayerGameModeExtension extension) {
@@ -69,7 +69,7 @@ public class MixinLocalPlayer extends AbstractClientPlayer {
         }
         InteractionUtils.INSTANCE.preprocess();
         InteractionUtils.INSTANCE.onTick();
-        ClientPlayerTickManager.tick();
+        Modules.tick();
     }
 
     @Inject(at = @At("HEAD"), method = "resetPos")

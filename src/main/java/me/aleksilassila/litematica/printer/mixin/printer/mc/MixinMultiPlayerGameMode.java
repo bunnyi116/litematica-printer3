@@ -1,15 +1,10 @@
 package me.aleksilassila.litematica.printer.mixin.printer.mc;
 
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
 import me.aleksilassila.litematica.printer.mixin.MinecraftAccessor;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
-import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
-import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
-import me.aleksilassila.litematica.printer.utils.CooldownUtils;
-import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.NetworkUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.mods.TweakerooUtils;
@@ -36,9 +31,6 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings({"DataFlowIssue", "DuplicateCondition"})
 @Mixin(value = MultiPlayerGameMode.class, priority = 1020)

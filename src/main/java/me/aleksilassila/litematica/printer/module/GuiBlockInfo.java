@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.handler;
+package me.aleksilassila.litematica.printer.module;
 
 import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;

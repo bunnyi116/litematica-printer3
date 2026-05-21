@@ -3,7 +3,7 @@ package me.aleksilassila.litematica.printer.guide;
 import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
-import me.aleksilassila.litematica.printer.utils.CooldownUtils;
+import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 
 import net.minecraft.client.Minecraft;
@@ -123,14 +123,14 @@ public abstract class Guide extends BlockStateUtils {
      * 该指南方块是否正在冷却（范围：指南隔离）
      */
     protected boolean isOnCooldown() {
-        return CooldownUtils.INSTANCE.isOnCooldown(context.level, getClass().getSimpleName(), context.blockPos);
+        return BlockPosCooldownUtils.INSTANCE.isOnCooldown(context.level, getClass().getSimpleName(), context.blockPos);
     }
 
     /**
      * 设置指南方坤是否正在冷却（范围：指南隔离）
      */
     protected Guide setCooldown(int cooldown) {
-        CooldownUtils.INSTANCE.setCooldown(context.level, getClass().getSimpleName(), context.blockPos, cooldown);
+        BlockPosCooldownUtils.INSTANCE.setCooldown(context.level, getClass().getSimpleName(), context.blockPos, cooldown);
         return this;
     }
 }

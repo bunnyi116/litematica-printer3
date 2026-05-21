@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.handler.handlers;
+package me.aleksilassila.litematica.printer.module.modules;
 
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
@@ -7,7 +7,7 @@ import lombok.Setter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.guide.Guides;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.interfaces.Implementation;
 import me.aleksilassila.litematica.printer.printer.*;
@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PrintHandler extends ClientPlayerTickHandler {
+public class PrintModule extends Module {
     public final static String NAME = "print";
 
     @Getter
@@ -43,7 +43,7 @@ public class PrintHandler extends ClientPlayerTickHandler {
 
     private SchematicBlockContext ctx;
 
-    public PrintHandler() {
+    public PrintModule() {
         super(NAME, PrintModeType.PRINTER, Configs.Core.PRINT, Configs.Print.PRINT_SELECTION_TYPE, true);
     }
 

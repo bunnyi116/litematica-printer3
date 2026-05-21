@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.chesttracker;
 
 //#if MC >= 12001
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
@@ -10,7 +10,6 @@ import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -90,10 +89,10 @@ public class MemoryUtils {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> unLoad());
     }
     public static void saveMemory(AbstractContainerMenu sc){
-        if(PRINTER_MEMORY != null && ZxyUtils.printerMemoryAdding || ClientPlayerTickManager.PRINT.isPrinterMemorySync())
+        if(PRINTER_MEMORY != null && ZxyUtils.printerMemoryAdding || Modules.PRINT.isPrinterMemorySync())
             save(sc , PRINTER_MEMORY);
         MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(memoryBank -> save(sc, memoryBank));
-        ClientPlayerTickManager.PRINT.setPrinterMemorySync(false);;
+        Modules.PRINT.setPrinterMemorySync(false);;
     }
     public static void createPrinterMemory(){
         Optional<Coordinate> current = Coordinate.getCurrent();

@@ -2,11 +2,11 @@ package me.aleksilassila.litematica.printer.render;
 
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.WorkingModeType;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickManager;
-import me.aleksilassila.litematica.printer.handler.GuiBlockInfo;
-import me.aleksilassila.litematica.printer.handler.handlers.GuiHandler;
-import me.aleksilassila.litematica.printer.handler.handlers.PrintHandler;
+import me.aleksilassila.litematica.printer.module.Module;
+import me.aleksilassila.litematica.printer.module.Modules;
+import me.aleksilassila.litematica.printer.module.GuiBlockInfo;
+import me.aleksilassila.litematica.printer.module.modules.GuiModule;
+import me.aleksilassila.litematica.printer.module.modules.PrintModule;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.render.Render2DUtils;
@@ -42,26 +42,6 @@ public class Render2D {
      * 注意：调用前必须已通过 Render2DUtils.initGuiGraphics 或 initMatrix 设置好渲染上下文。
      */
     public void render(float scaledWidth, float scaledHeight) {
-//        ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
-//        sword.setDamageValue(100);
-//        sword.setCount(64);
-
-//        int y = 50;
-//        // 绘制物品图标 + 装饰
-//        Render2DUtils.drawItemWithDecorations(sword, 100, y);
-//        y += 24;
-//        // 如果你只想绘制物品图标本身（不显示数量、耐久条）
-//        Render2DUtils.drawItem(sword, 100, y);
-//        y += 24;
-//        // 绘制方块图标本身
-//        Render2DUtils.drawBlock(Blocks.DIAMOND_BLOCK, 100, y);
-//        y += 24;
-//        // 绘制方块图标，并自动显示数量、耐久条等装饰
-//        Render2DUtils.drawBlockWithDecorations(Blocks.CHEST, 100, y);
-//        y += 24;
-//        // 组合方法
-//        Render2DUtils.drawItemWithLabel(sword, 100, y, sword.getItemName().getString(), Color.WHITE, true);
-
         if (Configs.Core.DEBUG_OUTPUT.getBooleanValue()) {
             drawDebugInfo(scaledWidth, scaledHeight);
         }
@@ -75,11 +55,11 @@ public class Render2D {
 
     private void drawDebugInfo(float scaledWidth, float scaledHeight) {
         Minecraft mc = Minecraft.getInstance();
-        List<ClientPlayerTickHandler> validHandlers = new ArrayList<>();
+        List<Module> validHandlers = new ArrayList<>();
         int globalMaxTextWidth = MIN_COLUMN_WIDTH;
 
         // 1. 收集有效 Handler 并计算全局最大宽度
-        for (ClientPlayerTickHandler handler : ClientPlayerTickManager.VALUES) {
+        for (Module handler : Modules.VALUES) {
             GuiBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
             if (guiInfo == null) continue;
 
@@ -128,7 +108,7 @@ public class Render2D {
         return Math.min(maxColumns, 3);
     }
 
-    private int drawHandlerPanels(List<ClientPlayerTickHandler> handlers, int startIndex,
+    private int drawHandlerPanels(List<Module> handlers, int startIndex,
                                   int startX, int startY, int columnWidth,
                                   int maxColumns, int availableHeight, float scaledHeight) {
         int drawnCount = 0;
@@ -137,7 +117,7 @@ public class Render2D {
         int currentY = startY;
 
         for (int i = startIndex; i < handlers.size(); i++) {
-            ClientPlayerTickHandler handler = handlers.get(i);
+            Module handler = handlers.get(i);
             GuiBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
             if (guiInfo == null) continue;
 
@@ -182,8 +162,8 @@ public class Render2D {
 
     private int drawCommonDebugInfo(int startX, int startY) {
         List<String> commonLines = new ArrayList<>();
-        commonLines.add("全局Tick: " + ClientPlayerTickManager.getCurrentHandlerTime());
-        commonLines.add("活跃Handler数: " + ClientPlayerTickManager.VALUES.size());
+        commonLines.add("全局Tick: " + Modules.getCurrentHandlerTime());
+        commonLines.add("活跃Handler数: " + Modules.VALUES.size());
 
         Minecraft mc = Minecraft.getInstance();
         int maxWidth = 0;
@@ -210,7 +190,7 @@ public class Render2D {
         return startY + bgHeight;
     }
 
-    private List<String> buildHandlerDebugLines(ClientPlayerTickHandler handler, GuiBlockInfo guiInfo) {
+    private List<String> buildHandlerDebugLines(Module handler, GuiBlockInfo guiInfo) {
         List<String> lines = new ArrayList<>();
         lines.add("处理类型: " + handler.getId());
         lines.add("当前位置: " + guiInfo.pos.toShortString());
@@ -238,14 +218,14 @@ public class Render2D {
     private void drawHudInfo(float scaledWidth, float scaledHeight) {
         int centerX = (int) (scaledWidth / 2);
         int centerY = (int) (scaledHeight / 2);
-        GuiHandler guiHandler = ClientPlayerTickManager.GUI;
+        GuiModule guiModule = Modules.GUI;
 
         // ====================== 统一 Y 基准（核心改动） ======================
         int y = centerY;
 
         // 1. 延迟过大警告（向上偏移）
         if (Configs.Core.LAG_CHECK.getBooleanValue() &&
-                ClientPlayerTickManager.getPacketTick() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
+                Modules.getPacketTick() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
             y += 22;
             Render2DUtils.drawString("延迟过大，已暂停运行", centerX, y - 22, Color.ORANGE, true, true);
         }
@@ -254,7 +234,7 @@ public class Render2D {
         WorkingModeType workMode = (WorkingModeType) Configs.Core.WORK_MODE.getOptionListValue();
         if (workMode.equals(WorkingModeType.SINGLE)) {
             y += 22; // 百分比位置
-            double progress = guiHandler.getTotalProgress().getProgress();
+            double progress = guiModule.getTotalProgress().getProgress();
             Render2DUtils.drawString((int) (progress * 100) + "%", centerX, y, Color.WHITE, true, true);
 
             y += 14; // 进度条偏移
@@ -268,8 +248,8 @@ public class Render2D {
             Render2DUtils.drawString(modeName, centerX, y, Color.WHITE, true, true);
         } else {
             HashSet<String> modeNames = new HashSet<>();
-            for (ClientPlayerTickHandler handler : ClientPlayerTickManager.VALUES) {
-                if (handler.getId().equals(GuiHandler.NAME) ||
+            for (Module handler : Modules.VALUES) {
+                if (handler.getId().equals(GuiModule.NAME) ||
                         handler.getEnableConfig() == null ||
                         !handler.getEnableConfig().getBooleanValue()) {
                     continue;
@@ -280,8 +260,8 @@ public class Render2D {
         }
 
 
-        PrintHandler printHandler = ClientPlayerTickManager.PRINT;
-        SchematicBlockContext printContext = printHandler.getContext();
+        PrintModule printModule = Modules.PRINT;
+        SchematicBlockContext printContext = printModule.getContext();
         if (printContext != null) {
             Minecraft mc = Minecraft.getInstance();
             ClientLevel level = mc.level;

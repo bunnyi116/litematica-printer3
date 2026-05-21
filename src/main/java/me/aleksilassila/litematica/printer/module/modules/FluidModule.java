@@ -1,8 +1,8 @@
-package me.aleksilassila.litematica.printer.handler.handlers;
+package me.aleksilassila.litematica.printer.module.modules;
 
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class FluidHandler extends ClientPlayerTickHandler {
+public class FluidModule extends Module {
     public final static String NAME = "fluid";
 
     private List<String> fillBlocks = new ArrayList<>();
@@ -29,7 +29,7 @@ public class FluidHandler extends ClientPlayerTickHandler {
     private List<String> fluidBlocks = new ArrayList<>();
     private List<Fluid> fluids = List.of(new Fluid[0]);
 
-    public FluidHandler() {
+    public FluidModule() {
         super(NAME, PrintModeType.FLUID, Configs.Core.FLUID, Configs.Fluid.FLUID_SELECTION_TYPE, true);
     }
 

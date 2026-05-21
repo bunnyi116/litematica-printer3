@@ -1,10 +1,10 @@
-package me.aleksilassila.litematica.printer.handler.handlers;
+package me.aleksilassila.litematica.printer.module.modules;
 
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.enums.FillBlockModeType;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
-import me.aleksilassila.litematica.printer.handler.ClientPlayerTickHandler;
+import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class FillHandler extends ClientPlayerTickHandler {
+public class FillModule extends Module {
     public final static String NAME = "fill";
 
     private List<String> fillCacheBlocklist = new ArrayList<>();
     @Getter
     private Item[] fillModeItemList = new Item[0];
 
-    public FillHandler() {
+    public FillModule() {
         super(NAME, PrintModeType.FILL, Configs.Core.FILL, Configs.Fill.FILL_SELECTION_TYPE, true);
     }
 
