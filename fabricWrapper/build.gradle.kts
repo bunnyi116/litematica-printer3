@@ -2,6 +2,9 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.jar.JarEntry
+import java.util.jar.JarInputStream
+import java.util.jar.JarOutputStream
 
 plugins {
     id("java-library")
@@ -45,6 +48,46 @@ fabricSubprojects.forEach {
     evaluationDependsOn(":${it.name}")
 }
 
+// ====== 工具函数：从 JAR 中剥离指定前缀的资源条目 ======
+fun stripJarResources(jarFile: File, prefixes: List<String>) {
+    val tempFile = File.createTempFile("stripped-", ".jar")
+    var strippedCount = 0
+    var keptCount = 0
+
+    JarInputStream(jarFile.inputStream().buffered()).use { jis ->
+        JarOutputStream(tempFile.outputStream().buffered()).use { jos ->
+            var entry = jis.nextJarEntry
+            while (entry != null) {
+                val name = entry.name
+                val shouldStrip = prefixes.any { prefix ->
+                    name == prefix || name.startsWith(prefix)
+                }
+                if (!shouldStrip) {
+                    jos.putNextEntry(JarEntry(name))
+                    jis.copyTo(jos)
+                    jos.closeEntry()
+                    keptCount++
+                } else {
+                    strippedCount++
+                }
+                entry = jis.nextJarEntry
+            }
+        }
+    }
+
+    if (strippedCount > 0) {
+        tempFile.copyTo(jarFile, overwrite = true)
+        println("  📦 ${jarFile.name}: 剥离 $strippedCount 个资源条目, 保留 $keptCount 个")
+    }
+    tempFile.delete()
+}
+
+// 要剥离的共享资源前缀列表 (相对于 JAR 根目录)
+val sharedResourcePrefixes = listOf(
+    "assets/litematica-printer/icon.png",
+    "assets/litematica-printer/lang/"
+)
+
 tasks {
     // 打包 fabricWrapper JAR
     named<Jar>("jar") {
@@ -80,7 +123,36 @@ tasks {
                 eachFile { println("📦 复制JAR: ${this.name}") }
             }
 
-            // 复制图标文件
+            // ====== 剥离共享资源 ======
+            println("🗜️ 开始剥离子模组 JAR 中的共享资源...")
+            targetDir.listFiles { f ->
+                f.isFile && f.name.endsWith(".jar")
+                        && !f.name.endsWith("-dev.jar")
+                        && !f.name.endsWith("-sources.jar")
+                        && !f.name.endsWith("-shadow.jar")
+            }?.forEach { jarFile ->
+                stripJarResources(jarFile, sharedResourcePrefixes)
+            }
+            println("✅ 共享资源剥离完成")
+
+            // ====== 将共享资源复制到 fabricWrapper 构建资源中 ======
+            val modId = rootProject.property("mod_id") as String
+            val sharedAssetsSource = rootProject.file("src/main/resources/assets/$modId")
+            val wrapperAssetsTarget = layout.buildDirectory
+                .dir("resources/main/assets/$modId").get().asFile
+
+            if (sharedAssetsSource.exists()) {
+                wrapperAssetsTarget.mkdirs()
+                copy {
+                    from(sharedAssetsSource)
+                    into(wrapperAssetsTarget)
+                }
+                println("✓ 共享资源已复制到 fabricWrapper: assets/$modId")
+            } else {
+                println("⚠ 未找到共享资源源目录: ${sharedAssetsSource.absolutePath}")
+            }
+
+            // 复制图标文件 (wrapper 自己的 icon)
             val rootIcon = rootProject.file("src/main/resources/assets/$modId/icon.png")
             val wrapperIconInResources =
                 layout.projectDirectory.file("src/main/resources/assets/$wrapperModId/icon.png").asFile
