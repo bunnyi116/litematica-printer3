@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.guide;
 
+import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.guide.guides.*;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
@@ -17,15 +18,14 @@ public class Guides {
 
     private Guides() {
         // ============================================================
-        // 水源处理指南（破冰放水逻辑，仅处理 WATER 方块，比 SkipGuide 优先级高）
+        // 流体统一处理指南（水源、含水方块、熔岩、水生植物水环境）
         // ============================================================
-        register(WaterGuide.class);
+        register(FluidGuide.class);
 
         // ============================================================
-        // 跳过指南（对无需放置的方块直接跳过，优先级低于 WaterGuide）
+        // 跳过指南（对无需放置的方块直接跳过）
         // ============================================================
         register(SkipGuide.class,
-                LiquidBlock.class,
                 BubbleColumnBlock.class,
                 LilyPadBlock.class
         );

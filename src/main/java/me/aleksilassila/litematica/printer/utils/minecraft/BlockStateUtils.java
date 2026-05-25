@@ -119,26 +119,28 @@ public class BlockStateUtils extends BlockUtils {
                 || blockState.getBlock() instanceof BubbleColumnBlock;
     }
 
-    /**
-     * 判断该方块是否需要水中才能放置（水生植物等）。
-     * 这些方块虽然 canSurvive 可能返回 true（只检查支撑），但实际放置需要水。
-     * 没有水时跳过放置，避免死循环切换物品。
-     *
-     * @param block 要判断的方块
-     * @return 是否需要水环境
-     */
+    public static boolean isWaterSource(BlockState blockState) {
+        return blockState.is(Blocks.WATER) && blockState.getValue(LiquidBlock.LEVEL) == 0;
+    }
+
     public static boolean requiresWaterToPlace(Block block) {
         return block instanceof SeagrassBlock
                 || block instanceof KelpBlock
                 || block instanceof KelpPlantBlock;
     }
 
+    /**
+     * 判断当前位置是否已满足"有水"条件。
+     * 含水方块（WATERLOGGED=true）视为已满足，不需要再破冰放水。
+     */
     public static boolean isCorrectWaterLevel(BlockState requiredState, BlockState currentState) {
+        if (currentState.hasProperty(BlockStateProperties.WATERLOGGED) && currentState.hasProperty(BlockStateProperties.WATERLOGGED)) {
+            return currentState.getValue(BlockStateProperties.WATERLOGGED).equals(requiredState.getValue(BlockStateProperties.WATERLOGGED));
+        }
         if (!currentState.is(Blocks.WATER)) return false;
         if (requiredState.is(Blocks.WATER) && currentState.getValue(LiquidBlock.LEVEL).equals(requiredState.getValue(LiquidBlock.LEVEL))) {
             return true;
-        } else {
-            return currentState.getValue(LiquidBlock.LEVEL) == 0;
         }
+        return currentState.getValue(LiquidBlock.LEVEL) == 0;
     }
 }

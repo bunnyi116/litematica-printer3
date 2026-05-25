@@ -590,7 +590,7 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
         public static final ImmutableList<IConfigBase> OPTIONS = ImmutableList.of(
                 FLUID_SELECTION_TYPE,         // 排流体 - 选区类型
                 FILL_FLOWING_FLUID,           // 排流体 - 填充流动液体
-                FLUID_REPLACE_BLOCK_LIST,             // 排流体 - 方块名单
+                FLUID_REPLACE_BLOCK_LIST,     // 排流体 - 方块名单
                 FLUID_LIST                    // 排流体 - 液体名单
         );
     }
