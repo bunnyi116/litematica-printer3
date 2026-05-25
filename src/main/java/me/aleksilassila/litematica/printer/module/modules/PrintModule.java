@@ -5,6 +5,7 @@ import fi.dy.masa.litematica.world.WorldSchematic;
 import lombok.Getter;
 import lombok.Setter;
 import me.aleksilassila.litematica.printer.config.Configs;
+import me.aleksilassila.litematica.printer.enums.BlockMatchResult;
 import me.aleksilassila.litematica.printer.enums.PrintModeType;
 import me.aleksilassila.litematica.printer.guide.Guides;
 import me.aleksilassila.litematica.printer.module.Module;
@@ -101,8 +102,17 @@ public class PrintModule extends Module {
         }
         Direction side = action.getValidSide(level, blockPos);
         if (side == null) return;
-        Item[] reqItems = action.getRequiredItems(ctx.requiredState.getBlock());
-        if (!InventoryUtils.switchToItems(player, reqItems)) return;
+
+        // 交互操作：跳过切物品，但需验证当前方块确实是预期的可交互方块
+        if (action instanceof ClickAction) {
+            if (BlockMatchResult.compare(ctx) != BlockMatchResult.WRONG_STATE) {
+                return;
+            }
+        } else {
+            Item[] reqItems = action.getRequiredItems(ctx.requiredState.getBlock());
+            if (!InventoryUtils.switchToItems(player, reqItems)) return;
+        }
+
         boolean useShift;
         if (action.getShift() == null) {
             useShift = (Implementation.isInteractive(level.getBlockState(blockPos.relative(side)).getBlock()) && !(action instanceof ClickAction))
