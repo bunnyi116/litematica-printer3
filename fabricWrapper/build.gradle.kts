@@ -51,7 +51,6 @@ tasks {
         outputs.upToDateWhen { false }
 
         from(rootProject.file("LICENSE"))
-        // 关键修复：从正确的临时目录读取文件打包
         from(layout.buildDirectory.dir("tmp/submods"))
     }
 
@@ -62,7 +61,6 @@ tasks {
         // 依赖所有子项目的 buildAndCollect 任务
         dependsOn(fabricSubprojects.map { it.tasks.named("buildAndCollect") })
 
-        // 关键修复：把 copy 操作放到 doLast 里，确保子项目构建完成后再复制
         doLast {
             // 每次先清空临时目录，防止旧 JAR 混入
             val targetDir = layout.buildDirectory.dir("tmp/submods/META-INF/jars").get().asFile
@@ -82,7 +80,6 @@ tasks {
                 eachFile { println("📦 复制JAR: ${this.name}") }
             }
 
-            // ====================== 下面是原有逻辑，保持不变 ======================
             // 复制图标文件
             val rootIcon = rootProject.file("src/main/resources/assets/$modId/icon.png")
             val wrapperIconInResources =

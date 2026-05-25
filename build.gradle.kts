@@ -49,6 +49,12 @@ preprocess {
     }
 }
 
+// 构建前清除共享 build/libs，防止各子项目 buildAndCollect 累积旧 JAR
+tasks.register<Delete>("cleanRootLibs") {
+    group = "build"
+    delete(rootProject.layout.buildDirectory.dir("libs"))
+}
+
 tasks.register<Delete>("clean") {
     group = "build"
     delete(rootProject.layout.buildDirectory)

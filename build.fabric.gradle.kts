@@ -101,8 +101,9 @@ loom {
 tasks {
     register<Copy>("buildAndCollect") {
         group = "build"
-        delete(project.layout.buildDirectory.dir("libs"))
         dependsOn("build")
+        dependsOn(rootProject.tasks.named("cleanRootLibs"))
+        delete(project.layout.buildDirectory.dir("libs"))
         from(jar.map { it.archiveFile })
         into(rootProject.layout.buildDirectory.dir("libs"))
     }
