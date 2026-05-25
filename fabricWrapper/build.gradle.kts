@@ -183,11 +183,11 @@ tasks {
     named<ProcessResources>("processResources") {
         outputs.upToDateWhen { false }
 
-        // 依赖所有子项目的 buildAndCollect 任务
+        delete(rootProject.layout.buildDirectory)
+        delete(project.layout.buildDirectory)
         dependsOn(fabricSubprojects.map { it.tasks.named("buildAndCollect") })
 
         doLast {
-            // 每次先清空临时目录，防止旧 JAR 混入
             val targetDir = layout.buildDirectory.dir("tmp/submods/META-INF/jars").get().asFile
             println("📁 目标JAR目录: ${targetDir.absolutePath}")
 
@@ -324,9 +324,9 @@ tasks {
                 println("⚠ 未找到 fabric.mod.json: ${jsonFile.absolutePath}")
             }
 
-            // ====== 复制独立版本 JAR 到 fabricWrapper 输出目录（避免 CI 二次编译）======
+            // ====== 复制独立版本 JAR 到 jars 子目录（方便 CI 直接打包文件夹）======
             val standaloneSource = rootProject.layout.buildDirectory.dir("libs").get().asFile
-            val standaloneTarget = layout.buildDirectory.dir("libs").get().asFile
+            val standaloneTarget = layout.buildDirectory.dir("libs/jars").get().asFile
             if (standaloneSource.exists()) {
                 standaloneTarget.mkdirs()
                 copy {
@@ -336,7 +336,7 @@ tasks {
                     exclude("*-dev.jar", "*-sources.jar", "*-shadow.jar")
                 }
                 val count = standaloneTarget.listFiles { f -> f.isFile && f.name.endsWith(".jar") }?.size ?: 0
-                println("✓ 独立版本 JAR 已复制到 fabricWrapper/build/libs/ (共 $count 个)")
+                println("✓ 独立版本 JAR 已复制到 fabricWrapper/build/libs/jars/ (共 $count 个)")
             } else {
                 println("⚠ 未找到独立版本源目录: ${standaloneSource.absolutePath}")
             }

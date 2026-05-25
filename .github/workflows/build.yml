@@ -41,9 +41,15 @@ jobs:
       - name: Build fabricWrapper subproject
         run: ./gradlew :fabricWrapper:build --stacktrace
 
-      - name: Capture build artifacts
+      - name: Capture versionpack
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts
+          name: versionpack
           path: fabricWrapper/build/libs/*.jar
           archive: false
+
+      - name: Capture standalone version JARs
+        uses: actions/upload-artifact@v7
+        with:
+          name: version-jars
+          path: fabricWrapper/build/libs/jars/
