@@ -82,6 +82,88 @@ fun stripJarResources(jarFile: File, prefixes: List<String>) {
     tempFile.delete()
 }
 
+// ====== 工具函数：从子JAR中收集嵌套库名列表 ======
+fun collectNestedLibs(jarFile: File): List<String> {
+    val libs = mutableListOf<String>()
+    JarInputStream(jarFile.inputStream().buffered()).use { jis ->
+        var entry = jis.nextJarEntry
+        while (entry != null) {
+            val name = entry.name
+            if (name.startsWith("META-INF/jars/") && name != "META-INF/jars/") {
+                libs.add(name.substring("META-INF/jars/".length))
+            }
+            entry = jis.nextJarEntry
+        }
+    }
+    return libs
+}
+
+// ====== 工具函数：从子JAR中提取指定嵌套库到目标文件 ======
+fun extractNestedLib(jarFile: File, libName: String, targetFile: File) {
+    JarInputStream(jarFile.inputStream().buffered()).use { jis ->
+        var entry = jis.nextJarEntry
+        while (entry != null) {
+            if (entry.name == "META-INF/jars/$libName") {
+                targetFile.outputStream().buffered().use { out ->
+                    jis.copyTo(out)
+                }
+                break
+            }
+            entry = jis.nextJarEntry
+        }
+    }
+}
+
+// ====== 工具函数：从子JAR中删除指定嵌套库并更新其fabric.mod.json ======
+fun removeNestedLibsFromJar(jarFile: File, libNamesToRemove: Set<String>) {
+    val tempFile = File.createTempFile("dedup-", ".jar")
+    var removedCount = 0
+
+    JarInputStream(jarFile.inputStream().buffered()).use { jis ->
+        JarOutputStream(tempFile.outputStream().buffered()).use { jos ->
+            var entry = jis.nextJarEntry
+            while (entry != null) {
+                val name = entry.name
+                val isNestedLib = name.startsWith("META-INF/jars/")
+                        && libNamesToRemove.contains(name.substring("META-INF/jars/".length))
+
+                if (isNestedLib) {
+                    removedCount++
+                } else if (name == "fabric.mod.json") {
+                    // 读取并修改 fabric.mod.json, 移除对应的jars条目
+                    val rawJson = jis.readBytes()
+                    @Suppress("UNCHECKED_CAST")
+                    val json = jsonSlurper.parse(rawJson.inputStream()) as MutableMap<String, Any>
+                    @Suppress("UNCHECKED_CAST")
+                    val jars = (json["jars"] as? List<Map<String, Any>>)?.filter { jarEntry ->
+                        val file = jarEntry["file"] as? String ?: ""
+                        !libNamesToRemove.any { lib -> file.contains(lib) }
+                    } ?: emptyList()
+                    if (jars.isEmpty()) {
+                        json.remove("jars")
+                    } else {
+                        json["jars"] = jars
+                    }
+                    val updatedJson = JsonBuilder(json).toPrettyString().toByteArray()
+                    jos.putNextEntry(JarEntry("fabric.mod.json"))
+                    jos.write(updatedJson)
+                    jos.closeEntry()
+                } else {
+                    jos.putNextEntry(JarEntry(name))
+                    jis.copyTo(jos)
+                    jos.closeEntry()
+                }
+                entry = jis.nextJarEntry
+            }
+        }
+    }
+
+    if (removedCount > 0) {
+        tempFile.copyTo(jarFile, overwrite = true)
+    }
+    tempFile.delete()
+}
+
 // 要剥离的共享资源前缀列表 (相对于 JAR 根目录)
 val sharedResourcePrefixes = listOf(
     "assets/litematica-printer/icon.png",
@@ -135,6 +217,45 @@ tasks {
             }
             println("✅ 共享资源剥离完成")
 
+            // ====== 去重：提取多个子JAR中共同存在的嵌套Java库 ======
+            println("🔍 扫描子模块 JAR 中的嵌套 Java 库...")
+            val validJars = targetDir.listFiles { f ->
+                f.isFile && f.name.endsWith(".jar")
+                        && !f.name.endsWith("-dev.jar")
+                        && !f.name.endsWith("-sources.jar")
+                        && !f.name.endsWith("-shadow.jar")
+            } ?: emptyArray()
+
+            val libMap = mutableMapOf<String, MutableList<String>>()
+            validJars.forEach { jarFile ->
+                collectNestedLibs(jarFile).forEach { libName ->
+                    libMap.getOrPut(libName) { mutableListOf() }.add(jarFile.name)
+                }
+            }
+
+            // 在所有子JAR中都出现的库视为公共Java库，提取到包装器层级
+            val totalJars = validJars.size
+            val commonLibs = libMap.filter { it.value.size >= totalJars }
+
+            if (commonLibs.isNotEmpty()) {
+                println("  发现 ${commonLibs.size} 个公共Java库: ${commonLibs.keys.joinToString(", ")}")
+
+                // 提取公共库到targetDir（与子JAR同级）
+                commonLibs.forEach { (libName, _) ->
+                    extractNestedLib(validJars.first(), libName, File(targetDir, libName))
+                    println("  📤 提取公共库: $libName")
+                }
+
+                // 从所有子JAR中删除公共库，并更新各自的fabric.mod.json
+                val libNamesToRemove = commonLibs.keys.toSet()
+                validJars.forEach { jarFile ->
+                    removeNestedLibsFromJar(jarFile, libNamesToRemove)
+                }
+                println("  ✅ 已从 ${validJars.size} 个子JAR中移除公共库")
+            } else {
+                println("  未发现需要去重的公共库")
+            }
+
             // ====== 将共享资源复制到 fabricWrapper 构建资源中 ======
             val modId = rootProject.property("mod_id") as String
             val sharedAssetsSource = rootProject.file("src/main/resources/assets/$modId")
@@ -168,6 +289,7 @@ tasks {
             }
 
             // 读取并更新fabric.mod.json
+            // jars列表现在同时包含子模组JAR和提取出来的公共Java库
             val jars = if (targetDir.exists() && targetDir.isDirectory) {
                 targetDir.listFiles { f ->
                     f.isFile && f.name.endsWith(".jar")
@@ -196,7 +318,7 @@ tasks {
 
                 jsonFile.bufferedWriter().use { it.write(JsonBuilder(json).toPrettyString()) }
 
-                println("✅ fabric.mod.json 已更新，包含 ${jars.size} 个子版本 JAR")
+                println("✅ fabric.mod.json 已更新，包含 ${jars.size} 个条目（含子版本JAR和公共Java库）")
                 jars.forEach { println("  - ${it["file"]}") }
             } else {
                 println("⚠ 未找到 fabric.mod.json: ${jsonFile.absolutePath}")
