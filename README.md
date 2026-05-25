@@ -6,7 +6,7 @@ Litematica Printer
 
 该模组为 投影 的 Minecraft Fabric 1.18.2 至 1.21.10 版本添加了自动建造功能。允许玩家通过自动放置周围正确方块来快速还原投影。
 
-这个版本基于[宅咸鱼二改版](https://github.com/zhaixianyu/litematica-printer)修改，添加了一些实用的功能。
+这个版本基于[BiliXWhite三改版](https://github.com/BiliXWhite/litematica-printer)修改，添加了一些实用的功能。
 
 如果你觉得好用，可以给该项目点个 Star ⭐️ 来以支持我们。
 
@@ -32,14 +32,23 @@ Litematica Printer
 - 1.21.4
 - 1.21.5
 - 1.21.6~8
-- 1.21.9~10
+- 1.21.9~11
+- 26.1
 
 暂不接受1.18.2以下版本的更新，之间的小版本是否可用请自行尝试，一般版本进度会跟进上游分支
 
 
 ## 前置模组
 
-该模组必须先安装 **Fabric API** , **MaLiLib** 和 **Litematica** 作为前置。可选前置有 **Twrakeroo** , **Chest Tracker**(≤1.21.4) 和 **Quick Shulker**。
+该模组必须先安装以下模组作为前置
+- Fabric API
+- MaLiLib
+- Litematica 
+
+可选前置有 
+- Twrakeroo
+- Chest Tracker(≤1.21.4) 
+- Quick Shulker
 
 ## 特性
 
@@ -52,7 +61,10 @@ Litematica Printer
 - **⏩改进**
   - [x] 不会因缺少水源而在迭代水时卡死不打印的 bug
   - [x] 填充功能（使用投影的选区范围）
-  - [x] 支持双兼容快捷潜影盒功能（服务器 AxShulkers 和模组 Quick Shulker ）
+  - [x] 排流体功能（自动处理水源和岩浆源）
+  - [x] 挖掘功能（按选区自动挖掘方块）
+  - [x] 支持凭空放置 (可在生存模式使用Tweakroo的浮空放置~)
+  - [x] 支持快捷潜影盒功能（模组 Quick Shulker ）
   - [x] 替换珊瑚（使用活珊瑚打印投影内的死珊瑚）
   - [x] 更好的破坏错误方块和破冰放水
   - [x] 支持多达 48 种范围迭代逻辑
@@ -80,7 +92,7 @@ Litematica Printer
 
 ## 未支持方块列表
 以下方块由于特殊原因暂未实现，打印机将自动跳过，亦或者是呈现错误的打印状态。如果发现其他方块放置错误，请尝试降低建造速度。若问题依旧存在，请提交 [Issue](https://github.com/bunnyi116/litematica-printer3/issues)。
-- 头颅，告示牌，旗帜(以及具有16个朝向的任何方块)
+- ~~头颅，告示牌，旗帜(已支持)~~(以及具有16个朝向的任何方块)
 - 装有液体的炼药锅
 - 实体方块（包括但不限于物品展示框、盔甲架、画等等）
 - 非原版游戏内容
@@ -112,7 +124,7 @@ Litematica Printer
 - `打印机工作间隔`设置过小，导致类似于 Luminol 等有放置速率限制的服务器不会及时响应，请尝试开启`使用数据包打印`功能打印或者调高`打印机工作间隔`。 
 - 某些玄学问题，在开启正版验证的服务器里打印数据交互不正常。可尝试重新登陆游戏账号。（推荐使用[AuthMe](https://modrinth.com/mod/auth-me)模组） 
 
-如果以上方法都无法解决问题，请尝试提交 [Issue](https://github.com/bunnyi116/litematica-printer3/issues/new?template=bug%E6%8A%A5%E5%91%8A.yml) ，开发者会协助您解决问题。
+如果以上方法都无法解决问题，请尝试提交 [Issue](https://github.com/bunnyi116/litematica-printer3/issues) ，开发者会协助您解决问题。
 
 ### 为什么打印机放置的方块是错的？
 
@@ -132,7 +144,7 @@ Litematica Printer
 
 感谢
 ----------
-- [bunny_i](https://github.com/bunnyi116): 为该项目提供了全方面支持。
+- [bunnyi116](https://github.com/bunnyi116): 为该项目提供了全方面支持。
 - [aleksilassila/litematica-printer](https://github.com/aleksilassila/litematica-printer): 如果没有 [aleksilassila](https://github.com/aleksilassila) 的成果，那么整个改版分支将不存在！
 - [zhaixianyu/litematica-printer](https://github.com/zhaixianyu/litematica-printer): 在原著的基础上解决了很多问题，同时也引进了很多新的内容。
 - [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker): 新版的快捷潜影盒支持。
