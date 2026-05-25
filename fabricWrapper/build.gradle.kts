@@ -201,6 +201,23 @@ tasks {
             } else {
                 println("⚠ 未找到 fabric.mod.json: ${jsonFile.absolutePath}")
             }
+
+            // ====== 复制独立版本 JAR 到 fabricWrapper 输出目录（避免 CI 二次编译）======
+            val standaloneSource = rootProject.layout.buildDirectory.dir("libs").get().asFile
+            val standaloneTarget = layout.buildDirectory.dir("libs").get().asFile
+            if (standaloneSource.exists()) {
+                standaloneTarget.mkdirs()
+                copy {
+                    from(standaloneSource)
+                    into(standaloneTarget)
+                    include("*.jar")
+                    exclude("*-dev.jar", "*-sources.jar", "*-shadow.jar")
+                }
+                val count = standaloneTarget.listFiles { f -> f.isFile && f.name.endsWith(".jar") }?.size ?: 0
+                println("✓ 独立版本 JAR 已复制到 fabricWrapper/build/libs/ (共 $count 个)")
+            } else {
+                println("⚠ 未找到独立版本源目录: ${standaloneSource.absolutePath}")
+            }
         }
     }
 }
