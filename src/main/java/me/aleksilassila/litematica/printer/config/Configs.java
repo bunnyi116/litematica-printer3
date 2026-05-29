@@ -13,9 +13,9 @@ import fi.dy.masa.malilib.util.data.json.JsonUtils;
 import fi.dy.masa.malilib.util.restrictions.UsageRestriction;
 import fi.dy.masa.malilib.config.ConfigManager;
 import me.aleksilassila.litematica.printer.Reference;
-import me.aleksilassila.litematica.printer.enums.*;
+import me.aleksilassila.litematica.printer.config.enums.*;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
-import me.aleksilassila.litematica.printer.gui.ConfigUi;
+import me.aleksilassila.litematica.printer.render.gui.masa.ConfigUi;
 import net.minecraft.world.level.block.Blocks;
 
 import java.io.File;

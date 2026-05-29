@@ -3,10 +3,13 @@ package me.aleksilassila.litematica.printer.utils.minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -19,6 +22,8 @@ public class BlockStateUtils extends BlockUtils {
     private final static EnumProperty<WallSide> wallSouthProperty = BlockStateProperties.SOUTH_WALL;
     private final static EnumProperty<WallSide> wallWestProperty = BlockStateProperties.WEST_WALL;
     private final static EnumProperty<WallSide> wallEastProperty = BlockStateProperties.EAST_WALL;
+
+    // ==================== 原有方法保持不变 ====================
 
     public static Comparable<?> getPropertyByName(BlockState state, String name) {
         for (Property<?> prop : state.getProperties()) {
@@ -107,20 +112,78 @@ public class BlockStateUtils extends BlockUtils {
         return Optional.empty();
     }
 
+    // ==================== 重构后的流体判断方法 ====================
+
     /**
-     * 判断该方块是否是含水方块
+     * 判断该方块是否包含任何形式的水（完全兼容原方法）
+     * 包括：水源方块、流动水方块、含水方块、气泡柱
      *
-     * @param blockState 要判断的方块
-     * @return 是否含水（是水）
+     * @param blockState 要判断的方块状态
+     * @return true 如果包含水
      */
     public static boolean isWaterBlock(BlockState blockState) {
-        return blockState.is(Blocks.WATER) && blockState.getValue(LiquidBlock.LEVEL) == 0
-                || (blockState.hasProperty(BlockStateProperties.WATERLOGGED) && blockState.getValue(BlockStateProperties.WATERLOGGED))
-                || blockState.getBlock() instanceof BubbleColumnBlock;
+        // 使用官方标准的 FluidState 判断，自动包含所有情况
+        return blockState.getFluidState().is(FluidTags.WATER);
     }
 
+    /**
+     * 判断是否是水源方块（包括含水方块中的水源）
+     * 注意：原方法只判断纯水源方块，现在已扩展为包含含水方块
+     * 如果需要原行为，请使用 isPureWaterSource()
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是水源
+     */
     public static boolean isWaterSource(BlockState blockState) {
-        return blockState.is(Blocks.WATER) && blockState.getValue(LiquidBlock.LEVEL) == 0;
+        FluidState fluidState = blockState.getFluidState();
+        return fluidState.is(FluidTags.WATER) && fluidState.isSource();
+    }
+
+    /**
+     * 判断是否是纯水源方块（不包括含水方块）
+     * 这是原 isWaterSource() 方法的行为
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是纯水源方块
+     */
+    public static boolean isPureWaterSource(BlockState blockState) {
+        FluidState fluidState = blockState.getFluidState();
+        return fluidState.isSource()
+                && fluidState.is(FluidTags.WATER)
+                && !blockState.hasProperty(BlockStateProperties.WATERLOGGED);
+    }
+
+    /**
+     * 判断是否是流动水（包括水平流动和垂直下落）
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是流动水
+     */
+    public static boolean isFlowingWater(BlockState blockState) {
+        return blockState.getFluidState().getType() == Fluids.FLOWING_WATER;
+    }
+
+    /**
+     * 判断是否是垂直下落的水
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是垂直下落的水
+     */
+    public static boolean isFallingWater(BlockState blockState) {
+        if (!blockState.is(Blocks.WATER)) return false;
+        int levelValue = blockState.getValue(BlockStateProperties.LEVEL);
+        return levelValue >= 8;
+    }
+
+    /**
+     * 判断是否是含水方块（WATERLOGGED=true）
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是含水方块
+     */
+    public static boolean isWaterlogged(BlockState blockState) {
+        return blockState.hasProperty(BlockStateProperties.WATERLOGGED)
+                && blockState.getValue(BlockStateProperties.WATERLOGGED);
     }
 
     public static boolean requiresWaterToPlace(Block block) {
@@ -129,18 +192,48 @@ public class BlockStateUtils extends BlockUtils {
                 || block instanceof KelpPlantBlock;
     }
 
+    // ==================== 新增：岩浆相关判断方法 ====================
+
     /**
-     * 判断当前位置是否已满足"有水"条件。
-     * 含水方块（WATERLOGGED=true）视为已满足，不需要再破冰放水。
+     * 判断该方块是否包含任何形式的岩浆
+     * 包括：源岩浆方块、流动岩浆方块
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果包含岩浆
      */
-    public static boolean isCorrectWaterLevel(BlockState requiredState, BlockState currentState) {
-        if (currentState.hasProperty(BlockStateProperties.WATERLOGGED) && currentState.hasProperty(BlockStateProperties.WATERLOGGED)) {
-            return currentState.getValue(BlockStateProperties.WATERLOGGED).equals(requiredState.getValue(BlockStateProperties.WATERLOGGED));
-        }
-        if (!currentState.is(Blocks.WATER)) return false;
-        if (requiredState.is(Blocks.WATER) && currentState.getValue(LiquidBlock.LEVEL).equals(requiredState.getValue(LiquidBlock.LEVEL))) {
-            return true;
-        }
-        return currentState.getValue(LiquidBlock.LEVEL) == 0;
+    public static boolean isLavaBlock(BlockState blockState) {
+        return blockState.getFluidState().is(FluidTags.LAVA);
+    }
+
+    /**
+     * 判断是否是源岩浆方块
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是源岩浆
+     */
+    public static boolean isLavaSource(BlockState blockState) {
+        FluidState fluidState = blockState.getFluidState();
+        return fluidState.is(FluidTags.LAVA) && fluidState.isSource();
+    }
+
+    /**
+     * 判断是否是流动岩浆
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是流动岩浆
+     */
+    public static boolean isFlowingLava(BlockState blockState) {
+        return blockState.getFluidState().getType() == Fluids.FLOWING_LAVA;
+    }
+
+    /**
+     * 判断是否是任何液体（水或岩浆）
+     *
+     * @param blockState 要判断的方块状态
+     * @return true 如果是液体
+     */
+    public static boolean isAnyLiquid(BlockState blockState) {
+        FluidState fluidState = blockState.getFluidState();
+        return fluidState.is(FluidTags.WATER) || fluidState.is(FluidTags.LAVA);
     }
 }

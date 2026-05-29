@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.utils.mods;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.enums.QuickShulkerModeType;
+import me.aleksilassila.litematica.printer.config.enums.QuickShulkerModeType;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import net.kyrptonaught.quickshulker.client.ClientUtil;

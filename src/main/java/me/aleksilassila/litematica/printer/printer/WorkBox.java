@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.printer;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.aleksilassila.litematica.printer.enums.IterationOrderType;
+import me.aleksilassila.litematica.printer.config.enums.IterationOrderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.NotNull;

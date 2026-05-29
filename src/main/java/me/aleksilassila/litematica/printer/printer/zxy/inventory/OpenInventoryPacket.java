@@ -5,7 +5,7 @@ import io.netty.buffer.Unpooled;
 import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.I18n;
-import me.aleksilassila.litematica.printer.module.Modules;
+import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.IdentifierUtils;
@@ -393,7 +393,7 @@ public class OpenInventoryPacket {
             ModLoadUtils.closeScreen--;
             openIng = false;
             isOpenHandler = false;
-            Modules.PRINT.setPrinterMemorySync(false);
+            ModuleManager.PRINT.setPrinterMemorySync(false);
             key = null;
             pos = null;
         }

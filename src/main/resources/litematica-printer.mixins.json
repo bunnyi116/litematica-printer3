@@ -18,13 +18,13 @@
     "printer.litematica.MixinInventoryUtils",
     "printer.malilib.config.MixinConfigBase",
     "printer.malilib.config.MixinIConfigBase",
-    "printer.mc.MixinBlockItem",
-    "printer.mc.MixinConnection",
-    "printer.mc.MixinGui",
+    "printer.mc.BlockItemMixin",
+    "printer.mc.ConnectionMixin",
+    "printer.mc.GuiMixin",
     "printer.mc.MixinServerboundMovePlayerPacket"
   ],
   "client": [
-    "MinecraftAccessor",
+    "printer.mc.MinecraftAccessor",
     "MixinClientPacketListener",
     "jackf.ChestTrackerScreenMixin",
     "jackf.EditMemoryBankScreenMixin",
@@ -48,11 +48,11 @@
     "printer.litematica.gui.MixinLitematicaGuiMainMenu",
     "printer.malilib.MixinAbstractCraftingMenu",
     "printer.malilib.MixinGuiStringListEdit",
-    "printer.mc.MixinClientLevel",
-    "printer.mc.MixinClientPacketListener",
-    "printer.mc.MixinGui",
-    "printer.mc.MixinLocalPlayer",
-    "printer.mc.MixinMultiPlayerGameMode"
+    "printer.mc.ClientLevelMixin",
+    "printer.mc.ClientPacketListenerMixin",
+    "printer.mc.GuiMixin",
+    "printer.mc.LocalPlayerMixin",
+    "printer.mc.MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

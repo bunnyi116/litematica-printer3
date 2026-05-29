@@ -6,14 +6,15 @@ import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.enums.*;
+import me.aleksilassila.litematica.printer.config.enums.IterationOrderType;
+import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkingModeType;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.WorkBox;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.SimpleCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
-import me.aleksilassila.litematica.printer.utils.minecraft.PlayerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -46,7 +47,7 @@ public abstract class Module extends ConfigUtils {
     @Nullable
     private final ConfigOptionList selectionType;
     private final AtomicReference<Boolean> skipIteration = new AtomicReference<>(false);
-    private final Queue<GuiDebugBlockInfo> debugGuiDebugBlockInfoQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<ModuleDebug> debugModuleDebugQueue = new ConcurrentLinkedQueue<>();
 
     protected Minecraft mc;
     protected ClientLevel level;
@@ -94,13 +95,13 @@ public abstract class Module extends ConfigUtils {
 
     public void tick() {
         if (!SimpleCooldownUtils.INSTANCE.isOnCooldown("debug_gui_block_info")) {
-            this.debugGuiDebugBlockInfoQueue.clear();
+            this.debugModuleDebugQueue.clear();
             this.renderIndex = 0;
         }
 
         int tickInterval = this.getTickWorkInterval(); // 工作间隔
         if (tickInterval > 0) {
-            long currentTickTime = Modules.getCurrentHandlerTime();
+            long currentTickTime = ModuleManager.getCurrentHandlerTime();
             if (this.lastTickTime != -1L) {
                 // 非首次执行
                 if (currentTickTime - this.lastTickTime < tickInterval) {
@@ -121,7 +122,8 @@ public abstract class Module extends ConfigUtils {
         // 更新迭代范围
         if (this.playerInteractionBox != null) {
             BlockPos playerPos = this.player.blockPosition();
-            double threshold = getWorkRange() * 0.7; // 玩家移动阈值：工作范围的70%
+            int workRange = getWorkRange();
+            double threshold = workRange * 0.7; // 玩家移动阈值：工作范围的70%
             @Nullable WorkBox playerInteractionBox = this.playerInteractionBox.get();
             if (playerInteractionBox == null
                     || !playerInteractionBox.equals(this.lastPlayerInteractionBox)
@@ -129,12 +131,6 @@ public abstract class Module extends ConfigUtils {
                     || !this.lastPlayerPos.closerThan(playerPos, threshold)
             ) {
                 this.lastPlayerPos = playerPos;
-                int workRange;
-                if (Configs.Core.CHECK_PLAYER_INTERACTION_RANGE.getBooleanValue()) {
-                    workRange = (int) Math.ceil(PlayerUtils.getPlayerBlockInteractionRange(5) + 3);
-                } else {
-                    workRange = getWorkRange();
-                }
                 playerInteractionBox = new WorkBox(playerPos, workRange);
                 this.lastPlayerInteractionBox = playerInteractionBox;
                 this.playerInteractionBox.set(playerInteractionBox);
@@ -161,7 +157,7 @@ public abstract class Module extends ConfigUtils {
                 int totalIterCount = 0;
                 int effectiveExecCount = 0;
                 this.skipIteration.set(false);
-                this.debugGuiDebugBlockInfoQueue.clear(); // 重置渲染信息
+                this.debugModuleDebugQueue.clear(); // 重置渲染信息
                 this.renderIndex = 0;   // 重置渲染信息
                 for (BlockPos pos : playerInteractionBox) {
                     // 单Tick迭代次数限制：达到最大次数则终止循环（防主线程阻塞）
@@ -174,12 +170,12 @@ public abstract class Module extends ConfigUtils {
                         break;
                     }
                     if (pos == null) continue;
-                    GuiDebugBlockInfo gui;
+                    ModuleDebug gui;
                     if (isSchematicBlockHandler()) {
                         WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
-                        gui = new GuiDebugBlockInfo(level, schematic, pos);
+                        gui = new ModuleDebug(level, schematic, pos);
                     } else {
-                        gui = new GuiDebugBlockInfo(level, null, pos);
+                        gui = new ModuleDebug(level, null, pos);
                     }
                     // 仅调试时候加入队列, 避免队列储存无用位置信息
                     if (Configs.Core.DEBUG_OUTPUT.getBooleanValue()) {
@@ -231,45 +227,45 @@ public abstract class Module extends ConfigUtils {
     }
 
 
-    private void addDebugGuiBlockInfoToQueue(GuiDebugBlockInfo guiDebugBlockInfo) {
-        if (guiDebugBlockInfo != null) {
-            this.debugGuiDebugBlockInfoQueue.add(guiDebugBlockInfo);
+    private void addDebugGuiBlockInfoToQueue(ModuleDebug moduleDebug) {
+        if (moduleDebug != null) {
+            this.debugModuleDebugQueue.add(moduleDebug);
             SimpleCooldownUtils.INSTANCE.setCooldown("debug_gui_block_info", 20);
         }
     }
 
     @Nullable
-    public GuiDebugBlockInfo getCurrentRenderGuiBlockInfo() {
-        if (debugGuiDebugBlockInfoQueue.isEmpty()) {
+    public ModuleDebug getCurrentRenderGuiBlockInfo() {
+        if (debugModuleDebugQueue.isEmpty()) {
             return null;
         }
-        GuiDebugBlockInfo[] infoArray = debugGuiDebugBlockInfoQueue.toArray(new GuiDebugBlockInfo[0]);
+        ModuleDebug[] infoArray = debugModuleDebugQueue.toArray(new ModuleDebug[0]);
         // 渲染索引超出队列长度时，返回最后一个元素并重置索引
         if (renderIndex >= infoArray.length) {
             renderIndex = 0; // 循环展示（可选：也可返回null）
             return infoArray[infoArray.length - 1];
         }
         // 获取当前帧的信息并推进索引
-        GuiDebugBlockInfo currentInfo = infoArray[renderIndex];
+        ModuleDebug currentInfo = infoArray[renderIndex];
         renderIndex++;
         return currentInfo;
     }
 
     @Nullable
-    public GuiDebugBlockInfo getGuiBlockInfo() {
-        if (debugGuiDebugBlockInfoQueue.isEmpty()) {
+    public ModuleDebug getGuiBlockInfo() {
+        if (debugModuleDebugQueue.isEmpty()) {
             return null;
         }
         // 返回队列最后一个元素（兼容原有逻辑）
-        return ((GuiDebugBlockInfo[]) debugGuiDebugBlockInfoQueue.toArray(new GuiDebugBlockInfo[0]))[debugGuiDebugBlockInfoQueue.size() - 1];
+        return ((ModuleDebug[]) debugModuleDebugQueue.toArray(new ModuleDebug[0]))[debugModuleDebugQueue.size() - 1];
     }
 
-    public void setGuiBlockInfo(@Nullable GuiDebugBlockInfo guiDebugBlockInfo) {
-        this.addDebugGuiBlockInfoToQueue(guiDebugBlockInfo);
+    public void setGuiBlockInfo(@Nullable ModuleDebug moduleDebug) {
+        this.addDebugGuiBlockInfoToQueue(moduleDebug);
     }
 
     public int getGuiBlockInfoQueueSize() {
-        return debugGuiDebugBlockInfoQueue.size();
+        return debugModuleDebugQueue.size();
     }
 
     private boolean isConfigAllowExecute() {

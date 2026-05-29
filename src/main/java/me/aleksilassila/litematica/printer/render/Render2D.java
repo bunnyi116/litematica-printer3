@@ -1,10 +1,10 @@
 package me.aleksilassila.litematica.printer.render;
 
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.enums.WorkingModeType;
-import me.aleksilassila.litematica.printer.module.GuiDebugBlockInfo;
+import me.aleksilassila.litematica.printer.config.enums.WorkingModeType;
+import me.aleksilassila.litematica.printer.module.ModuleDebug;
 import me.aleksilassila.litematica.printer.module.Module;
-import me.aleksilassila.litematica.printer.module.Modules;
+import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.module.modules.GuiModule;
 import me.aleksilassila.litematica.printer.module.modules.PrintModule;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * 统一的 2D 渲染管理器，负责所有调试信息和 HUD 的绘制。
- * 由 MixinGui 在每帧调用 render() 方法触发。
+ * 由 GuiMixin 在每帧调用 render() 方法触发。
  */
 public class Render2D {
     public static final Render2D INSTANCE = new Render2D();
@@ -59,8 +59,8 @@ public class Render2D {
         int globalMaxTextWidth = MIN_COLUMN_WIDTH;
 
         // 1. 收集有效 Handler 并计算全局最大宽度
-        for (Module handler : Modules.VALUES) {
-            GuiDebugBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
+        for (Module handler : ModuleManager.VALUES) {
+            ModuleDebug guiInfo = handler.getCurrentRenderGuiBlockInfo();
             if (guiInfo == null) continue;
 
             validHandlers.add(handler);
@@ -118,7 +118,7 @@ public class Render2D {
 
         for (int i = startIndex; i < handlers.size(); i++) {
             Module handler = handlers.get(i);
-            GuiDebugBlockInfo guiInfo = handler.getCurrentRenderGuiBlockInfo();
+            ModuleDebug guiInfo = handler.getCurrentRenderGuiBlockInfo();
             if (guiInfo == null) continue;
 
             List<String> debugLines = buildHandlerDebugLines(handler, guiInfo);
@@ -162,8 +162,8 @@ public class Render2D {
 
     private int drawCommonDebugInfo(int startX, int startY) {
         List<String> commonLines = new ArrayList<>();
-        commonLines.add("全局Tick: " + Modules.getCurrentHandlerTime());
-        commonLines.add("活跃Handler数: " + Modules.VALUES.size());
+        commonLines.add("全局Tick: " + ModuleManager.getCurrentHandlerTime());
+        commonLines.add("活跃Handler数: " + ModuleManager.VALUES.size());
 
         Minecraft mc = Minecraft.getInstance();
         int maxWidth = 0;
@@ -190,7 +190,7 @@ public class Render2D {
         return startY + bgHeight;
     }
 
-    private List<String> buildHandlerDebugLines(Module handler, GuiDebugBlockInfo guiInfo) {
+    private List<String> buildHandlerDebugLines(Module handler, ModuleDebug guiInfo) {
         List<String> lines = new ArrayList<>();
         lines.add("处理类型: " + handler.getId());
         lines.add("当前位置: " + guiInfo.pos.toShortString());
@@ -218,14 +218,14 @@ public class Render2D {
     private void drawHudInfo(float scaledWidth, float scaledHeight) {
         int centerX = (int) (scaledWidth / 2);
         int centerY = (int) (scaledHeight / 2);
-        GuiModule guiModule = Modules.GUI;
+        GuiModule guiModule = ModuleManager.GUI;
 
         // ====================== 统一 Y 基准（核心改动） ======================
         int y = centerY;
 
         // 1. 延迟过大警告（向上偏移）
         if (Configs.Core.LAG_CHECK.getBooleanValue() &&
-                Modules.getPacketTick() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
+                ModuleManager.getPacketTick() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
             y += 22;
             Render2DUtils.drawString("延迟过大，已暂停运行", centerX, y - 22, Color.ORANGE, true, true);
         }
@@ -248,7 +248,7 @@ public class Render2D {
             Render2DUtils.drawString(modeName, centerX, y, Color.WHITE, true, true);
         } else {
             HashSet<String> modeNames = new HashSet<>();
-            for (Module handler : Modules.VALUES) {
+            for (Module handler : ModuleManager.VALUES) {
                 if (handler.getId().equals(GuiModule.NAME) ||
                         handler.getEnableConfig() == null ||
                         !handler.getEnableConfig().getBooleanValue()) {
@@ -260,7 +260,7 @@ public class Render2D {
         }
 
 
-        PrintModule printModule = Modules.PRINT;
+        PrintModule printModule = ModuleManager.PRINT;
         SchematicBlockContext printContext = printModule.getContext();
         if (printContext != null) {
             Minecraft mc = Minecraft.getInstance();
