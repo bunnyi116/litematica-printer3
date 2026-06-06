@@ -45,7 +45,7 @@ public class GuiModule extends Module {
     }
 
     @Override
-    protected void preprocess() {
+    protected void onPreprocess() {
         // 只有上一帧正常完成了（没中断），这一帧才重置统计
         if (!lastTickInterrupted) {
             for (Progress progress : progresses) {
@@ -55,7 +55,7 @@ public class GuiModule extends Module {
     }
 
     @Override
-    protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         this.blockPos = blockPos;
         if (ConfigUtils.isPrintMode()) {
             WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
@@ -84,7 +84,7 @@ public class GuiModule extends Module {
     }
 
     @Override
-    protected void stopIteration(boolean interrupt) {
+    protected void onIterationEnd(boolean interrupt) {
         this.lastTickInterrupted = interrupt;
         if (!interrupt) {
             for (Progress progress : progresses) {

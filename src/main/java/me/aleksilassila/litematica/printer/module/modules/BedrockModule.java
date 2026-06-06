@@ -46,7 +46,7 @@ public class BedrockModule extends Module {
     }
 
     @Override
-    protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         BedrockUtils.addToBreakList(blockPos, client.level);
         setBlockPosCooldown(blockPos, 100);
     }

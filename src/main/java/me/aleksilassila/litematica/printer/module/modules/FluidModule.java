@@ -44,7 +44,7 @@ public class FluidModule extends Module {
     }
 
     @Override
-    protected void preprocess() {
+    protected void onPreprocess() {
         // 填充方块
         List<String> fileBlocks = Configs.Fluid.FLUID_REPLACE_BLOCK_LIST.getStrings();
         if (!fileBlocks.equals(fillBlocks)) {
@@ -77,7 +77,7 @@ public class FluidModule extends Module {
     }
 
     @Override
-    protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         FluidState fluidState = level.getBlockState(blockPos).getFluidState();
         if (fluids.contains(fluidState.getType())) {
             if (!Configs.Fluid.FILL_FLOWING_FLUID.getBooleanValue() && !fluidState.isSource()) {

@@ -47,7 +47,7 @@ public class FillModule extends Module {
     }
 
     @Override
-    protected void preprocess() {
+    protected void onPreprocess() {
         FillBlockModeType fillMode = (FillBlockModeType) Configs.Fill.FILL_BLOCK_MODE.getOptionListValue();
         switch (fillMode) {
             case BLOCKLIST:
@@ -97,7 +97,7 @@ public class FillModule extends Module {
     }
 
     @Override
-    protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         if (Configs.Placement.FALLING_CHECK.getBooleanValue() &&
                 player.getMainHandItem().getItem() instanceof BlockItem item &&
                 item.getBlock() instanceof FallingBlock block &&

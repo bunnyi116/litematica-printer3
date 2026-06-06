@@ -76,7 +76,7 @@ public class MineModule extends Module {
     }
 
     @Override
-    protected void executeIteration(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         BlockBreakResult result = InteractionUtils.INSTANCE.continueDestroyBlock(blockPos);
         this.setBlockPosCooldown(blockPos, getBreakCooldown());
         if (result == BlockBreakResult.IN_PROGRESS) {
