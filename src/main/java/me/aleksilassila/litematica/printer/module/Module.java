@@ -1,7 +1,5 @@
 package me.aleksilassila.litematica.printer.module;
 
-import fi.dy.masa.litematica.world.SchematicWorldHandler;
-import fi.dy.masa.litematica.world.WorldSchematic;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
@@ -13,7 +11,6 @@ import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.WorkBox;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
-import me.aleksilassila.litematica.printer.utils.SimpleCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,58 +24,50 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class Module extends ConfigUtils {
-    @Getter
-    @Nullable
-    public final AtomicReference<WorkBox> playerInteractionBox;
-    @Getter
-    private final String id;
-    @Getter
-    @Nullable
-    private final WorkSingleMode workSingleMode;
-    @Getter
-    @Nullable
-    private final ConfigBoolean enableConfig;
-    @Getter
-    @Nullable
-    private final ConfigOptionList selectionType;
-    private final AtomicReference<Boolean> skipIteration = new AtomicReference<>(false);
-    private final Queue<ModuleDebug> debugModuleDebugQueue = new ConcurrentLinkedQueue<>();
-
+    // 为实现类预制了一些常用的MC变量
     protected Minecraft mc;
     protected ClientLevel level;
     protected LocalPlayer player;
     protected ClientPacketListener connection;
     protected MultiPlayerGameMode gameMode;
     protected GameType gameType;
-    @Nullable
-    protected HitResult hitResult;
-    @Nullable
-    protected BlockHitResult blockHitResult;
-    @Nullable
-    private WorkBox lastPlayerInteractionBox;
+    protected @Nullable HitResult hitResult;
+    protected @Nullable BlockHitResult blockHitResult;
 
-    @Nullable
-    private BlockPos lastPlayerPos;
+    @Getter
+    protected final String id;
+
+    @Getter
+    protected final @Nullable AtomicReference<WorkBox> currentWorkBox;
+    private @Nullable WorkBox lastWorkBox;
+    private @Nullable BlockPos lastPlayerPos;
+
+    @Getter
+    protected final @Nullable ConfigBoolean enable;
+
+    @Getter
+    private final @Nullable WorkSingleMode workSingleMode;
+
+    @Getter
+    private final @Nullable ConfigOptionList selectionType;
+
+    private final AtomicReference<Boolean> skipIteration = new AtomicReference<>(false);
 
     private long lastTickTime = -1L;
-    @Getter
-    private int renderIndex = 0;
 
-    protected Module(String id, @Nullable WorkSingleMode workSingleMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
+    protected Module(String id, @Nullable WorkSingleMode workSingleMode, @Nullable ConfigBoolean enable, @Nullable ConfigOptionList selectionType, boolean useBox) {
         this.id = id;
         this.workSingleMode = workSingleMode;
-        this.enableConfig = enableConfig;
+        this.enable = enable;
         this.selectionType = selectionType;
-        this.playerInteractionBox = useBox ? new AtomicReference<>() : null;
+        this.currentWorkBox = useBox ? new AtomicReference<>() : null;
         this.updateVariables();
     }
 
-    protected void updateVariables() {
+    protected boolean updateVariables() {
         this.mc = Minecraft.getInstance();
         this.level = mc.level;
         this.player = mc.player;
@@ -91,14 +80,10 @@ public abstract class Module extends ConfigUtils {
         } else {
             this.blockHitResult = null;
         }
+        return this.mc != null && this.level != null && this.player != null && this.connection != null && this.gameMode != null && this.gameType != null;
     }
 
     public void tick() {
-        if (!SimpleCooldownUtils.INSTANCE.isOnCooldown("debug_gui_block_info")) {
-            this.debugModuleDebugQueue.clear();
-            this.renderIndex = 0;
-        }
-
         int tickInterval = this.getTickWorkInterval(); // 工作间隔
         if (tickInterval > 0) {
             long currentTickTime = ModuleManager.getCurrentHandlerTime();
@@ -114,26 +99,25 @@ public abstract class Module extends ConfigUtils {
             this.lastPlayerPos = null;
             return;
         }
-        this.updateVariables();
-        if (this.mc == null || this.level == null || this.player == null || this.connection == null || this.gameMode == null || this.gameType == null) {
+        if (!this.updateVariables()) {
             this.lastPlayerPos = null;
             return;
         }
         // 更新迭代范围
-        if (this.playerInteractionBox != null) {
+        if (this.currentWorkBox != null) {
             BlockPos playerPos = this.player.blockPosition();
             int workRange = getWorkRange();
             double threshold = workRange * 0.7; // 玩家移动阈值：工作范围的70%
-            @Nullable WorkBox playerInteractionBox = this.playerInteractionBox.get();
+            @Nullable WorkBox playerInteractionBox = this.currentWorkBox.get();
             if (playerInteractionBox == null
-                    || !playerInteractionBox.equals(this.lastPlayerInteractionBox)
+                    || !playerInteractionBox.equals(this.lastWorkBox)
                     || this.lastPlayerPos == null
                     || !this.lastPlayerPos.closerThan(playerPos, threshold)
             ) {
                 this.lastPlayerPos = playerPos;
                 playerInteractionBox = new WorkBox(playerPos, workRange);
-                this.lastPlayerInteractionBox = playerInteractionBox;
-                this.playerInteractionBox.set(playerInteractionBox);
+                this.lastWorkBox = playerInteractionBox;
+                this.currentWorkBox.set(playerInteractionBox);
             }
             // 同步交互盒的迭代配置：从全局配置读取迭代顺序、方向等
             playerInteractionBox.setIterationMode((IterationOrderType) Configs.Core.ITERATION_ORDER.getOptionListValue());
@@ -141,15 +125,16 @@ public abstract class Module extends ConfigUtils {
             playerInteractionBox.setYIncrement(!Configs.Core.Y_REVERSE.getBooleanValue());
             playerInteractionBox.setZIncrement(!Configs.Core.Z_REVERSE.getBooleanValue());
         }
-        this.preprocess(); // 运行前处理的事情
-        if (!this.isConfigAllowExecute()) {
+        this.onPreprocess(); // 运行前处理的事情
+        if (!this.isAllowConfigExecute()) {
             this.lastPlayerPos = null;
             return;
         }
         boolean interrupt = false;
         // 执行迭代业务任务：基于玩家交互盒的方块迭代处理（防主线程阻塞）
-        if (this.playerInteractionBox != null && this.canExecute()) {
-            WorkBox playerInteractionBox = this.playerInteractionBox.get();
+        if (this.currentWorkBox != null && this.canExecute()) {
+            this.onIterationStart();
+            WorkBox playerInteractionBox = this.currentWorkBox.get();
             // 交互盒非空且满足迭代执行条件时，执行迭代逻辑
             if (playerInteractionBox != null && canIterate()) {
                 int maxEffectiveExec = this.getMaxEffectiveExecutionsPerTick();
@@ -157,8 +142,7 @@ public abstract class Module extends ConfigUtils {
                 int totalIterCount = 0;
                 int effectiveExecCount = 0;
                 this.skipIteration.set(false);
-                this.debugModuleDebugQueue.clear(); // 重置渲染信息
-                this.renderIndex = 0;   // 重置渲染信息
+                // 开始迭代方块
                 for (BlockPos pos : playerInteractionBox) {
                     // 单Tick迭代次数限制：达到最大次数则终止循环（防主线程阻塞）
                     if (maxTotalIter > 0 && ++totalIterCount >= maxTotalIter) {
@@ -170,23 +154,6 @@ public abstract class Module extends ConfigUtils {
                         break;
                     }
                     if (pos == null) continue;
-                    ModuleDebug gui;
-                    if (isSchematicBlockHandler()) {
-                        WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
-                        gui = new ModuleDebug(level, schematic, pos);
-                    } else {
-                        gui = new ModuleDebug(level, null, pos);
-                    }
-                    // 仅调试时候加入队列, 避免队列储存无用位置信息
-                    if (Configs.Core.DEBUG_OUTPUT.getBooleanValue()) {
-                        this.addDebugGuiBlockInfoToQueue(gui);
-                    }
-                    if (ConfigUtils.canInteracted(pos)) {
-                        gui.interacted = true;
-                    } else {
-                        gui.interacted = false;
-                        continue;
-                    }
                     if (isSchematicBlockHandler()) {
                         if (!LitematicaUtils.isSchematicBlock(pos)) {
                             continue;
@@ -195,14 +162,11 @@ public abstract class Module extends ConfigUtils {
                         continue;
                     }
                     if (selectionType != null && !ConfigUtils.isPositionInSelectionRange(player, pos, selectionType)) {
-                        gui.posInSelectionRange = false;
                         continue;
                     }
-                    gui.posInSelectionRange = true;
                     // 方块迭代权限校验：子类可重写实现自定义过滤逻辑
                     if (this.canIterationBlockPos(pos) && !isBlockPosOnCooldown(pos)) {
-                        this.executeIteration(pos, this.skipIteration);
-                        gui.execute = true;
+                        this.executeIterationBlockPos(pos, this.skipIteration);
                         if (this.skipIteration.get() || maxEffectiveExec > 0 && ++effectiveExecCount >= maxEffectiveExec) {
                             interrupt = true;
                         }
@@ -211,7 +175,7 @@ public abstract class Module extends ConfigUtils {
                         break;
                     }
                 }
-                stopIteration(interrupt);
+                this.onIterationEnd(interrupt);
             }
         }
         if (!interrupt) {
@@ -219,71 +183,35 @@ public abstract class Module extends ConfigUtils {
         }
     }
 
-    protected void stopIteration(boolean interrupt) {
+    protected void onIterationEnd(boolean interrupt) {
+    }
+
+    protected void onIterationStart() {
+    }
+
+    protected void onPreprocess() {
     }
 
     protected boolean isSchematicBlockHandler() {
         return false;
     }
 
-
-    private void addDebugGuiBlockInfoToQueue(ModuleDebug moduleDebug) {
-        if (moduleDebug != null) {
-            this.debugModuleDebugQueue.add(moduleDebug);
-            SimpleCooldownUtils.INSTANCE.setCooldown("debug_gui_block_info", 20);
-        }
-    }
-
-    @Nullable
-    public ModuleDebug getCurrentRenderGuiBlockInfo() {
-        if (debugModuleDebugQueue.isEmpty()) {
-            return null;
-        }
-        ModuleDebug[] infoArray = debugModuleDebugQueue.toArray(new ModuleDebug[0]);
-        // 渲染索引超出队列长度时，返回最后一个元素并重置索引
-        if (renderIndex >= infoArray.length) {
-            renderIndex = 0; // 循环展示（可选：也可返回null）
-            return infoArray[infoArray.length - 1];
-        }
-        // 获取当前帧的信息并推进索引
-        ModuleDebug currentInfo = infoArray[renderIndex];
-        renderIndex++;
-        return currentInfo;
-    }
-
-    @Nullable
-    public ModuleDebug getGuiBlockInfo() {
-        if (debugModuleDebugQueue.isEmpty()) {
-            return null;
-        }
-        // 返回队列最后一个元素（兼容原有逻辑）
-        return ((ModuleDebug[]) debugModuleDebugQueue.toArray(new ModuleDebug[0]))[debugModuleDebugQueue.size() - 1];
-    }
-
-    public void setGuiBlockInfo(@Nullable ModuleDebug moduleDebug) {
-        this.addDebugGuiBlockInfoToQueue(moduleDebug);
-    }
-
-    public int getGuiBlockInfoQueueSize() {
-        return debugModuleDebugQueue.size();
-    }
-
-    private boolean isConfigAllowExecute() {
+    private boolean isAllowConfigExecute() {
         // 全局打印机功能未启用，直接禁止所有处理器执行
         if (!ConfigUtils.isEnable()) {
             return false;
         }
         // 处理器绑定了模式和配置，按当前游戏模式校验
-        if (this.workSingleMode != null && this.enableConfig != null) {
+        if (this.workSingleMode != null && this.enable != null) {
             WorkMode modeType = (WorkMode) Configs.Core.WORK_MODE.getOptionListValue();
             return switch (modeType) {
                 case SINGLE -> Configs.Core.WORK_MODE_TYPE.getOptionListValue().equals(this.workSingleMode);
-                case MULTI -> this.enableConfig.getBooleanValue();
+                case MULTI -> this.enable.getBooleanValue();
             };
         }
         // 仅绑定了启用配置，直接校验配置是否启用
-        if (this.enableConfig != null) {
-            return this.enableConfig.getBooleanValue();
+        if (this.enable != null) {
+            return this.enable.getBooleanValue();
         }
         // 无任何配置绑定，默认允许执行（由全局配置控制）
         return true;
@@ -301,9 +229,6 @@ public abstract class Module extends ConfigUtils {
         return Configs.Core.ITERATOR_TOTAL_PER_TICK.getIntegerValue();
     }
 
-    protected void preprocess() {
-    }
-
     protected boolean canExecute() {
         return true;
     }
@@ -316,7 +241,7 @@ public abstract class Module extends ConfigUtils {
         return true;
     }
 
-    protected void executeIteration(BlockPos pos, AtomicReference<Boolean> skipIteration) {
+    protected void executeIterationBlockPos(BlockPos pos, AtomicReference<Boolean> skipIteration) {
     }
 
     public boolean isBlockPosOnCooldown(@Nullable BlockPos pos) {
