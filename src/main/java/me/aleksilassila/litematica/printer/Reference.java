@@ -64,8 +64,6 @@ public class Reference {
             CartographyTableBlock.class,    // 制图台
             GrindstoneBlock.class,          // 砂轮
             StonecutterBlock.class,         // 切石机
-            SmokerBlock.class,              // 烟熏炉
-            BlastFurnaceBlock.class,        // 高炉
             SignBlock.class,                // 告示牌（右键打开编辑界面）
             //#if MC < 12109
             //$$ FletchingTableBlock.class, // 制箭台
