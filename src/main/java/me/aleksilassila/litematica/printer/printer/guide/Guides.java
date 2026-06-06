@@ -1,6 +1,5 @@
 package me.aleksilassila.litematica.printer.printer.guide;
 
-import me.aleksilassila.litematica.printer.guide.guides.*;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.guide.guides.*;

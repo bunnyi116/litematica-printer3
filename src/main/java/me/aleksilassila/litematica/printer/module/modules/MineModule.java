@@ -4,7 +4,7 @@ import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.restrictions.UsageRestriction;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.ExcavateListMode;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
@@ -24,7 +24,7 @@ public class MineModule extends Module {
     public final static String NAME = "mine";
 
     public MineModule() {
-        super(NAME, PrintModeType.MINE, Configs.Core.MINE, Configs.Mine.MINE_SELECTION_TYPE, true);
+        super(NAME, WorkSingleMode.MINE, Configs.Core.MINE, Configs.Mine.MINE_SELECTION_TYPE, true);
     }
 
     public static boolean mineRestriction(BlockState blockState) {

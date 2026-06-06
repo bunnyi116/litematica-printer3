@@ -3,13 +3,16 @@ package me.aleksilassila.litematica.printer.config.enums;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.config.ConfigOptionListEntry;
 
-public enum WorkingModeType implements ConfigOptionListEntry<WorkingModeType> {
-    MULTI("modeType.multi"),
-    SINGLE("modeType.single");
+/**
+ * 工作模式
+ */
+public enum WorkMode implements ConfigOptionListEntry<WorkMode> {
+    MULTI("workMode.multi"),
+    SINGLE("workMode.single");
 
     private final I18n i18n;
 
-    WorkingModeType(String translateKey) {
+    WorkMode(String translateKey) {
         this.i18n = I18n.of(translateKey);
     }
 

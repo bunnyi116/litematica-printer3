@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.module.modules;
 
 import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class BedrockModule extends Module {
     public BedrockModule() {
-        super("bedrock", PrintModeType.BEDROCK, Configs.Hotkeys.BEDROCK, null, true);
+        super("bedrock", WorkSingleMode.BEDROCK, Configs.Hotkeys.BEDROCK, null, true);
     }
 
     @Override

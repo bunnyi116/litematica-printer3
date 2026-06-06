@@ -1,7 +1,7 @@
 package me.aleksilassila.litematica.printer.render;
 
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.config.enums.WorkingModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkMode;
 import me.aleksilassila.litematica.printer.module.ModuleDebug;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.module.ModuleManager;
@@ -231,8 +231,8 @@ public class Render2D {
         }
 
         // 2. 单模式进度百分比（向下偏移）
-        WorkingModeType workMode = (WorkingModeType) Configs.Core.WORK_MODE.getOptionListValue();
-        if (workMode.equals(WorkingModeType.SINGLE)) {
+        WorkMode workMode = (WorkMode) Configs.Core.WORK_MODE.getOptionListValue();
+        if (workMode.equals(WorkMode.SINGLE)) {
             y += 22; // 百分比位置
             double progress = guiModule.getTotalProgress().getProgress();
             Render2DUtils.drawString((int) (progress * 100) + "%", centerX, y, Color.WHITE, true, true);

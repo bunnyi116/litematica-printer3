@@ -1,7 +1,7 @@
 package me.aleksilassila.litematica.printer.module.modules;
 
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
@@ -30,7 +30,7 @@ public class FluidModule extends Module {
     private List<Fluid> fluids = List.of(new Fluid[0]);
 
     public FluidModule() {
-        super(NAME, PrintModeType.FLUID, Configs.Core.FLUID, Configs.Fluid.FLUID_SELECTION_TYPE, true);
+        super(NAME, WorkSingleMode.FLUID, Configs.Core.FLUID, Configs.Fluid.FLUID_SELECTION_TYPE, true);
     }
 
     @Override

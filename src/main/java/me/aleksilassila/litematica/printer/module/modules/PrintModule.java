@@ -7,7 +7,7 @@ import lombok.Setter;
 import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.printer.guide.Guides;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
@@ -45,7 +45,7 @@ public class PrintModule extends Module {
     private SchematicBlockContext ctx;
 
     public PrintModule() {
-        super(NAME, PrintModeType.PRINTER, Configs.Core.PRINT, Configs.Print.PRINT_SELECTION_TYPE, true);
+        super(NAME, WorkSingleMode.PRINT, Configs.Core.PRINT, Configs.Print.PRINT_SELECTION_TYPE, true);
     }
 
     public SchematicBlockContext getContext() {

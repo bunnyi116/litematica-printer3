@@ -7,8 +7,8 @@ import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.IterationOrderType;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
-import me.aleksilassila.litematica.printer.config.enums.WorkingModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
+import me.aleksilassila.litematica.printer.config.enums.WorkMode;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.WorkBox;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
@@ -39,7 +39,7 @@ public abstract class Module extends ConfigUtils {
     private final String id;
     @Getter
     @Nullable
-    private final PrintModeType printMode;
+    private final WorkSingleMode workSingleMode;
     @Getter
     @Nullable
     private final ConfigBoolean enableConfig;
@@ -69,9 +69,9 @@ public abstract class Module extends ConfigUtils {
     @Getter
     private int renderIndex = 0;
 
-    protected Module(String id, @Nullable PrintModeType printMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
+    protected Module(String id, @Nullable WorkSingleMode workSingleMode, @Nullable ConfigBoolean enableConfig, @Nullable ConfigOptionList selectionType, boolean useBox) {
         this.id = id;
-        this.printMode = printMode;
+        this.workSingleMode = workSingleMode;
         this.enableConfig = enableConfig;
         this.selectionType = selectionType;
         this.playerInteractionBox = useBox ? new AtomicReference<>() : null;
@@ -274,10 +274,10 @@ public abstract class Module extends ConfigUtils {
             return false;
         }
         // 处理器绑定了模式和配置，按当前游戏模式校验
-        if (this.printMode != null && this.enableConfig != null) {
-            WorkingModeType modeType = (WorkingModeType) Configs.Core.WORK_MODE.getOptionListValue();
+        if (this.workSingleMode != null && this.enableConfig != null) {
+            WorkMode modeType = (WorkMode) Configs.Core.WORK_MODE.getOptionListValue();
             return switch (modeType) {
-                case SINGLE -> Configs.Core.WORK_MODE_TYPE.getOptionListValue().equals(this.printMode);
+                case SINGLE -> Configs.Core.WORK_MODE_TYPE.getOptionListValue().equals(this.workSingleMode);
                 case MULTI -> this.enableConfig.getBooleanValue();
             };
         }

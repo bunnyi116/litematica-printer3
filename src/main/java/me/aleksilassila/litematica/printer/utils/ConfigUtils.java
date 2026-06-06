@@ -20,40 +20,40 @@ public class ConfigUtils {
     }
 
     public static boolean isMultiMode() {
-        return Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI);
+        return Configs.Core.WORK_MODE.getOptionListValue().equals(WorkMode.MULTI);
     }
 
     public static boolean isSingleMode() {
-        return Configs.Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.SINGLE);
+        return Configs.Core.WORK_MODE.getOptionListValue().equals(WorkMode.SINGLE);
     }
 
     public static boolean isPrintMode() {
         return (isMultiMode() && Configs.Core.PRINT.getBooleanValue())
-                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.PRINTER;
+                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == WorkSingleMode.PRINT;
     }
 
     public static boolean isMineMode() {
         return (isMultiMode() && Configs.Core.MINE.getBooleanValue())
-                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.MINE;
+                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == WorkSingleMode.MINE;
     }
 
     public static boolean isFillMode() {
         return (isMultiMode() && Configs.Core.FILL.getBooleanValue())
-                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.FILL;
+                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == WorkSingleMode.FILL;
     }
 
     public static boolean isFluidMode() {
         return (isMultiMode() && Configs.Core.FLUID.getBooleanValue())
-                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.FLUID;
+                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == WorkSingleMode.FLUID;
     }
 
     public static boolean isBedrockMode() {
         return (isMultiMode() && Configs.Hotkeys.BEDROCK.getBooleanValue())
-                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == PrintModeType.BEDROCK;
+                || Configs.Core.WORK_MODE_TYPE.getOptionListValue() == WorkSingleMode.BEDROCK;
     }
 
-    public static PrintModeType getPrintModeType() {
-        return (PrintModeType) Configs.Core.WORK_MODE_TYPE.getOptionListValue();
+    public static WorkSingleMode getPrintModeType() {
+        return (WorkSingleMode) Configs.Core.WORK_MODE_TYPE.getOptionListValue();
     }
 
     public static int getPlaceCooldown() {

@@ -3,7 +3,7 @@ package me.aleksilassila.litematica.printer;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import me.aleksilassila.litematica.printer.render.gui.masa.ConfigUi;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.HighlightBlockRenderer;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
@@ -40,7 +40,7 @@ public class InitHandler implements IInitializationHandler {
                 Core.MINE.setBooleanValue(false);
                 Core.FLUID.setBooleanValue(false);
                 Core.WORK_SWITCH.setBooleanValue(false);
-                Core.WORK_MODE_TYPE.setOptionListValue(PrintModeType.PRINTER);
+                Core.WORK_MODE_TYPE.setOptionListValue(WorkSingleMode.PRINT);
                 MessageUtils.setOverlayMessage(I18n.CLOSE_ALL_MODE_NOTICE.getName());
             }
             return true;
@@ -61,7 +61,7 @@ public class InitHandler implements IInitializationHandler {
 
         // 切换模式时, 关闭破基岩
         Core.WORK_MODE_TYPE.setValueChangeCallback(b -> {
-            if (!b.getOptionListValue().equals(PrintModeType.BEDROCK)) {
+            if (!b.getOptionListValue().equals(WorkSingleMode.BEDROCK)) {
                 if (ModLoadUtils.isBedrockMinerLoaded() || ModLoadUtils.isBlockMinerLoaded()) {
                     if (BedrockUtils.isWorking()) {
                         BedrockUtils.setWorking(false);

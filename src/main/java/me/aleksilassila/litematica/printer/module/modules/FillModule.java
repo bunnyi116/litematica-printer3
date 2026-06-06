@@ -3,7 +3,7 @@ package me.aleksilassila.litematica.printer.module.modules;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.FillBlockModeType;
-import me.aleksilassila.litematica.printer.config.enums.PrintModeType;
+import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.action.Action;
@@ -33,7 +33,7 @@ public class FillModule extends Module {
     private Item[] fillModeItemList = new Item[0];
 
     public FillModule() {
-        super(NAME, PrintModeType.FILL, Configs.Core.FILL, Configs.Fill.FILL_SELECTION_TYPE, true);
+        super(NAME, WorkSingleMode.FILL, Configs.Core.FILL, Configs.Fill.FILL_SELECTION_TYPE, true);
     }
 
     @Override

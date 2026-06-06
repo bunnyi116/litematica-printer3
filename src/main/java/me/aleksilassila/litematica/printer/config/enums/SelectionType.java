@@ -3,21 +3,27 @@ package me.aleksilassila.litematica.printer.config.enums;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.config.ConfigOptionListEntry;
 
+/**
+ * 选区模式
+ */
 public enum SelectionType implements ConfigOptionListEntry<SelectionType> {
     /**
-     * 使用投影的选择框进行打印
+     * 投影选区范围
      */
     LITEMATICA_SELECTION("selectionType.litematica.selection"),
+
     /**
-     * 使用投影的渲染层进行打印
+     * 投影渲染层
      */
     LITEMATICA_RENDER_LAYER("selectionType.litematica.renderLayer"),
+
     /**
-     * 打印投影选择框中玩家下方的部分
+     * 玩家下方的部分
      */
     LITEMATICA_SELECTION_BELOW_PLAYER("selectionType.litematica.selection.belowPlayer"),
+
     /**
-     * 打印投影选择框中玩家上方的部分
+     * 玩家上方的部分
      */
     LITEMATICA_SELECTION_ABOVE_PLAYER("selectionType.litematica.selection.abovePlayer");
 

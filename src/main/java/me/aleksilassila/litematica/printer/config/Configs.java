@@ -34,8 +34,8 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
     // 配置页面是否可视(函数式, 动态获取, 全局统一使用)
     private static final BooleanSupplier isLoadChestTrackerLoaded = ModLoadUtils::isChestTrackerLoaded;
-    private static final BooleanSupplier isSingle = () -> Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.SINGLE);
-    private static final BooleanSupplier isMulti = () -> Core.WORK_MODE.getOptionListValue().equals(WorkingModeType.MULTI);
+    private static final BooleanSupplier isSingle = () -> Core.WORK_MODE.getOptionListValue().equals(WorkMode.SINGLE);
+    private static final BooleanSupplier isMulti = () -> Core.WORK_MODE.getOptionListValue().equals(WorkMode.MULTI);
 
     private static final BooleanSupplier isBreakCustom = () -> Break.BREAK_LIMITER.getOptionListValue().equals(ExcavateListMode.CUSTOM);
     private static final BooleanSupplier isBreakWhitelist = () -> isBreakCustom.getAsBoolean() && Break.BREAK_LIMIT.getOptionListValue().equals(UsageRestriction.ListType.WHITELIST);
@@ -83,7 +83,7 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
         // 核心 - 模式切换
         public static final ConfigOptionList WORK_MODE = optionList("modeSwitch")
-                .defaultValue(WorkingModeType.SINGLE)
+                .defaultValue(WorkMode.SINGLE)
                 .build();
 
         // 多模 - 打印
@@ -112,7 +112,7 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
         // 核心 - 单模模式
         public static final ConfigOptionList WORK_MODE_TYPE = optionList("printerMode")
-                .defaultValue(PrintModeType.PRINTER)
+                .defaultValue(WorkSingleMode.PRINT)
                 .setVisible(isSingle) // 仅单模式时显示
                 .build();
 
