@@ -392,7 +392,7 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 .build();
 
         // 跳过含水方块
-        public static final ConfigBoolean SKIP_WATERLOGGED_BLOCK = bool("printSkipWaterlogged")
+        public static final ConfigBooleanHotkeyed SKIP_WATERLOGGED_BLOCK = booleanHotkey("printSkipWaterlogged")
                 .defaultValue(false)
                 .build();
 
