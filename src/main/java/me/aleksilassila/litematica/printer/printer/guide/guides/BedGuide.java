@@ -23,13 +23,13 @@ public class BedGuide extends Guide {
         BedPart bedPart = getProperty(requiredState, BedBlock.PART).orElseThrow();
         // 只放置床尾，床头自动生成
         if (bedPart == BedPart.HEAD) {
-            return Result.SKIP;
+            return Result.skip();
         }
         return Result.success(new Action().setLookDirection(facing));
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.SKIP;
+        return Result.skip();
     }
 }

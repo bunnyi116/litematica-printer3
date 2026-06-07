@@ -42,6 +42,6 @@ public class RedstoneWireGuide extends Guide {
         if (allNoneRequired && allSideCurrent) {
             return Result.success(new ClickAction().setItem(Items.AIR));
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

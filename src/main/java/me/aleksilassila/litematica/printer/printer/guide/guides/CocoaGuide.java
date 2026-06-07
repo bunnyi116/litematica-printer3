@@ -25,6 +25,6 @@ public class CocoaGuide extends Guide {
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         // AGE 由生长决定，环境决定 → 跳过
-        return Result.SKIP;
+        return Result.skip();
     }
 }

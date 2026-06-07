@@ -28,7 +28,7 @@ public class CauldronGuide extends Guide {
         Optional<Integer> requiredLevel = getProperty(requiredState, LayeredCauldronBlock.LEVEL);
 
         if (currentLevel.isEmpty() || requiredLevel.isEmpty()) {
-            return Result.SKIP;
+            return Result.skip();
         }
 
         if (currentLevel.get() > requiredLevel.get()) {
@@ -41,7 +41,7 @@ public class CauldronGuide extends Guide {
                 return Result.success(new ClickAction().setItem(Items.POTION));
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 
     @Override
@@ -50,6 +50,6 @@ public class CauldronGuide extends Guide {
                 && InteractionUtils.canBreakBlock(blockPos)) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

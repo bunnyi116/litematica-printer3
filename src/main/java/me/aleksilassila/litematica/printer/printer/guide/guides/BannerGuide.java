@@ -36,6 +36,6 @@ public class BannerGuide extends Guide {
                     .setLookDirection(facing.getOpposite())
                     .setRequiresSupport());
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

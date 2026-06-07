@@ -7,6 +7,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.module.modules.*;
 import me.aleksilassila.litematica.printer.mixin.printer.mc.MinecraftAccessor;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
+import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.client.Minecraft;
 
@@ -22,7 +23,7 @@ public class ModuleManager {
     public static final MineModule MINE = new MineModule();
     public static final FluidModule FLUID = new FluidModule();
     public static final BedrockModule BEDROCK = new BedrockModule();
-    public static final ImmutableList<Module> VALUES = ImmutableList.of(GUI, PRINT, FILL, MINE, FLUID, BEDROCK);
+    public static final ImmutableList<Module> VALUES = ImmutableList.of(GUI, MINE, FLUID, PRINT, FILL, BEDROCK);
 
     @Getter
     @Setter
@@ -58,6 +59,7 @@ public class ModuleManager {
             }
             handler.tick();
         }
+        BlockPosCooldownUtils.INSTANCE.tick();
     }
 
     public static long getCurrentHandlerTime() {

@@ -2,8 +2,10 @@ package me.aleksilassila.litematica.printer.printer;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.IterationOrderType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +40,7 @@ public class WorkBox implements Iterable<BlockPos> {
     private IterationOrderType iterationMode = IterationOrderType.XZY;
 
     @Getter
-    private Iterator<BlockPos> iterator;
+    private BoxIterator iterator;
 
     public WorkBox(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
         this.update(minX, minY, minZ, maxX, maxY, maxZ);
@@ -54,6 +56,10 @@ public class WorkBox implements Iterable<BlockPos> {
 
     public WorkBox(Vec3i pos1, Vec3i pos2) {
         this(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
+    }
+
+    public WorkBox(LocalPlayer player, int radius) {
+        this.update(player, radius);
     }
 
     public void update(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
@@ -94,6 +100,15 @@ public class WorkBox implements Iterable<BlockPos> {
         }
     }
 
+    public void update(LocalPlayer player, int radius) {
+        this.iterationMode = (IterationOrderType) Configs.Core.ITERATION_ORDER.getOptionListValue();
+        this.yIncrement = !Configs.Core.X_REVERSE.getBooleanValue();
+        this.xIncrement = !Configs.Core.Y_REVERSE.getBooleanValue();
+        this.zIncrement = !Configs.Core.Z_REVERSE.getBooleanValue();
+        BlockPos blockPos = player.blockPosition();
+        this.update(blockPos.getX(), blockPos.getY(), blockPos.getZ(), radius);
+    }
+
     public boolean contains(int x, int y, int z) {
         return x >= this.minX && x <= this.maxX && y >= this.minY && y <= this.maxY && z >= this.minZ && z <= this.maxZ;
     }
@@ -115,9 +130,7 @@ public class WorkBox implements Iterable<BlockPos> {
     }
 
     public void setNextIterationPos(@Nullable BlockPos pos) {
-        if (this.iterator instanceof BoxIterator boxIterator) {
-            boxIterator.nextPosOverride = pos;
-        }
+        iterator.nextPosOverride = pos;
     }
 
     @Override
@@ -136,8 +149,12 @@ public class WorkBox implements Iterable<BlockPos> {
         @Override
         public boolean hasNext() {
             // 1. 如果有有效的自定义位置，直接返回 true，允许迭代继续
-            if (nextPosOverride != null && contains(nextPosOverride)) {
-                return true;
+            if (nextPosOverride != null) {
+                BlockPos overridePos = nextPosOverride;
+                if (contains(overridePos)) {
+                    return true;
+                }
+                nextPosOverride = null;
             }
             // 2. 没有自定义位置，执行原有逻辑
             if (currPos == null) return true;
@@ -170,7 +187,6 @@ public class WorkBox implements Iterable<BlockPos> {
                 nextPosOverride = null;
 
                 if (contains(overridePos)) {
-                    currPos = overridePos;
                     return currPos;
                 }
             }

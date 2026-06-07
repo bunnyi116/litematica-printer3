@@ -28,7 +28,7 @@ public class StairGuide extends Guide {
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, StairBlock.FACING).orElse(null);
         Half half = getProperty(requiredState, StairBlock.HALF).orElse(null);
-        if (facing == null || half == null) return Result.PASS;
+        if (facing == null || half == null) return Result.pass();
 
         Map<Direction, Vec3> sides = new HashMap<>();
         if (half == Half.BOTTOM) {
@@ -53,6 +53,6 @@ public class StairGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

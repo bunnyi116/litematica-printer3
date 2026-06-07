@@ -4,7 +4,6 @@ import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.config.enums.IterationOrderType;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.config.enums.WorkMode;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
@@ -27,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class Module extends ConfigUtils {
+
+
     // 为实现类预制了一些常用的MC变量
     protected Minecraft mc;
     protected ClientLevel level;
@@ -41,9 +42,7 @@ public abstract class Module extends ConfigUtils {
     protected final String id;
 
     @Getter
-    protected final @Nullable AtomicReference<WorkBox> currentWorkBox;
-    private @Nullable WorkBox lastWorkBox;
-    private @Nullable BlockPos lastPlayerPos;
+    protected final @Nullable AtomicReference<WorkBox> boxAtomicReference;
 
     @Getter
     protected final @Nullable ConfigBoolean enable;
@@ -66,7 +65,7 @@ public abstract class Module extends ConfigUtils {
         this.workSingleMode = workSingleMode;
         this.enable = enable;
         this.selectionType = selectionType;
-        this.currentWorkBox = useBox ? new AtomicReference<>() : null;
+        this.boxAtomicReference = useBox ? new AtomicReference<>() : null;
         this.updateVariables();
     }
 
@@ -99,54 +98,37 @@ public abstract class Module extends ConfigUtils {
             this.lastTickTime = currentTickTime; // 更新上次执行时间，首次执行也会初始化
         }
         if (!isEnable()) {
-            this.lastPlayerPos = null;
             return;
         }
         if (!this.updateVariables()) {
-            this.lastPlayerPos = null;
             return;
         }
         // 更新迭代范围
-        if (this.currentWorkBox != null) {
-            BlockPos playerPos = this.player.blockPosition();
-            int workRange = getWorkRange();
-            double threshold = workRange * 0.7; // 玩家移动阈值：工作范围的70%
-            @Nullable WorkBox playerInteractionBox = this.currentWorkBox.get();
-            if (playerInteractionBox == null
-                    || !playerInteractionBox.equals(this.lastWorkBox)
-                    || this.lastPlayerPos == null
-                    || !this.lastPlayerPos.closerThan(playerPos, threshold)
-            ) {
-                this.lastPlayerPos = playerPos;
-                playerInteractionBox = new WorkBox(playerPos, workRange);
-                this.lastWorkBox = playerInteractionBox;
-                this.currentWorkBox.set(playerInteractionBox);
+        if (this.boxAtomicReference != null) {
+            if (this.boxAtomicReference.get() == null) {
+                this.boxAtomicReference.set(new WorkBox(player, getWorkRange()));
+            } else {
+                this.boxAtomicReference.get().update(player, getWorkRange());
             }
-            // 同步交互盒的迭代配置：从全局配置读取迭代顺序、方向等
-            playerInteractionBox.setIterationMode((IterationOrderType) Configs.Core.ITERATION_ORDER.getOptionListValue());
-            playerInteractionBox.setXIncrement(!Configs.Core.X_REVERSE.getBooleanValue());
-            playerInteractionBox.setYIncrement(!Configs.Core.Y_REVERSE.getBooleanValue());
-            playerInteractionBox.setZIncrement(!Configs.Core.Z_REVERSE.getBooleanValue());
         }
         this.onPreprocess(); // 运行前处理的事情
         if (!this.isAllowConfigExecute()) {
-            this.lastPlayerPos = null;
             return;
         }
         boolean interrupt = false;
         // 执行迭代业务任务：基于玩家交互盒的方块迭代处理（防主线程阻塞）
-        if (this.currentWorkBox != null && this.canExecute()) {
+        if (this.boxAtomicReference != null && this.canExecute()) {
             this.onIterationStart();
-            WorkBox playerInteractionBox = this.currentWorkBox.get();
+            WorkBox workBox = this.boxAtomicReference.get();
             // 交互盒非空且满足迭代执行条件时，执行迭代逻辑
-            if (playerInteractionBox != null && canIterate()) {
+            if (workBox != null && canIterate()) {
                 int maxEffectiveExec = this.getMaxEffectiveExecutionsPerTick();
                 int maxTotalIter = this.getMaxTotalIterationsPerTick();
                 int totalIterCount = 0;
                 int effectiveExecCount = 0;
                 this.skipIteration.set(false);
                 // 开始迭代方块
-                for (BlockPos pos : playerInteractionBox) {
+                for (BlockPos pos : workBox) {
                     // 单Tick迭代次数限制：达到最大次数则终止循环（防主线程阻塞）
                     if (maxTotalIter > 0 && ++totalIterCount >= maxTotalIter) {
                         interrupt = true;
@@ -156,7 +138,9 @@ public abstract class Module extends ConfigUtils {
                         interrupt = true;
                         break;
                     }
-                    if (pos == null) continue;
+                    if (pos == null) {
+                        continue;
+                    }
                     if (isSchematicBlockHandler()) {
                         if (!LitematicaUtils.isSchematicBlock(pos)) {
                             continue;
@@ -175,21 +159,16 @@ public abstract class Module extends ConfigUtils {
                         }
                     }
                     if (iterationNextBlockPos != null) {
+                        workBox.setNextIterationPos(iterationNextBlockPos);
+                        iterationNextBlockPos = null;
                         interrupt = true;
                     }
                     if (interrupt) {
                         break;
                     }
                 }
-                if (iterationNextBlockPos != null) {
-                    playerInteractionBox.setNextIterationPos(iterationNextBlockPos);
-                    iterationNextBlockPos = null;
-                }
                 this.onIterationEnd(interrupt);
             }
-        }
-        if (!interrupt) {
-            this.lastPlayerPos = null;
         }
     }
 

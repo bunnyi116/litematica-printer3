@@ -67,7 +67,7 @@ public class SignGuide extends Guide {
         }
         //#endif
 
-        return Result.SKIP;
+        return Result.skip();
     }
 
     @Override
@@ -84,6 +84,6 @@ public class SignGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

@@ -59,7 +59,7 @@ public class ObserverGuide extends Guide {
                 if (tempFacing != null) {
                     SchematicBlockContext offset = temp.offset(tempFacing);
                     if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
-                        return Result.SKIP;
+                        return Result.skip();
                     }
                     temp = offset;
                 } else {
@@ -76,7 +76,7 @@ public class ObserverGuide extends Guide {
             while (temp.requiredState.getBlock() instanceof net.minecraft.world.level.block.FallingBlock) {
                 SchematicBlockContext offset = temp.offset(Direction.DOWN);
                 if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
-                    return Result.SKIP;
+                    return Result.skip();
                 }
                 temp = offset;
             }
@@ -89,7 +89,7 @@ public class ObserverGuide extends Guide {
                     if (tempFacing != null) {
                         SchematicBlockContext offset = temp.offset(tempFacing);
                         if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
-                            return Result.SKIP;
+                            return Result.skip();
                         }
                         temp = offset;
                     } else {
@@ -106,15 +106,15 @@ public class ObserverGuide extends Guide {
                 if (offset.blockPos.equals(blockPos)) continue;
                 if (offset.requiredState.getBlock() instanceof PistonBaseBlock) {
                     if (!offset.currentState.isAir()) {
-                        return Result.SKIP;
+                        return Result.skip();
                     }
                 }
             }
         } else if (inputState == BlockMatchResult.WRONG_STATE) {
-            return Result.SKIP;
+            return Result.skip();
         } else {
             if (!output.requiredState.isAir()) {
-                return Result.SKIP;
+                return Result.skip();
             }
         }
 
@@ -123,6 +123,6 @@ public class ObserverGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.SKIP;
+        return Result.skip();
     }
 }

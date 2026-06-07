@@ -27,7 +27,7 @@ public class TrapDoorGuide extends Guide {
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, TrapDoorBlock.FACING).orElse(null);
         Half half = getProperty(requiredState, TrapDoorBlock.HALF).orElse(Half.BOTTOM);
-        if (facing == null) return Result.SKIP;
+        if (facing == null) return Result.skip();
 
         Direction side = half == Half.TOP ? Direction.UP : Direction.DOWN;
         return Result.success(new Action()
@@ -39,7 +39,7 @@ public class TrapDoorGuide extends Guide {
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         // 铁活板门无法手动交互
         if (requiredState.is(Blocks.IRON_TRAPDOOR)) {
-            return Result.SKIP;
+            return Result.skip();
         }
         // 开关状态不一致 → 右键点击切换
         if (!getProperty(requiredState, TrapDoorBlock.OPEN)
@@ -54,6 +54,6 @@ public class TrapDoorGuide extends Guide {
                 && facing != currentFacing) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

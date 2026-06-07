@@ -29,6 +29,6 @@ public class RepeaterGuide extends Guide {
                 && getProperty(requiredState, RepeaterBlock.LOCKED).equals(getProperty(currentState, RepeaterBlock.LOCKED))) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

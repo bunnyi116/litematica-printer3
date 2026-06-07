@@ -33,11 +33,11 @@ public class FlowerPotGuide extends Guide {
                 return Result.success(new ClickAction().setItem(content.asItem()));
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.SKIP;
+        return Result.skip();
     }
 }

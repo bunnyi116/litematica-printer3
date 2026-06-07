@@ -108,10 +108,10 @@ public class DefaultGuide extends Guide {
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         if (!Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
-            return Result.PASS;
+            return Result.pass();
         }
         InteractionUtils.INSTANCE.add(context);
-        return Result.PASS;
+        return Result.pass();
     }
 
     @Override
@@ -127,6 +127,6 @@ public class DefaultGuide extends Guide {
                 }
             }
         }
-        return Result.PASS;
+        return Result.pass();
     }
 }

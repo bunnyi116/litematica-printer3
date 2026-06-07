@@ -72,6 +72,6 @@ public class ChestGuide extends Guide {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

@@ -28,15 +28,15 @@ public class ComposterGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return Result.PASS;
+        if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return Result.pass();
         if (!currentState.hasProperty(ComposterBlock.LEVEL) || !requiredState.hasProperty(ComposterBlock.LEVEL)) {
-            return Result.SKIP;
+            return Result.skip();
         }
 
         int currentLevel = getProperty(currentState, ComposterBlock.LEVEL).orElse(0);
         int requiredLevel = getProperty(requiredState, ComposterBlock.LEVEL).orElse(0);
 
-        if (currentLevel >= requiredLevel) return Result.PASS;
+        if (currentLevel >= requiredLevel) return Result.pass();
 
         List<String> whitelist = Configs.Print.FILL_COMPOSTER_WHITELIST.getStrings();
         if (!whitelist.equals(compostWhitelistCache)) {
@@ -57,6 +57,6 @@ public class ComposterGuide extends Guide {
         if (finalItems.length > 0) {
             return Result.success(new ClickAction().setItems(finalItems));
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

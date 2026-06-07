@@ -24,7 +24,7 @@ public class RailGuide extends Guide {
         Optional<RailShape> railShape = getProperty(requiredState, BlockStateProperties.RAIL_SHAPE)
                 .or(() -> getProperty(requiredState, BlockStateProperties.RAIL_SHAPE_STRAIGHT));
 
-        if (railShape.isEmpty()) return Result.PASS;
+        if (railShape.isEmpty()) return Result.pass();
 
         Action action = new Action();
         switch (railShape.get()) {
@@ -40,6 +40,6 @@ public class RailGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.SKIP;
+        return Result.skip();
     }
 }

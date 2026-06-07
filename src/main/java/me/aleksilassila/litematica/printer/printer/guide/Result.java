@@ -16,9 +16,6 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 public final class Result {
-    public static final Result PASS = new Result(null, true, false);
-    public static final Result SKIP = new Result(null, false, true);
-
     private final @Nullable Action action;
     private final boolean passToNext;
     private final boolean skipOtherGuide;
@@ -28,6 +25,14 @@ public final class Result {
         this.action = action;
         this.passToNext = passToNext;
         this.skipOtherGuide = skipOtherGuide;
+    }
+
+    public static Result pass() {
+        return new Result(null, true, false);
+    }
+
+    public static Result skip() {
+        return new Result(null, false, true);
     }
 
     public static Result success(Action action) {
@@ -43,10 +48,10 @@ public final class Result {
      *
      * @param condition 条件
      * @param action    要返回的动作
-     * @return 条件成立则返回 {@link #success(Action)}，否则返回 {@link #PASS}
+     * @return 条件成立则返回 {@link #success(Action)}，否则返回 {@link #pass}
      */
     public static Result resultIf(boolean condition, Action action) {
-        return condition ? success(action) : PASS;
+        return condition ? success(action) : pass();
     }
 
     /**
@@ -54,10 +59,10 @@ public final class Result {
      *
      * @param condition 条件
      * @param supplier  动作供应者（延迟执行）
-     * @return 条件成立则返回成功结果，否则返回 {@link #PASS}
+     * @return 条件成立则返回成功结果，否则返回 {@link #pass}
      */
     public static Result resultIf(boolean condition, Supplier<Action> supplier) {
-        return condition ? success(supplier.get()) : PASS;
+        return condition ? success(supplier.get()) : pass();
     }
 
     /**

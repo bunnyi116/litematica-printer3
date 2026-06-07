@@ -37,7 +37,7 @@ public class RodGuide extends Guide {
                 if (forwardSchematic == forwardState) {
                     return Result.success(new Action().setSides(facing.getOpposite()));
                 }
-                return Result.SKIP;
+                return Result.skip();
             }
         }
 

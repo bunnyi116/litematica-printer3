@@ -27,6 +27,6 @@ public class TripWireHookGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.SKIP;
+        return Result.skip();
     }
 }

@@ -41,7 +41,7 @@ public abstract class Guide extends BlockStateUtils {
 
         // 方块在此位置无法自然存活（火把无附着面、植物在石头上等），跳过放置
         if (!requiredState.canSurvive(level, blockPos)) {
-            return Result.PASS;
+            return Result.pass();
         }
 
         Result result = this.onBuildAction(state);
@@ -53,7 +53,7 @@ public abstract class Guide extends BlockStateUtils {
             case MISSING -> this.onBuildActionMissingBlock(state);
             case WRONG_BLOCK -> this.onBuildActionWrongBlock(state);
             case WRONG_STATE -> this.onBuildActionWrongState(state);
-            default -> Result.PASS;
+            default -> Result.pass();
         };
     }
 
@@ -64,23 +64,23 @@ public abstract class Guide extends BlockStateUtils {
     // ==================== 子类可覆盖的钩子 ====================
 
     protected Result onBuildAction(BlockMatchResult state) {
-        return Result.PASS;
+        return Result.pass();
     }
 
     protected Result onBuildActionCorrect(BlockMatchResult state) {
-        return Result.PASS;
+        return Result.pass();
     }
 
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
-        return Result.PASS;
+        return Result.pass();
     }
 
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
-        return Result.PASS;
+        return Result.pass();
     }
 
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.PASS;
+        return Result.pass();
     }
 
     // ==================== 冷却 ====================

@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.Optional;
@@ -42,28 +43,36 @@ public class FluidGuide extends Guide {
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
         if (requiredState.is(Blocks.LAVA)) {
-            return Result.SKIP;
+            return Result.skip();
         }
         if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue()) {
-            return Result.SKIP;
+            return Result.skip();
         }
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
-            return Result.PASS;
+            return Result.pass();
         }
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
+            if (isOnCooldown()) {
+                return Result.skip().setIterationNextBlockPos(context.blockPos);
+            }
             if (isCorrectWaterLevel(requiredState, currentState)) {
-                return Result.PASS.setIterationNextBlockPos(context.blockPos);
+                return Result.pass().setIterationNextBlockPos(context.blockPos);
             }
             if (!canIceMeltIntoWaterSource(level, blockPos)) {
-                return Result.SKIP;
+                return Result.skip().setIterationNextBlockPos(context.blockPos);
             }
             if (currentBlock instanceof IceBlock) {
-                InteractionUtils.INSTANCE.add(context);
-                return Result.SKIP.setIterationNextBlockPos(context.blockPos);
+                if (!InteractionUtils.INSTANCE.contains(context.blockPos)) {
+                    InteractionUtils.INSTANCE.add(context);
+                    setCooldown(10);
+                }
+                return Result.skip().setIterationNextBlockPos(context.blockPos);
             }
-            return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(context.blockPos);
+            if (BlockStateUtils.isReplaceable(currentState)) {
+                return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(context.blockPos);
+            }
         }
-        return Result.PASS;
+        return Result.skip();
     }
 
     /**

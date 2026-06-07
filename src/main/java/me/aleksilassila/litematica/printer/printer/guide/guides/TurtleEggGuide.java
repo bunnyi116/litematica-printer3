@@ -39,6 +39,6 @@ public class TurtleEggGuide extends Guide {
 
         // 当前蛋数多于目标（不应该发生，但处理一下）
         // 或者 HATCH 状态不对 → 这种情况无法交互修正，跳过
-        return Result.SKIP;
+        return Result.skip();
     }
 }

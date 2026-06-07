@@ -61,7 +61,6 @@ public class LocalPlayerMixin extends AbstractClientPlayer {
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo ci) {
-        BlockPosCooldownUtils.INSTANCE.tick();
         InventoryUtils.tick();
         ZxyUtils.tick();
         if (minecraft.gameMode instanceof MultiPlayerGameModeExtension extension) {

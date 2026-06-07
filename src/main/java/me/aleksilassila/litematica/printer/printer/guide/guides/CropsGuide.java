@@ -41,7 +41,7 @@ public class CropsGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        if (!Configs.Print.BONEMEAL_CROPS.getBooleanValue()) return Result.PASS;
+        if (!Configs.Print.BONEMEAL_CROPS.getBooleanValue()) return Result.pass();
 
         Direction facing = getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING).orElse(null);
 
@@ -50,10 +50,10 @@ public class CropsGuide extends Guide {
             if (facing != null
                     && currentState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                     && !getProperty(currentState, BlockStateProperties.HORIZONTAL_FACING).equals(Optional.of(facing))) {
-                return Result.PASS; // facing 不对 → 放置性错误，交给 DefaultGuide 破坏重放
+                return Result.pass(); // facing 不对 → 放置性错误，交给 DefaultGuide 破坏重放
             }
             // AGE 由生长决定，跳过
-            return Result.SKIP;
+            return Result.skip();
         }
 
         // 农作物（CropBlock）和甜菜根（BeetrootBlock）：骨粉催熟
@@ -68,7 +68,7 @@ public class CropsGuide extends Guide {
                 ageProp = CropBlock.AGE;
                 maxAge = cropBlock.getMaxAge();
             } else {
-                return Result.SKIP;
+                return Result.skip();
             }
             int requiredAge = getProperty(requiredState, ageProp).orElse(0);
             int currentAge = getProperty(currentState, ageProp).orElse(0);
@@ -76,7 +76,7 @@ public class CropsGuide extends Guide {
                 return Result.success(new ClickAction().setItem(Items.BONE_MEAL));
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 
     @Override
@@ -88,6 +88,6 @@ public class CropsGuide extends Guide {
         } else if (requiredKey.contains("melon_stem") && !currentKey.contains("melon_stem")) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

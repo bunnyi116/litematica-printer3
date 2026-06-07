@@ -21,7 +21,7 @@ public class PistonGuide extends Guide {
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, PistonBaseBlock.FACING).orElse(null);
-        if (facing == null) return Result.SKIP;
+        if (facing == null) return Result.skip();
         return Result.success(new Action().setLookDirection(facing.getOpposite()));
     }
 
@@ -32,6 +32,6 @@ public class PistonGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 }

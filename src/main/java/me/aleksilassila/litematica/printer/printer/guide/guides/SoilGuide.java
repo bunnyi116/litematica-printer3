@@ -31,7 +31,7 @@ public class SoilGuide extends Guide {
                     Items.DIRT, Items.GRASS_BLOCK, Items.COARSE_DIRT,
                     Items.ROOTED_DIRT, Items.MYCELIUM, Items.PODZOL));
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 
     @Override
@@ -52,11 +52,11 @@ public class SoilGuide extends Guide {
                 }
             }
         }
-        return Result.SKIP;
+        return Result.skip();
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.SKIP;
+        return Result.skip();
     }
 }
