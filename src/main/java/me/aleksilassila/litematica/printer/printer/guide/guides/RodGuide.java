@@ -1,10 +1,13 @@
 package me.aleksilassila.litematica.printer.printer.guide.guides;
 
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
+import me.aleksilassila.litematica.printer.utils.ConfigUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.EndRodBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,17 +27,19 @@ public class RodGuide extends Guide {
 
         // 末地烛的特殊逻辑
         if (requiredBlock instanceof EndRodBlock) {
-            BlockState forwardState = level.getBlockState(blockPos.relative(facing));
+            BlockPos forwardPos = blockPos.relative(facing);
+            BlockState forwardState = level.getBlockState(forwardPos);
             // 前面有反向末地烛 → 点击 facing 方向
             if (forwardState.is(requiredBlock)
                     && getProperty(forwardState, EndRodBlock.FACING).orElseThrow() == facing.getOpposite()) {
                 return Result.success(new Action().setSides(facing));
             }
             // 投影中前面有同向末地烛 → 等待
-            BlockState forwardSchematic = schematic.getBlockState(blockPos.relative(facing));
+            BlockState forwardSchematic = schematic.getBlockState(forwardPos);
             if (forwardSchematic.is(requiredBlock)
+                    && ConfigUtils.isPositionInSelectionRange(client.player, forwardPos, Configs.Print.PRINT_SELECTION_TYPE)
                     && getProperty(forwardSchematic, EndRodBlock.FACING).orElseThrow() == facing) {
-                if (forwardSchematic == forwardState) {
+                if (statesEqual(forwardSchematic, forwardState)) {
                     return Result.success(new Action().setSides(facing.getOpposite()));
                 }
                 return Result.skip();
