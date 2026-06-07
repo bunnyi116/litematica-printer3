@@ -6,6 +6,7 @@ import me.aleksilassila.litematica.printer.config.enums.IterationOrderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -16,8 +17,16 @@ import net.minecraft.core.BlockPos;
 public class WorkBox implements Iterable<BlockPos> {
     public static final Minecraft client = Minecraft.getInstance();
 
-    private int minX, minY, minZ, maxX, maxY, maxZ;
-    private int centerX, centerY, centerZ;
+    private int minX;
+    private int minY;
+    private int minZ;
+    private int maxX;
+    private int maxY;
+    private int maxZ;
+
+    private int centerX;
+    private int centerY;
+    private int centerZ;
 
     @Setter
     private boolean yIncrement = true;
@@ -56,7 +65,6 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxY = Math.max(minY, maxY);
         this.maxZ = Math.max(minZ, maxZ);
 
-        // 根据当前世界对世界进行性能优化, 避免出现大范围无效位置迭代
         if (client.level != null) {
             this.minY = Math.max(client.level.getMinY(), this.minY);
             this.maxY = Math.min(client.level.getMaxY(), this.maxY);
@@ -80,7 +88,6 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxY = centerY + radius;
         this.maxZ = centerZ + radius;
 
-        // 根据当前世界对世界进行性能优化, 避免出现大范围无效位置迭代
         if (client.level != null) {
             this.minY = Math.max(client.level.getMinY(), this.minY);
             this.maxY = Math.min(client.level.getMaxY(), this.maxY);
@@ -107,6 +114,11 @@ public class WorkBox implements Iterable<BlockPos> {
         return Objects.hash(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
+    public void setNextIterationPos(@Nullable BlockPos pos) {
+        if (this.iterator instanceof BoxIterator boxIterator) {
+            boxIterator.nextPosOverride = pos;
+        }
+    }
 
     @Override
     public @NotNull Iterator<BlockPos> iterator() {
@@ -119,9 +131,17 @@ public class WorkBox implements Iterable<BlockPos> {
     private class BoxIterator implements Iterator<BlockPos> {
         public BlockPos currPos;
 
+        private @Nullable BlockPos nextPosOverride; // 自定义下一次位置
+
         @Override
         public boolean hasNext() {
+            // 1. 如果有有效的自定义位置，直接返回 true，允许迭代继续
+            if (nextPosOverride != null && contains(nextPosOverride)) {
+                return true;
+            }
+            // 2. 没有自定义位置，执行原有逻辑
             if (currPos == null) return true;
+
             int x = currPos.getX();
             int y = currPos.getY();
             int z = currPos.getZ();
@@ -144,7 +164,18 @@ public class WorkBox implements Iterable<BlockPos> {
 
         @Override
         public BlockPos next() {
-            // 初始化起始位置
+            // 优先使用自定义位置（一次性生效）
+            if (nextPosOverride != null) {
+                BlockPos overridePos = nextPosOverride;
+                nextPosOverride = null;
+
+                if (contains(overridePos)) {
+                    currPos = overridePos;
+                    return currPos;
+                }
+            }
+
+            // 初始化逻辑
             if (currPos == null) {
                 currPos = new BlockPos(
                         IterationOrderType.Axis.X.reset(WorkBox.this),
@@ -154,26 +185,21 @@ public class WorkBox implements Iterable<BlockPos> {
                 return currPos;
             }
 
-            // 复制当前坐标，避免直接修改原对象
+            // 正常迭代逻辑
             int x = currPos.getX();
             int y = currPos.getY();
             int z = currPos.getZ();
 
-            // 获取当前迭代模式的轴优先级，通用处理所有轴迭代（无任何switch）
             for (IterationOrderType.Axis axis : iterationMode.axis) {
-                // 对当前轴执行增量
                 int newValue = axis.increment(WorkBox.this, axis.getCoord(WorkBox.this, x, y, z));
 
-                // 检查是否溢出
                 if (axis.isOverflow(WorkBox.this, newValue)) {
-                    // 溢出则重置当前轴，继续处理下一个轴
                     switch (axis) {
                         case X -> x = axis.reset(WorkBox.this);
                         case Y -> y = axis.reset(WorkBox.this);
                         case Z -> z = axis.reset(WorkBox.this);
                     }
                 } else {
-                    // 未溢出则更新当前轴坐标，终止循环
                     switch (axis) {
                         case X -> x = newValue;
                         case Y -> y = newValue;
@@ -183,7 +209,6 @@ public class WorkBox implements Iterable<BlockPos> {
                 }
             }
 
-            // 更新当前位置并返回
             currPos = new BlockPos(x, y, z);
             return currPos;
         }

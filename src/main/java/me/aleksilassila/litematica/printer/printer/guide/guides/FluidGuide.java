@@ -52,16 +52,16 @@ public class FluidGuide extends Guide {
         }
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
             if (isCorrectWaterLevel(requiredState, currentState)) {
-                return Result.PASS;
+                return Result.PASS.setIterationNextBlockPos(context.blockPos);
             }
             if (!canIceMeltIntoWaterSource(level, blockPos)) {
                 return Result.SKIP;
             }
             if (currentBlock instanceof IceBlock) {
                 InteractionUtils.INSTANCE.add(context);
-                return Result.SKIP;
+                return Result.SKIP.setIterationNextBlockPos(context.blockPos);
             }
-            return Result.success(new Action().setItem(Items.ICE));
+            return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(context.blockPos);
         }
         return Result.PASS;
     }

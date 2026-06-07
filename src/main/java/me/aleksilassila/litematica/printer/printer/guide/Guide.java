@@ -45,7 +45,7 @@ public abstract class Guide extends BlockStateUtils {
         }
 
         Result result = this.onBuildAction(state);
-        if (!result.passToNext() || result.skipOtherGuide()) {
+        if (!result.isPassToNext() || result.isSkipOtherGuide()) {
             return result;
         }
 

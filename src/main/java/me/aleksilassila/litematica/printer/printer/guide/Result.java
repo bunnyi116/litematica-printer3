@@ -1,33 +1,34 @@
 package me.aleksilassila.litematica.printer.printer.guide;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.aleksilassila.litematica.printer.printer.action.Action;
+import net.minecraft.core.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Guide 动作执行结果。
- *
- * <pre>
- *     // 成功返回
- *     return Result.success(new Action().setSides(facing));
- *
- *     // 交给下一位
- *     return Result.PASS;
- *
- *     // 便捷方法：仅当条件成立时返回动作
- *     return resultIf(condition, action);
- * </pre>
  */
-public record Result(Action action, boolean passToNext, boolean skipOtherGuide) {
-
-    /** 不处理，让下一个 Guide 继续 */
+@Getter
+@Setter
+public final class Result {
     public static final Result PASS = new Result(null, true, false);
-
-    /** 无结果（兼容旧代码） */
-    public static final Result EMPTY = PASS;
-
-    /** 跳过其他指南，不处理此方块 */
     public static final Result SKIP = new Result(null, false, true);
+
+    private final @Nullable Action action;
+    private final boolean passToNext;
+    private final boolean skipOtherGuide;
+    private @Nullable BlockPos iterationNextBlockPos;
+
+    public Result(@Nullable Action action, boolean passToNext, boolean skipOtherGuide) {
+        this.action = action;
+        this.passToNext = passToNext;
+        this.skipOtherGuide = skipOtherGuide;
+    }
 
     public static Result success(Action action) {
         return new Result(action, false, false);
@@ -55,7 +56,7 @@ public record Result(Action action, boolean passToNext, boolean skipOtherGuide) 
      * @param supplier  动作供应者（延迟执行）
      * @return 条件成立则返回成功结果，否则返回 {@link #PASS}
      */
-    public static Result resultIf(boolean condition, java.util.function.Supplier<Action> supplier) {
+    public static Result resultIf(boolean condition, Supplier<Action> supplier) {
         return condition ? success(supplier.get()) : PASS;
     }
 
@@ -76,7 +77,7 @@ public record Result(Action action, boolean passToNext, boolean skipOtherGuide) 
     /**
      * 如果有动作则执行 consumer。
      */
-    public void ifHasAction(java.util.function.Consumer<Action> consumer) {
+    public void ifHasAction(Consumer<Action> consumer) {
         if (action != null) {
             consumer.accept(action);
         }
@@ -94,7 +95,12 @@ public record Result(Action action, boolean passToNext, boolean skipOtherGuide) 
     /**
      * 如果当前是 PASS，则使用 supplier 生成结果。
      */
-    public Result or(java.util.function.Supplier<Result> supplier) {
+    public Result or(Supplier<Result> supplier) {
         return passToNext ? supplier.get() : this;
+    }
+
+    public Result setIterationNextBlockPos(@Nullable BlockPos iterationNextBlockPos) {
+        this.iterationNextBlockPos = iterationNextBlockPos;
+        return this;
     }
 }

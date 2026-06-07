@@ -49,14 +49,17 @@ public abstract class Module extends ConfigUtils {
     protected final @Nullable ConfigBoolean enable;
 
     @Getter
-    private final @Nullable WorkSingleMode workSingleMode;
+    protected final @Nullable WorkSingleMode workSingleMode;
 
     @Getter
-    private final @Nullable ConfigOptionList selectionType;
+    protected final @Nullable ConfigOptionList selectionType;
+
+    protected @Nullable BlockPos iterationNextBlockPos;
 
     private final AtomicReference<Boolean> skipIteration = new AtomicReference<>(false);
 
     private long lastTickTime = -1L;
+
 
     protected Module(String id, @Nullable WorkSingleMode workSingleMode, @Nullable ConfigBoolean enable, @Nullable ConfigOptionList selectionType, boolean useBox) {
         this.id = id;
@@ -171,9 +174,16 @@ public abstract class Module extends ConfigUtils {
                             interrupt = true;
                         }
                     }
+                    if (iterationNextBlockPos != null) {
+                        interrupt = true;
+                    }
                     if (interrupt) {
                         break;
                     }
+                }
+                if (iterationNextBlockPos != null) {
+                    playerInteractionBox.setNextIterationPos(iterationNextBlockPos);
+                    iterationNextBlockPos = null;
                 }
                 this.onIterationEnd(interrupt);
             }

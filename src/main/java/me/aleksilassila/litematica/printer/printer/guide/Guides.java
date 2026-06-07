@@ -224,7 +224,7 @@ public class Guides {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    private List<Guide> getGuides(SchematicBlockContext context) {
+    public List<Guide> getGuides(SchematicBlockContext context) {
         List<Guide> guides = new ArrayList<>();
         for (GuideRegistration reg : registrations) {
             boolean matches = reg.blockClass.length == 0;
@@ -250,21 +250,6 @@ public class Guides {
             }
         }
         return guides;
-    }
-
-    public final Optional<Action> buildAction(SchematicBlockContext context) {
-        BlockMatchResult blockMatchResult = BlockMatchResult.compare(context);
-        List<Guide> guides = this.getGuides(context);
-        for (Guide guide : guides) {
-            Result result = guide.buildAction(blockMatchResult);
-            if (result.hasAction()) {
-                return result.toOptional();
-            }
-            if (result.skipOtherGuide()) {
-                break;
-            }
-        }
-        return Optional.empty();
     }
 
     @SuppressWarnings("ClassCanBeRecord")

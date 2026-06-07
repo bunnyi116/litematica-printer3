@@ -97,6 +97,7 @@ public class InteractionUtils {
 
     public boolean contains(BlockPos pos) {
         if (pos == null) return false;
+        if (breakPos != null && breakPos.equals(pos)) return true;
         return breakQueue.contains(pos);
     }
 

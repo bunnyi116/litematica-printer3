@@ -8,6 +8,7 @@ import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
+import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Guides;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
@@ -15,6 +16,7 @@ import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
+import me.aleksilassila.litematica.printer.printer.guide.Result;
 import me.aleksilassila.litematica.printer.utils.*;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.LitematicaUtils;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -40,9 +43,8 @@ public class PrintModule extends Module {
     @Setter
     private boolean printerMemorySync;
 
-    private Action action;
-
     private SchematicBlockContext ctx;
+    private Action action;
 
     public PrintModule() {
         super(NAME, WorkSingleMode.PRINT, Configs.Core.PRINT, Configs.Print.PRINT_SELECTION_TYPE, true);
@@ -70,7 +72,9 @@ public class PrintModule extends Module {
     @Override
     public boolean canIterationBlockPos(BlockPos blockPos) {
         WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
-        if (schematic == null) return false;
+        if (schematic == null) {
+            return false;
+        }
         SchematicBlockContext context = new SchematicBlockContext(client, level, schematic, blockPos);
         if (Configs.Print.PRINT_SKIP.getBooleanValue()) {
             Set<String> skipSet = new HashSet<>(Configs.Print.PRINT_SKIP_LIST.getStrings()); // 转换为 HashSet
@@ -78,9 +82,27 @@ public class PrintModule extends Module {
                 return false;
             }
         }
-        Optional<Action> action = Guides.INSTANCE.buildAction(context);
+
+        Optional<Action> action = Optional.empty();
+        BlockMatchResult blockMatchResult = BlockMatchResult.compare(context);
+        List<Guide> guides = Guides.INSTANCE.getGuides(context);
+        for (Guide guide : guides) {
+            Result result = guide.buildAction(blockMatchResult);
+            if (result.getIterationNextBlockPos() != null) {
+                this.iterationNextBlockPos = result.getIterationNextBlockPos();
+            }
+            if (result.hasAction()) {
+                action = result.toOptional();
+                break;
+            }
+            if (result.isSkipOtherGuide()) {
+                break;
+            }
+        }
+
         if (action.isEmpty()) {
             this.ctx = null;
+            this.action = null;
             return false;
         }
         this.action = action.get();
