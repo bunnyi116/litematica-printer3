@@ -75,15 +75,22 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
     public static class Core {
         // 打印状态
-        public static final ConfigBooleanHotkeyed WORK_SWITCH = booleanHotkey("workingSwitch")
+        public static final ConfigBooleanHotkeyed WORK_SWITCH = booleanHotkey("workToggle")
                 .defaultValue(false)
                 .defaultHotkey("CAPS_LOCK")
                 .keybindSettings(KeybindSettings.PRESS_ALLOWEXTRA_EMPTY)
                 .build();
 
         // 核心 - 模式切换
-        public static final ConfigOptionList WORK_MODE = optionList("modeSwitch")
+        public static final ConfigOptionList WORK_MODE = optionList("workMode")
                 .defaultValue(WorkMode.SINGLE)
+                .build();
+
+        
+        // 核心 - 单模模式
+        public static final ConfigOptionList WORK_MODE_TYPE = optionList("workSingleMode")
+                .defaultValue(WorkSingleMode.PRINT)
+                .setVisible(isSingle) // 仅单模式时显示
                 .build();
 
         // 多模 - 打印
@@ -110,11 +117,6 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 .setVisible(isMulti) // 仅多模式时显示
                 .build();
 
-        // 核心 - 单模模式
-        public static final ConfigOptionList WORK_MODE_TYPE = optionList("printerMode")
-                .defaultValue(WorkSingleMode.PRINT)
-                .setVisible(isSingle) // 仅单模式时显示
-                .build();
 
         // 核心 - 工作半径
         public static final ConfigInteger WORK_RANGE = integer("workRange")
@@ -144,28 +146,28 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 .build();
 
         // 核心 - 迭代区域形状
-        public static final ConfigOptionList ITERATOR_SHAPE = optionList("printerIteratorShape")
+        public static final ConfigOptionList ITERATOR_SHAPE = optionList("workIteratorShape")
                 .defaultValue(RadiusShapeType.SPHERE)
                 .build();
 
         // 核心 - 遍历顺序
-        public static final ConfigOptionList ITERATION_ORDER = optionList("printerIteratorMode")
-                .defaultValue(IterationOrderType.XZY)
+        public static final ConfigOptionList ITERATION_ORDER = optionList("workIteratorMode")
+                .defaultValue(IterationOrder.XZY)
                 .build();
 
         // 核心 - 迭代X轴反向
-        public static final ConfigBoolean X_REVERSE = bool("printerXAxisReverse")
-                .defaultValue(false)
+        public static final ConfigOptionList AXIS_DIRECTION_X = optionList("axisDirectionX")
+                .defaultValue(AxisDirection.POSITIVE)
                 .build();
 
         // 核心 - 迭代Y轴反向
-        public static final ConfigBoolean Y_REVERSE = bool("printerYAxisReverse")
-                .defaultValue(false)
+        public static final ConfigOptionList AXIS_DIRECTION_Y = optionList("axisDirectionY")
+                .defaultValue(AxisDirection.POSITIVE)
                 .build();
 
         // 核心 - 迭代Z轴反向
-        public static final ConfigBoolean Z_REVERSE = bool("printerZAxisReverse")
-                .defaultValue(false)
+        public static final ConfigOptionList AXIS_DIRECTION_Z = optionList("axisDirectionZ")
+                .defaultValue(AxisDirection.POSITIVE)
                 .build();
 
         // 核心 - 显示打印机HUD
@@ -228,9 +230,9 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
                 CHECK_PLAYER_INTERACTION_RANGE,
                 ITERATOR_SHAPE,
                 ITERATION_ORDER,
-                X_REVERSE,
-                Y_REVERSE,
-                Z_REVERSE,
+                AXIS_DIRECTION_X,
+                AXIS_DIRECTION_Y,
+                AXIS_DIRECTION_Z,
                 AUTO_DISABLE_PRINTER,
                 UPDATE_CHECK,
                 DEBUG_OUTPUT,

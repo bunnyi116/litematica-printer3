@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
+import me.aleksilassila.litematica.printer.config.enums.AxisDirection;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.config.enums.WorkMode;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
@@ -105,11 +106,17 @@ public abstract class Module extends ConfigUtils {
         }
         // 更新迭代范围
         if (this.boxAtomicReference != null) {
-            if (this.boxAtomicReference.get() == null) {
-                this.boxAtomicReference.set(new WorkBox(player, getWorkRange()));
-            } else {
-                this.boxAtomicReference.get().update(player, getWorkRange());
-            }
+            WorkBox box = boxAtomicReference.updateAndGet(v -> {
+                if (v == null) {
+                    return new WorkBox(player, getWorkRange(), level);
+                } else {
+                    v.setPlayerWorkBox(player, getWorkRange(), level);
+                    return v;
+                }
+            });
+            box.setXDirection((AxisDirection) Configs.Core.AXIS_DIRECTION_X.getOptionListValue());
+            box.setYDirection((AxisDirection) Configs.Core.AXIS_DIRECTION_Y.getOptionListValue());
+            box.setZDirection((AxisDirection) Configs.Core.AXIS_DIRECTION_Z.getOptionListValue());
         }
         this.onPreprocess(); // 运行前处理的事情
         if (!this.isAllowConfigExecute()) {
