@@ -51,7 +51,7 @@
     "printer.mc.ClientPacketListenerMixin",
     "printer.mc.GuiMixin",
     "printer.mc.LocalPlayerMixin",
-    "printer.mc.MinecraftAccessor",
+    "printer.mc.MinecraftMixin",
     "printer.mc.MultiPlayerGameModeMixin"
   ],
   "injectors": {

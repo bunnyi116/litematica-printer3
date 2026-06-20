@@ -3,9 +3,9 @@ package me.aleksilassila.litematica.printer.module;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
+import me.aleksilassila.litematica.printer.TickContext;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.module.modules.*;
-import me.aleksilassila.litematica.printer.mixin.printer.mc.MinecraftAccessor;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
@@ -63,6 +63,6 @@ public class ModuleManager {
     }
 
     public static long getCurrentHandlerTime() {
-        return ((MinecraftAccessor) Minecraft.getInstance()).getClientTickCount();
+        return TickContext.INSTANCE.getClientTickCount();
     }
 }

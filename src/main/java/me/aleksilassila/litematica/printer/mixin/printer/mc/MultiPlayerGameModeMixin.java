@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.mixin.printer.mc;
 
+import me.aleksilassila.litematica.printer.TickContext;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
@@ -266,6 +267,6 @@ public abstract class MultiPlayerGameModeMixin implements MultiPlayerGameModeExt
 
     @Unique
     private long getClientTickCount() {
-        return ((MinecraftAccessor) Minecraft.getInstance()).getClientTickCount();
+        return TickContext.INSTANCE.getClientTickCount();
     }
 }

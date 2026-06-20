@@ -3,12 +3,12 @@ package me.aleksilassila.litematica.printer.mixin.printer.mc;
 import com.mojang.authlib.GameProfile;
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
+import me.aleksilassila.litematica.printer.TickContext;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
-import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.UpdateCheckerUtils;
@@ -61,6 +61,7 @@ public class LocalPlayerMixin extends AbstractClientPlayer {
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo ci) {
+        TickContext.INSTANCE.clientTick();
         InventoryUtils.tick();
         ZxyUtils.tick();
         if (minecraft.gameMode instanceof MultiPlayerGameModeExtension extension) {
