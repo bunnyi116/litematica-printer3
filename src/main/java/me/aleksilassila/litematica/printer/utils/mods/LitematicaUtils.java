@@ -25,16 +25,15 @@ public class LitematicaUtils {
         return DataManager.getRenderLayerRange().isPositionWithinRange(pos);
     }
 
-    @SuppressWarnings("deprecation")
     public static Vec3 usePrecisionPlacement(BlockPos pos, BlockState stateSchematic) {
         if (Configs.Print.EASY_PLACE_PROTOCOL.getBooleanValue()) {
             EasyPlaceProtocol protocol = PlacementHandler.getEffectiveProtocolVersion();
             Vec3 hitPos = Vec3.atLowerCornerOf(pos);
             if (protocol == EasyPlaceProtocol.V3) {
-                return fi.dy.masa.litematica.util.WorldUtils.applyPlacementProtocolV3(pos, stateSchematic, hitPos);
+                return fi.dy.masa.litematica.util.EasyPlaceUtils.applyPlacementProtocolV3(pos, stateSchematic, hitPos);
             } else if (protocol == EasyPlaceProtocol.V2) {
                 // Carpet Accurate Block placements protocol support, plus slab support
-                return fi.dy.masa.litematica.util.WorldUtils.applyCarpetProtocolHitVec(pos, stateSchematic, hitPos);
+                return fi.dy.masa.litematica.util.EasyPlaceUtils.applyCarpetProtocolHitVec(pos, stateSchematic, hitPos);
             }
         }
         return null;
@@ -54,7 +53,7 @@ public class LitematicaUtils {
         //#endif
 
         for (SchematicPlacementManager.PlacementPart placementPart : allPlacementsTouchingChunk) {
-            if (placementPart.getBox().containsPos(pos)) {
+            if (placementPart.getBox().contains(pos)) {
                 return true;
             }
         }

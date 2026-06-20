@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.render.gui.masa;
+package me.aleksilassila.litematica.printer.config.gui.masa;
 
 import me.aleksilassila.litematica.printer.I18n;
 

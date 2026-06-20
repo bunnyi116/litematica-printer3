@@ -43,6 +43,7 @@
     "jackf.lgacy.MixinRealmsMainScreen",
     "jackf.lgacy.MixinWCardPanel",
     "jackf.lgacy.WItemListPanelMixin",
+    "openinv.MixinGui",
     "openinv.MixinMinecraftClient",
     "printer.litematica.gui.MixinLitematicaGuiMainMenu",
     "printer.malilib.MixinAbstractCraftingMenu",
@@ -50,6 +51,7 @@
     "printer.mc.ClientLevelMixin",
     "printer.mc.ClientPacketListenerMixin",
     "printer.mc.GuiMixin",
+    "printer.mc.HudMixin",
     "printer.mc.LocalPlayerMixin",
     "printer.mc.MinecraftMixin",
     "printer.mc.MultiPlayerGameModeMixin"

@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.render.gui.masa;
+package me.aleksilassila.litematica.printer.config.gui.masa;
 
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.IConfigBase;
@@ -27,11 +27,20 @@ public class ConfigUi extends GuiConfigsBase {
     }
 
     public ConfigUi() {
-        this(Minecraft.getInstance().screen);
+        //#if MC >= 260200
+        this(Minecraft.getInstance().gui.screen());
+        //#else
+        //$$ this(Minecraft.getInstance().screen);
+        //#endif
     }
 
     public static void refresh() {
-        if (Reference.MINECRAFT.screen instanceof ConfigUi gui) {
+        //#if MC >= 260200
+        Screen screen = Minecraft.getInstance().gui.screen();
+        //#else
+        //$$ Screen screen = Minecraft.getInstance().screen;
+        //#endif
+        if (screen instanceof ConfigUi gui) {
             gui.initGui();
         }
     }

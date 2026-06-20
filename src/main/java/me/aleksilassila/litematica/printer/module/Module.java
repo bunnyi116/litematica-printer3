@@ -155,6 +155,9 @@ public abstract class Module extends ConfigUtils {
                     } else if (!LitematicaUtils.isWithinSelection1ModeRange(pos)) {
                         continue;
                     }
+                    if (Configs.Core.CHECK_PLAYER_INTERACTION_RANGE.getBooleanValue() && !canInteracted(pos)) {
+                        continue;
+                    }
                     if (selectionType != null && !ConfigUtils.isPositionInSelectionRange(player, pos, selectionType)) {
                         continue;
                     }

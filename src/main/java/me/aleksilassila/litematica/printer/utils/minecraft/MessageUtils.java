@@ -5,7 +5,10 @@ import net.minecraft.network.chat.Component;
 
 public class MessageUtils {
     public static void setOverlayMessage(Component message, boolean bl) {
-        Minecraft.getInstance().gui.setOverlayMessage(message, bl);
+        //#if MC>=260200
+        Minecraft.getInstance().gui.hud.setOverlayMessage(message, false);
+        //$$ Minecraft.getInstance().gui.setOverlayMessage(message, false);
+        //#endif
     }
 
     public static void setOverlayMessage(Component message) {
@@ -17,8 +20,10 @@ public class MessageUtils {
     }
 
     public static void addMessage(Component message) {
-        //#if MC>=260000
-        Minecraft.getInstance().gui.getChat().addClientSystemMessage(message);
+        //#if MC>=260200
+        Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(message);
+        //#elseif MC>=260100
+        //$$ Minecraft.getInstance().gui.getChat().addClientSystemMessage(message);
         //#else
         //$$ Minecraft.getInstance().gui.getChat().addMessage(message);
         //#endif

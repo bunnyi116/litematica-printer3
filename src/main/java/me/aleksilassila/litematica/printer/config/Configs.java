@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.enums.*;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
-import me.aleksilassila.litematica.printer.render.gui.masa.ConfigUi;
+import me.aleksilassila.litematica.printer.config.gui.masa.ConfigUi;
 import net.minecraft.world.level.block.Blocks;
 
 import java.io.File;

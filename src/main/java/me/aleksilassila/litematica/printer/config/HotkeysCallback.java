@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.config;
 
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
-import me.aleksilassila.litematica.printer.render.gui.masa.ConfigUi;
+import me.aleksilassila.litematica.printer.config.gui.masa.ConfigUi;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import net.minecraft.client.Minecraft;
 
@@ -32,7 +32,11 @@ public class HotkeysCallback {
             return false;
         }
         if (key == Configs.Hotkeys.OPEN_SCREEN.getKeybind()) {
-            client.setScreen(new ConfigUi());
+            //#if MC >= 260200
+            client.gui.setScreen(new ConfigUi());
+            //#else
+            //$$ client.setScreen(new ConfigUi());
+            //#endif
             return true;
         }
 

@@ -1,11 +1,11 @@
 package me.aleksilassila.litematica.printer;
 
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
-import me.aleksilassila.litematica.printer.render.gui.masa.ConfigUi;
+import me.aleksilassila.litematica.printer.printer.zxy.utils.HighlightBlockRenderer;
+import me.aleksilassila.litematica.printer.config.gui.masa.ConfigUi;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
-import me.aleksilassila.litematica.printer.printer.zxy.utils.HighlightBlockRenderer;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;

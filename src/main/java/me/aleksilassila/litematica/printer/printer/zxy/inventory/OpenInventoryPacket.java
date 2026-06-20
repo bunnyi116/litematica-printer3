@@ -280,7 +280,7 @@ public class OpenInventoryPacket {
 
         if (!isInv || blockState.isAir() || (blockEntity instanceof ShulkerBoxBlockEntity entity &&
                 //#if MC > 12103
-                !client.level.noCollision(Shulker.getProgressDeltaAabb(1.0F, blockState.getValue(BlockStateProperties.FACING), 0.0F, 0.5F, pos.getBottomCenter()).move(pos).deflate(1.0E-6)) &&
+                !client.level.noCollision(Shulker.getProgressDeltaAabb(1.0F, blockState.getValue(BlockStateProperties.FACING), 0.0F, 0.5F, Vec3.atBottomCenterOf(pos)).move(pos).deflate(1.0E-6)) &&
                 //#elseif MC <= 12103 && MC > 12004
                 //$$ !client.level.noCollision(Shulker.getProgressDeltaAabb(1.0F, blockState.getValue(BlockStateProperties.FACING), 0.0F, 0.5F).move(pos).deflate(1.0E-6)) &&
                 //#elseif MC <= 12004
@@ -377,7 +377,7 @@ public class OpenInventoryPacket {
                 String translationKey = key.identifier().toLanguageKey();
                 String translate = StringUtils.translate(translationKey);
                 if (client.player != null)
-                    MessageUtils.addMessage(I18n.INVENTORY_OPEN_FAILED.getName(translate, pos.getCenter()));
+                    MessageUtils.addMessage(I18n.INVENTORY_OPEN_FAILED.getName(translate, Vec3.atCenterOf(pos)));
                 //#endif
 
                 //#if MC >= 12001

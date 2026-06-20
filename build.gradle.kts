@@ -1,7 +1,7 @@
 plugins {
     id("maven-publish")
-    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT" apply false
-    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT" apply false
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT" apply false
+    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT" apply false
 
     // https://github.com/ReplayMod/preprocessor
     // https://github.com/Fallen-Breath/preprocessor
@@ -12,20 +12,21 @@ plugins {
 preprocess {
     strictExtraMappings.set(false)
 
-    val mc11802 = createNode("1.18.2", 1_18_02, "mojang")
-    val mc11904 = createNode("1.19.4", 1_19_04, "mojang")
-    val mc12001 = createNode("1.20.1", 1_20_01, "mojang")
-    val mc12002 = createNode("1.20.2", 1_20_02, "mojang")
-    val mc12004 = createNode("1.20.4", 1_20_04, "mojang")
-    val mc12006 = createNode("1.20.6", 1_20_06, "mojang")
-    val mc12101 = createNode("1.21.1", 1_21_01, "mojang")
-    val mc12103 = createNode("1.21.3", 1_21_03, "mojang")
-    val mc12104 = createNode("1.21.4", 1_21_04, "mojang")
-    val mc12105 = createNode("1.21.5", 1_21_05, "mojang")
-    val mc12106 = createNode("1.21.6", 1_21_06, "mojang")
-    val mc12109 = createNode("1.21.9", 1_21_09, "mojang")
-    val mc12111 = createNode("1.21.11", 1_21_11, "mojang")
-    val mc260100 = createNode("26.1", 260100, "mojang")
+    val mc11802 = createNode("1.18.2", 1_18_02, "")
+    val mc11904 = createNode("1.19.4", 1_19_04, "")
+    val mc12001 = createNode("1.20.1", 1_20_01, "")
+    val mc12002 = createNode("1.20.2", 1_20_02, "")
+    val mc12004 = createNode("1.20.4", 1_20_04, "")
+    val mc12006 = createNode("1.20.6", 1_20_06, "")
+    val mc12101 = createNode("1.21.1", 1_21_01, "")
+    val mc12103 = createNode("1.21.3", 1_21_03, "")
+    val mc12104 = createNode("1.21.4", 1_21_04, "")
+    val mc12105 = createNode("1.21.5", 1_21_05, "")
+    val mc12106 = createNode("1.21.6", 1_21_06, "")
+    val mc12109 = createNode("1.21.9", 1_21_09, "")
+    val mc12111 = createNode("1.21.11", 1_21_11, "")
+    val mc260100 = createNode("26.1", 26_01_00, "")
+    val mc260200 = createNode("26.2", 26_02_00, "")
 
     mc11802.link(mc11904, file("versions/mapping-1.18.2-1.19.4.txt"))
     mc11904.link(mc12001, null)
@@ -40,6 +41,8 @@ preprocess {
     mc12106.link(mc12109, null)
     mc12109.link(mc12111, file("versions/mapping-1.21.10-1.21.11.txt"))
     mc12111.link(mc260100, file("versions/mapping-1.21.11-26.1.txt"))
+    mc260100.link(mc260200, file("versions/mapping-26.1.2-26.2.txt"))
+
 
     // See https://github.com/Fallen-Breath/fabric-mod-template/blob/1d72d77a1c5ce0bf060c2501270298a12adab679/build.gradle#L55-L63
     for (node in getNodes()) {

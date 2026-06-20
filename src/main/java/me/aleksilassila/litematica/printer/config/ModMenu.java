@@ -2,7 +2,7 @@ package me.aleksilassila.litematica.printer.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import me.aleksilassila.litematica.printer.render.gui.masa.ConfigUi;
+import me.aleksilassila.litematica.printer.config.gui.masa.ConfigUi;
 
 public class ModMenu implements ModMenuApi {
     @Override

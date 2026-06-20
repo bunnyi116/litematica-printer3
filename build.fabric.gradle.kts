@@ -86,14 +86,17 @@ dependencies {
 }
 
 loom {
-    val commonVmArgs = listOf("-Dmixin.debug.export=true", "-Dmixin.debug.verbose=true", "-Dmixin.env.remapRefMap=true")
-    val programArgs = listOf("--width", "1280", "--height", "720", "--username", "PrinterTest")
     runs {
         named("client") {
-            ideConfigGenerated(true)
-            vmArgs(commonVmArgs)
-            programArgs(programArgs)
-            runDir = "../../run/client"
+            client()
+            runDirectory.set(file("../../run/client"))
+            jvmArguments.add("-Dmixin.debug.export=true")
+            jvmArguments.add("-Dmixin.debug.countInjections=true")
+            jvmArguments.add("-Dmixin.env.remapRefMap=true")
+            programArguments.addAll("--width", "1280")
+            programArguments.addAll("--height", "720")
+            programArguments.addAll("--username", "PrinterTest")
+            generateRunConfig.set(true)
         }
     }
 }

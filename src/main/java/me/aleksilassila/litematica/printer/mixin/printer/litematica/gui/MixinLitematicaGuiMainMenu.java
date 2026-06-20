@@ -1,7 +1,7 @@
 package me.aleksilassila.litematica.printer.mixin.printer.litematica.gui;
 
-import me.aleksilassila.litematica.printer.render.gui.masa.ButtonListenerChangeMenu;
-import me.aleksilassila.litematica.printer.render.gui.masa.ButtonType;
+import me.aleksilassila.litematica.printer.config.gui.masa.ButtonListenerChangeMenu;
+import me.aleksilassila.litematica.printer.config.gui.masa.ButtonType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Invoker;

@@ -1,4 +1,4 @@
-package me.aleksilassila.litematica.printer.render.gui.masa;
+package me.aleksilassila.litematica.printer.config.gui.masa;
 
 import net.minecraft.client.gui.screens.Screen;
 import fi.dy.masa.malilib.gui.GuiBase;

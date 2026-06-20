@@ -19,8 +19,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import java.util.*;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
-
 
 //#if MC <= 12104
 //$$ import net.minecraft.client.Minecraft;
@@ -94,7 +92,7 @@ public class HighlightBlockRenderer implements IRenderer {
     }
 
     // @formatter:off
-    //#if MC > 260100
+    //#if MC >= 260100
     public void test3(Matrix4fc matrices, Color4f color4f, Set<BlockPos> posSet) {
     //#elseif MC > 12004
     //$$ public void test3(Matrix4f matrices, Color4f color4f, Set<BlockPos> posSet) {
@@ -127,22 +125,25 @@ public class HighlightBlockRenderer implements IRenderer {
         //#else
         //$$ RenderSystem.setShader(GameRenderer::getPositionColorShader);
         //#endif
-        Tesselator tesselator = Tesselator.getInstance();
+
+
 
         //#if MC > 12006
             //#if MC > 12104
-                //#if MC == 12105
+                //#if MC >= 260200
+                RenderContext ctx = new RenderContext(() -> threadName, MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT,0);
+                //#elseif MC == 12105
                 //$$ RenderContext ctx = new RenderContext(MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT, BufferUsage.STATIC_WRITE);
                 //#else
-                RenderContext ctx = new RenderContext(() -> threadName, MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT);
+                //$$ RenderContext ctx = new RenderContext(() -> threadName, MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT);
                 //#endif
             BufferBuilder buffer = ctx.getBuilder();
             //#else
-            //$$ BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            //$$ BufferBuilder buffer = com.mojang.blaze3d.vertex.Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             //#endif
         MeshData meshData;
         //#else
-        //$$ BufferBuilder buffer = tesselator.getBuilder();
+        //$$ BufferBuilder buffer = com.mojang.blaze3d.vertex.Tesselator.getInstance().getBuilder();
         //$$ buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         //#endif
         for (BlockPos pos : posSet) {
@@ -166,7 +167,7 @@ public class HighlightBlockRenderer implements IRenderer {
                     //$$ meshData.close();
                     //#endif
                 //#else
-                //$$ tesselator.end();
+                //$$ com.mojang.blaze3d.vertex.Tesselator.getInstance().end();
                 //#endif
             }
         } catch (Exception e) {

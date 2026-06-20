@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Gui;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,9 +25,12 @@ import net.minecraft.client.DeltaTracker;
 
 @Mixin(Gui.class)
 public abstract class GuiMixin {
+
     // @formatter:off
-    //#if MC >= 260100
-    @Inject(method = "extractHotbarAndDecorations", at = @At("TAIL"))
+    //#if MC>= 260200
+    @Unique
+    //#elseif MC >= 260100
+    //$$ @Inject(method = "extractHotbarAndDecorations", at = @At("TAIL"))
     //#else
     //$$ @Inject(method = "renderItemHotbar", at = @At("TAIL"))
     //#endif

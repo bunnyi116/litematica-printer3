@@ -44,13 +44,15 @@ public abstract class MixinMinecraftClient {
     @Nullable
     public ClientLevel level;
 
-    @Inject(method = {"setScreen"}, at = {@At(value = "HEAD")}, cancellable = true)
-    public void setScreen(@Nullable Screen screen, CallbackInfo ci) {
-        if (ModLoadUtils.closeScreen > 0 && /*screen != null &&*/ screen instanceof AbstractContainerScreen<?>) {
-            ModLoadUtils.closeScreen--;
-            ci.cancel();
-        }
-    }
+    //#if MC < 260200
+    //$$ @Inject(method = "setScreen", at = {@At(value = "HEAD")}, cancellable = true)
+    //$$ public void setScreen(@Nullable Screen screen, CallbackInfo ci) {
+    //$$     if (ModLoadUtils.closeScreen > 0 && /*screen != null &&*/ screen instanceof AbstractContainerScreen<?>) {
+    //$$         ModLoadUtils.closeScreen--;
+    //$$         ci.cancel();
+    //$$     }
+    //$$ }
+    //#endif
 
     //鼠标中键从打印机库存或通过快捷濳影盒 取出对应物品
     //#if MC > 12103
