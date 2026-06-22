@@ -1,11 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
+package me.aleksilassila.litematica.printer.mixin.openinv;
 
 //#if MC >= 260200
-
-package me.aleksilassila.litematica.printer.mixin.openinv;
 
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import net.minecraft.client.gui.Gui;
