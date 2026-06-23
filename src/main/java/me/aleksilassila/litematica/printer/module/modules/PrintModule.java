@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -82,7 +83,6 @@ public class PrintModule extends Module {
                 return false;
             }
         }
-
         Optional<Action> action = Optional.empty();
         BlockMatchResult blockMatchResult = BlockMatchResult.compare(context);
         List<Guide> guides = Guides.INSTANCE.getGuides(context);
@@ -125,15 +125,8 @@ public class PrintModule extends Module {
         Direction side = action.getValidSide(level, blockPos);
         if (side == null) return;
 
-        // 交互操作：跳过切物品，但需验证当前方块确实是预期的可交互方块
-        if (action instanceof ClickAction) {
-            if (BlockMatchResult.compare(ctx) != BlockMatchResult.WRONG_STATE) {
-                return;
-            }
-        } else {
-            Item[] reqItems = action.getRequiredItems(ctx.requiredState.getBlock());
-            if (!InventoryUtils.switchToItems(player, reqItems)) return;
-        }
+        @Nullable Item[] reqItems = action.getRequiredItems(ctx.requiredState.getBlock());
+        if (reqItems != null && !InventoryUtils.switchToItems(player, reqItems)) return;
 
         boolean useShift;
         if (action.getShift() == null) {

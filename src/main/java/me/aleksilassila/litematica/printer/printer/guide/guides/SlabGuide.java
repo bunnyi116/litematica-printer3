@@ -80,22 +80,15 @@ public class SlabGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-
-        // DOUBLE：在已有单层台阶上点击另一面来合并成双层
-        // 使用 ClickAction 直接点击方块本身，因为普通 Action 的 getValidSide
-        // 会检查相邻方块是否可点击——台阶上方通常是空气，UP 面会被过滤掉
         if (slabType == SlabType.DOUBLE) {
             if (currentState.hasProperty(SlabBlock.TYPE)) {
                 SlabType current = getProperty(currentState, SlabBlock.TYPE).orElse(SlabType.BOTTOM);
-                // 点击面应该是当前台阶的「缺失面」：BOTTOM 台阶缺上方 → 点 UP，TOP 台阶缺下方 → 点 DOWN
-                Direction clickFace = current == SlabType.BOTTOM ? Direction.UP : Direction.DOWN;
-                return Result.success(new ClickAction()
+                Direction clickFace = current == SlabType.BOTTOM ? Direction.DOWN : Direction.UP;
+                return Result.success(new Action()
                         .setSides(clickFace)
                         .setItem(requiredBlock.asItem()));
             }
         }
-
-        // 其他 WRONG_STATE：根据配置决定是否破坏
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             InteractionUtils.INSTANCE.add(context);
         }
