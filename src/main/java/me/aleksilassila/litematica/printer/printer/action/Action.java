@@ -11,6 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -56,7 +57,12 @@ public class Action {
     }
 
     public @Nullable Item[] getRequiredItems(Block backup) {
-        return clickItems == null ? new Item[]{backup.asItem()} : clickItems;
+        if (clickItems == null) {
+            if (backup.asItem() != Items.AIR) {
+                return new Item[]{backup.asItem()};
+            }
+        }
+        return clickItems;
     }
 
     public @NotNull Map<Direction, Vec3> getSides() {
