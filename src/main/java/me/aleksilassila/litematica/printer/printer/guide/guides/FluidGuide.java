@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.Optional;
@@ -53,23 +52,23 @@ public class FluidGuide extends Guide {
         }
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
             if (isOnCooldown()) {
-                return Result.skip().setIterationNextBlockPos(context.blockPos);
+                return Result.skip().setIterationNextBlockPos(blockPos);
             }
             if (isCorrectWaterLevel(requiredState, currentState)) {
-                return Result.pass().setIterationNextBlockPos(context.blockPos);
+                return Result.pass().setIterationNextBlockPos(blockPos);
             }
             if (!canIceMeltIntoWaterSource(level, blockPos)) {
-                return Result.skip().setIterationNextBlockPos(context.blockPos);
+                return Result.skip().setIterationNextBlockPos(blockPos);
             }
             if (currentBlock instanceof IceBlock) {
-                if (!InteractionUtils.INSTANCE.contains(context.blockPos)) {
+                if (!InteractionUtils.INSTANCE.contains(blockPos)) {
                     InteractionUtils.INSTANCE.add(context);
                     setCooldown(10);
                 }
-                return Result.skip().setIterationNextBlockPos(context.blockPos);
+                return Result.skip().setIterationNextBlockPos(blockPos);
             }
             if (BlockStateUtils.isReplaceable(currentState)) {
-                return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(context.blockPos);
+                return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(blockPos);
             }
         }
         return Result.skip();

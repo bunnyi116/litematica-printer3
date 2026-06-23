@@ -126,7 +126,11 @@ public class PrintModule extends Module {
         if (side == null) return;
 
         @Nullable Item[] reqItems = action.getRequiredItems(ctx.requiredState.getBlock());
-        if (reqItems == null || !InventoryUtils.switchToItems(player, reqItems)) return;
+        if (reqItems == null || !InventoryUtils.switchToItems(player, reqItems)) {
+            if (!(action instanceof ClickAction)){
+                return;
+            }
+        }
 
         boolean useShift;
         if (action.getShift() == null) {
