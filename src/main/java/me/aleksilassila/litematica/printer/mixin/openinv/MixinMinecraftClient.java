@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package me.aleksilassila.litematica.printer.mixin.openinv;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -56,7 +51,7 @@ public abstract class MixinMinecraftClient {
 
     //鼠标中键从打印机库存或通过快捷濳影盒 取出对应物品
     //#if MC > 12103
-        //#if MC > 260100
+        //#if MC >= 260100
         @WrapOperation(method = "pickBlockOrEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handlePickItemFromBlock(Lnet/minecraft/core/BlockPos;Z)V"))
         //#else
         //$$ @WrapOperation(method = "pickBlock",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handlePickItemFromBlock(Lnet/minecraft/core/BlockPos;Z)V"))
