@@ -25,7 +25,7 @@ import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 
 //监听按键
 public class HotkeysCallback {
-    private static final Minecraft client = Minecraft.getInstance();
+    private final static Minecraft client = Minecraft.getInstance();
 
     public static boolean onKeyAction(KeyAction action, IKeybind key) {
         if (client.player == null || client.level == null) {

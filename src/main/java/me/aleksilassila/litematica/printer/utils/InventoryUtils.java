@@ -41,10 +41,10 @@ import static me.aleksilassila.litematica.printer.printer.zxy.inventory.Inventor
 
 @SuppressWarnings({"DataFlowIssue", "SpellCheckingInspection", "GrazieInspection"})
 public class InventoryUtils {
-    private static final Minecraft client = Minecraft.getInstance();
-    private static final int OFFHAND_SLOT_INDEX = 40;
-    private static final long MESSAGE_COOLDOWN_MS = 5000L;
-    private static final Map<String, Long> LAST_MESSAGE_SEND_TIME = new ConcurrentHashMap<>();
+    private final static Minecraft client = Minecraft.getInstance();
+    private final static int OFFHAND_SLOT_INDEX = 40;
+    private final static long MESSAGE_COOLDOWN_MS = 5000L;
+    private final static Map<String, Long> LAST_MESSAGE_SEND_TIME = new ConcurrentHashMap<>();
     @Getter
     @Setter
     private static ItemStack orderlyStoreItem; //有序存放临时存储

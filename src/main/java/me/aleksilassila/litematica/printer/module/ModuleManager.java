@@ -1,12 +1,14 @@
 package me.aleksilassila.litematica.printer.module;
 
-import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
-import me.aleksilassila.litematica.printer.TickContext;
 import me.aleksilassila.litematica.printer.config.Configs;
+import me.aleksilassila.litematica.printer.event.EventCallbacks;
+import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
 import me.aleksilassila.litematica.printer.module.modules.*;
 import me.aleksilassila.litematica.printer.printer.ActionManager;
+import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
+import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.client.Minecraft;
@@ -14,37 +16,52 @@ import net.minecraft.client.Minecraft;
 import static me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils.isOpenHandler;
 import static me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils.switchItem;
 
-public class ModuleManager {
-    public static final Minecraft mc = Minecraft.getInstance();
 
-    public static final GuiModule GUI = new GuiModule();
-    public static final PrintModule PRINT = new PrintModule();
-    public static final FillModule FILL = new FillModule();
-    public static final MineModule MINE = new MineModule();
-    public static final FluidModule FLUID = new FluidModule();
-    public static final BedrockModule BEDROCK = new BedrockModule();
-    public static final ImmutableList<Module> VALUES = ImmutableList.of(GUI, MINE, FLUID, PRINT, FILL, BEDROCK);
+public class ModuleManager {
+    public final static ModuleManager INSTANCE = new ModuleManager();
+
+    @Getter
+    private long clientTickCount;
 
     @Getter
     @Setter
-    private static int packetTick;
+    private int receivePacketCount;
 
-    public static void tick() {
+    public void registerEvents() {
+        EventCallbacks.CLIENT_START_TICK.register(ModuleManager.INSTANCE::onStartTick);
+        EventCallbacks.CLIENT_END_TICK.register(ModuleManager.INSTANCE::onEndTick);
+    }
+
+    @SuppressWarnings("unused")
+    public void onStartTick(Minecraft minecraft) {
+        this.clientTickCount++;
+    }
+
+    public void onEndTick(Minecraft minecraft) {
+        InventoryUtils.tick();
+        ZxyUtils.tick();
+        if (minecraft.gameMode instanceof MultiPlayerGameModeExtension extension) {
+            extension.litematica_printer$handleDelayedDestroy();
+        }
+        InteractionUtils.INSTANCE.preprocess();
+        InteractionUtils.INSTANCE.onTick();
+
+
         // 本次TICK共享部分预先检查
         if (isOpenHandler || switchItem() || InteractionUtils.INSTANCE.isNeedHandle()) {
             return;
         }
         if (ActionManager.INSTANCE.needWaitModifyLook) {
-            ActionManager.INSTANCE.sendQueue(mc.player);
+            ActionManager.INSTANCE.sendQueue(minecraft.player);
             return;
         }
         if (Configs.Core.LAG_CHECK.getBooleanValue()) {
-            if (packetTick > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
+            if (receivePacketCount > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
                 return;
             }
-            packetTick++;
+            receivePacketCount++;
         }
-        for (Module handler : VALUES) {
+        for (Module handler : Modules.VALUES) {
             boolean isGui = handler instanceof GuiModule;
             // Gui无需等待处理
             if (!isGui) {
@@ -62,7 +79,4 @@ public class ModuleManager {
         BlockPosCooldownUtils.INSTANCE.tick();
     }
 
-    public static long getCurrentHandlerTime() {
-        return TickContext.INSTANCE.getClientTickCount();
-    }
 }

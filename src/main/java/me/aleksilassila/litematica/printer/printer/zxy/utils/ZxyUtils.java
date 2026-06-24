@@ -46,7 +46,7 @@ import static me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInve
 import static net.minecraft.world.level.block.ShulkerBoxBlock.FACING;
 
 public class ZxyUtils {
-    private static final Minecraft client = Minecraft.getInstance();
+    private final static Minecraft client = Minecraft.getInstance();
 
     //旧版箱子追踪
     @SuppressWarnings("unused")

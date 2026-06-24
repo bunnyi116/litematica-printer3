@@ -49,7 +49,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.memory;
 //$$
 //$$ @Environment(EnvType.CLIENT)
 //$$ public abstract class MemoryUtils {
-//$$     public static final ResourceLocation ENDER_CHEST_ID = ModLoadUtils.isChestTrackerLoaded() ? id("ender_chest") : null;
+//$$     public final static ResourceLocation ENDER_CHEST_ID = ModLoadUtils.isChestTrackerLoaded() ? id("ender_chest") : null;
 //$$     @Nullable
 //$$     private static BlockPos latestPos = null;
 //$$     @Nullable

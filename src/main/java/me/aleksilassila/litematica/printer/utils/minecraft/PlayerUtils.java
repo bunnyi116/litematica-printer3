@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @SuppressWarnings("EnhancedSwitchMigration")
 public class PlayerUtils {
-    private static final Minecraft client = Minecraft.getInstance();
+    private final static Minecraft client = Minecraft.getInstance();
 
     public static Optional<LocalPlayer> getPlayer() {
         return Optional.ofNullable(client.player);

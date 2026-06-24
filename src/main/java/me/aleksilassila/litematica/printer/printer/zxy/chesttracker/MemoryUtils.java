@@ -4,6 +4,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.chesttracker;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.I18n;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
@@ -89,10 +90,10 @@ public class MemoryUtils {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> unLoad());
     }
     public static void saveMemory(AbstractContainerMenu sc){
-        if(PRINTER_MEMORY != null && ZxyUtils.printerMemoryAdding || ModuleManager.PRINT.isPrinterMemorySync())
+        if(PRINTER_MEMORY != null && ZxyUtils.printerMemoryAdding || Modules.PRINT.isPrinterMemorySync())
             save(sc , PRINTER_MEMORY);
         MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(memoryBank -> save(sc, memoryBank));
-        ModuleManager.PRINT.setPrinterMemorySync(false);;
+        Modules.PRINT.setPrinterMemorySync(false);;
     }
     public static void createPrinterMemory(){
         Optional<Coordinate> current = Coordinate.getCurrent();

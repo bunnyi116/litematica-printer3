@@ -4,6 +4,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.WorkMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.module.ModuleManager;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.module.modules.GuiModule;
 import me.aleksilassila.litematica.printer.module.modules.PrintModule;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
@@ -28,14 +29,14 @@ public class RenderHud {
     private void drawHudInfo(float scaledWidth, float scaledHeight) {
         int centerX = (int) (scaledWidth / 2);
         int centerY = (int) (scaledHeight / 2);
-        GuiModule guiModule = ModuleManager.GUI;
+        GuiModule guiModule = Modules.GUI;
 
         // ====================== 统一 Y 基准（核心改动） ======================
         int y = centerY;
 
         // 1. 延迟过大警告（向上偏移）
         if (Configs.Core.LAG_CHECK.getBooleanValue() &&
-                ModuleManager.getPacketTick() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
+                ModuleManager.INSTANCE.getReceivePacketCount() > Configs.Core.LAG_CHECK_MAX.getIntegerValue()) {
             y += 22;
             Render2DUtils.drawString("延迟过大，已暂停运行", centerX, y - 22, Color.ORANGE, true, true);
         }
@@ -58,7 +59,7 @@ public class RenderHud {
             Render2DUtils.drawString(modeName, centerX, y, Color.WHITE, true, true);
         } else {
             HashSet<String> modeNames = new HashSet<>();
-            for (Module handler : ModuleManager.VALUES) {
+            for (Module handler : Modules.VALUES) {
                 if (handler.getId().equals(GuiModule.NAME) ||
                         handler.getEnable() == null ||
                         !handler.getEnable().getBooleanValue()) {
@@ -70,7 +71,7 @@ public class RenderHud {
         }
 
 
-        PrintModule printModule = ModuleManager.PRINT;
+        PrintModule printModule = Modules.PRINT;
         SchematicBlockContext printContext = printModule.getContext();
         if (printContext != null) {
             Minecraft mc = Minecraft.getInstance();

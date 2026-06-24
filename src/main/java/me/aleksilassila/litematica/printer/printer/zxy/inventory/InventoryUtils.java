@@ -2,6 +2,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.inventory;
 
 import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.I18n;
+import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ShulkerUtils;
@@ -51,7 +52,7 @@ import static me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInve
 public class InventoryUtils {
     private static int shulkerCooldown = 0;
 
-    private static final Minecraft client = Minecraft.getInstance();
+    private final static Minecraft client = Minecraft.getInstance();
 
     public static boolean isInventory(Level world, BlockPos pos) {
         return fi.dy.masa.malilib.util.InventoryUtils.getInventory(world, pos) != null;
@@ -111,7 +112,7 @@ public class InventoryUtils {
                     if (SearchItem.search(true)) {
                         ModLoadUtils.closeScreen++;
                         isOpenHandler = true;
-                        ModuleManager.PRINT.setPrinterMemorySync(true);
+                        Modules.PRINT.setPrinterMemorySync(true);
                         return true;
                     }
                     //#elseif MC < 12001

@@ -1,6 +1,8 @@
 package me.aleksilassila.litematica.printer;
 
 import fi.dy.masa.malilib.event.InitializationHandler;
+import me.aleksilassila.litematica.printer.event.EventCallbacks;
+import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -16,5 +18,7 @@ public class LitematicaPrinterMod implements ModInitializer, ClientModInitialize
     public void onInitializeClient() {
         OpenInventoryPacket.registerClientReceivePacket();
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
+
+        ModuleManager.INSTANCE.registerEvents();
     }
 }

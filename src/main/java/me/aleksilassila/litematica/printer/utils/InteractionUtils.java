@@ -33,8 +33,8 @@ import static fi.dy.masa.tweakeroo.tweaks.PlacementTweaks.BLOCK_TYPE_BREAK_RESTR
 @SuppressWarnings({"DataFlowIssue", "BooleanMethodIsAlwaysInverted"})
 @Environment(EnvType.CLIENT)
 public class InteractionUtils {
-    public static final Minecraft client = Minecraft.getInstance();
-    public static final InteractionUtils INSTANCE = new InteractionUtils();
+    public final static Minecraft client = Minecraft.getInstance();
+    public final static InteractionUtils INSTANCE = new InteractionUtils();
 
     private final Queue<BlockPos> breakQueue = new LinkedList<>();
     private BlockPos breakPos;

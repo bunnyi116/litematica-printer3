@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 
 public class NetworkUtils {
 
-    private static final Minecraft client = Minecraft.getInstance();
+    private final static Minecraft client = Minecraft.getInstance();
 
     public static void sendPacket(Packet<?> packet) {
         ClientPacketListener connection = client.getConnection();

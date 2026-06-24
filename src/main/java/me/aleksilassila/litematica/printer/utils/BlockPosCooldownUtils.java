@@ -106,7 +106,7 @@ public class BlockPosCooldownUtils {
     }
 
     @SuppressWarnings("ClassCanBeRecord")
-    private static final class Info {
+    private final static class Info {
         private final Identifier dimension;
         private final String type;
         private final BlockPos pos;

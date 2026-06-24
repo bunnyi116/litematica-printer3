@@ -22,7 +22,7 @@ public class ConnectionMixin {
     @Inject(method = "genericsFtw", at = @At("HEAD"), require = 1)
     private static void hookGenericsFtw(Packet<?> packet, PacketListener listener, CallbackInfo ci) {
         if (ConfigUtils.isEnable()) {
-            ModuleManager.setPacketTick(0);   // 用于延迟检测
+            ModuleManager.INSTANCE.setReceivePacketCount(0);   // 用于延迟检测
         }
     }
 

@@ -16,9 +16,9 @@ import java.util.stream.Stream;
  */
 public class FilterUtils {
     // 常量定义：提升可读性，避免魔法值
-    private static final char TAG_PREFIX = '#';
-    private static final String SPLIT_SEPARATOR = ",";
-    private static final String CONTAINS_FLAG = "c";
+    private final static char TAG_PREFIX = '#';
+    private final static String SPLIT_SEPARATOR = ",";
+    private final static String CONTAINS_FLAG = "c";
 
     /**
      * 字符串匹配规则：支持"包含"（c参数）或"精确相等"

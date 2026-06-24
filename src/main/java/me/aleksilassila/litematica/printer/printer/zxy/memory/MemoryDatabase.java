@@ -34,7 +34,7 @@ package me.aleksilassila.litematica.printer.printer.zxy.memory;
 //$$
 //$$ @Environment(EnvType.CLIENT)
 //$$ public class MemoryDatabase {
-//$$     private static final CompoundTag FULL_DURABILITY_TAG = new CompoundTag();
+//$$     private final static CompoundTag FULL_DURABILITY_TAG = new CompoundTag();
 //$$     private static @Nullable MemoryDatabase currentDatabase = null;
 //$$     @Getter
 //$$     private final transient String id;

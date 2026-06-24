@@ -27,10 +27,10 @@ import java.util.regex.Pattern;
 
 public class UpdateCheckerUtils {
     // 本地版本（从fabric.mod.json读取）
-    public static final String LOCAL_VERSION = getVersionFromModJson();
+    public final static String LOCAL_VERSION = getVersionFromModJson();
 
     // 语义化版本号正则：匹配v1.2.3、1.2、5等格式，提取数字部分
-    public static final Pattern SEM_VER_PATTERN = Pattern.compile("^v?(\\d+)(?:\\.(\\d+))?(?:\\.(\\d+))?.*$");
+    public final static Pattern SEM_VER_PATTERN = Pattern.compile("^v?(\\d+)(?:\\.(\\d+))?(?:\\.(\\d+))?.*$");
 
     public static void checkForUpdates() {
         CompletableFuture.runAsync(() -> {

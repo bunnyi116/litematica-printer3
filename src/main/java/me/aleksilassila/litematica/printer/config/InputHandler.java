@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.hotkeys.IKeyboardInputHandler;
 import me.aleksilassila.litematica.printer.Reference;
 
 public class InputHandler implements IKeybindProvider, IKeyboardInputHandler {
-    private static final InputHandler INSTANCE = new InputHandler();
+    private final static InputHandler INSTANCE = new InputHandler();
 
     @Override
     public void addKeysToMap(IKeybindManager manager) {

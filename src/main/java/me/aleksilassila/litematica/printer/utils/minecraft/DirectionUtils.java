@@ -6,13 +6,13 @@ import net.minecraft.util.Util;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class DirectionUtils {
-    private static final float YAW_MIN = -180.0F;
-    private static final float YAW_MAX = 180.0F;
-    private static final int ROTATION_MIN = 0;
-    private static final int ROTATION_MAX = 15;
-    private static final float ROTATION_TO_YAW_FACTOR = 22.5F;
+    private final static float YAW_MIN = -180.0F;
+    private final static float YAW_MAX = 180.0F;
+    private final static int ROTATION_MIN = 0;
+    private final static int ROTATION_MAX = 15;
+    private final static float ROTATION_TO_YAW_FACTOR = 22.5F;
 
-    private static final float[] SIN = Util.make(new float[65536], fs -> {
+    private final static float[] SIN = Util.make(new float[65536], fs -> {
         for (int ix = 0; ix < fs.length; ix++) {
             fs[ix] = (float) Math.sin(ix / 10430.378350470453);
         }

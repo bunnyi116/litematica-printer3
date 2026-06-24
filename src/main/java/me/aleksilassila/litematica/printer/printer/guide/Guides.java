@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Guides {
-    public static final Guides INSTANCE = new Guides();
+    public final static Guides INSTANCE = new Guides();
     private final List<GuideRegistration> registrations = new ArrayList<>();
 
     private Guides() {

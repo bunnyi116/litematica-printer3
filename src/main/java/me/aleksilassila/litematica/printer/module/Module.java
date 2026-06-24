@@ -89,7 +89,7 @@ public abstract class Module extends ConfigUtils {
     public void tick() {
         int tickInterval = this.getTickWorkInterval(); // 工作间隔
         if (tickInterval > 0) {
-            long currentTickTime = ModuleManager.getCurrentHandlerTime();
+            long currentTickTime = ModuleManager.INSTANCE.getClientTickCount();
             if (this.lastTickTime != -1L) {
                 // 非首次执行
                 if (currentTickTime - this.lastTickTime < tickInterval) {

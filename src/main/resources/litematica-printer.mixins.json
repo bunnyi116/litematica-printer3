@@ -53,7 +53,6 @@
     "printer.mc.GuiMixin",
     "printer.mc.HudMixin",
     "printer.mc.LocalPlayerMixin",
-    "printer.mc.MinecraftMixin",
     "printer.mc.MultiPlayerGameModeMixin"
   ],
   "injectors": {

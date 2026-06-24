@@ -7,56 +7,56 @@ import org.jetbrains.annotations.Nullable;
 
 @Getter
 public class I18n {
-    public static final I18n MESSAGE_TOGGLED = of("message.toggled");
-    public static final I18n MESSAGE_VALUE_OFF = of("message.value.off");
-    public static final I18n MESSAGE_VALUE_ON = of("message.value.on");
+    public final static I18n MESSAGE_TOGGLED = of("message.toggled");
+    public final static I18n MESSAGE_VALUE_OFF = of("message.value.off");
+    public final static I18n MESSAGE_VALUE_ON = of("message.value.on");
 
-    public static final I18n AUTO_DISABLE_NOTICE = of("auto_disable_notice");
-    public static final I18n FREE_NOTICE = of("free_notice");
+    public final static I18n AUTO_DISABLE_NOTICE = of("auto_disable_notice");
+    public final static I18n FREE_NOTICE = of("free_notice");
 
-    public static final I18n UPDATE_AVAILABLE = of("update.available");
-    public static final I18n UPDATE_DOWNLOAD = of("update.download");
-    public static final I18n UPDATE_FAILED = of("update.failed");
-    public static final I18n UPDATE_PASSWORD = of("update.password");
-    public static final I18n UPDATE_RECOMMENDATION = of("update.recommendation");
-    public static final I18n UPDATE_REPOSITORY = of("update.repository");
+    public final static I18n UPDATE_AVAILABLE = of("update.available");
+    public final static I18n UPDATE_DOWNLOAD = of("update.download");
+    public final static I18n UPDATE_FAILED = of("update.failed");
+    public final static I18n UPDATE_PASSWORD = of("update.password");
+    public final static I18n UPDATE_RECOMMENDATION = of("update.recommendation");
+    public final static I18n UPDATE_REPOSITORY = of("update.repository");
 
     // 下落方块检查提示
-    public static final I18n FALLING_BLOCK_NO_SUPPORT = of("message.falling_block.no_support");
-    public static final I18n FALLING_BLOCK_MISMATCH = of("message.falling_block.mismatch");
+    public final static I18n FALLING_BLOCK_NO_SUPPORT = of("message.falling_block.no_support");
+    public final static I18n FALLING_BLOCK_MISMATCH = of("message.falling_block.mismatch");
 
     // 破基岩模式提示
-    public static final I18n BEDROCK_CREATIVE_MODE = of("message.bedrock.creative_mode");
-    public static final I18n BEDROCK_MOD_NOT_LOADED = of("message.bedrock.mod_not_loaded");
+    public final static I18n BEDROCK_CREATIVE_MODE = of("message.bedrock.creative_mode");
+    public final static I18n BEDROCK_MOD_NOT_LOADED = of("message.bedrock.mod_not_loaded");
 
     // 快捷潜影盒提示
-    public static final I18n SHULKER_MOD_NOT_LOADED = of("message.shulker.mod_not_loaded");
+    public final static I18n SHULKER_MOD_NOT_LOADED = of("message.shulker.mod_not_loaded");
 
     // 关闭全部模式提示
-    public static final I18n CLOSE_ALL_MODE_NOTICE = of("message.close_all_mode");
+    public final static I18n CLOSE_ALL_MODE_NOTICE = of("message.close_all_mode");
 
     // 远程交互容器提示
-    public static final I18n REMOTE_SERVER_ERROR = of("message.remote.server_error");
-    public static final I18n REMOTE_AUTO_ENABLED = of("message.remote.auto_enabled");
-    public static final I18n REMOTE_AUTO_DISABLED = of("message.remote.auto_disabled");
+    public final static I18n REMOTE_SERVER_ERROR = of("message.remote.server_error");
+    public final static I18n REMOTE_AUTO_ENABLED = of("message.remote.auto_enabled");
+    public final static I18n REMOTE_AUTO_DISABLED = of("message.remote.auto_disabled");
 
     // 库存/同步相关提示
-    public static final I18n INVENTORY_ADD_COMPLETE = of("message.inventory.add_complete");
-    public static final I18n INVENTORY_ADDING = of("message.inventory.adding");
-    public static final I18n INVENTORY_CONTAINER_CANNOT_OPEN = of("message.inventory.container_cannot_open");
-    public static final I18n INVENTORY_NOT_CONTAINER = of("message.inventory.not_container");
-    public static final I18n INVENTORY_SYNC_CANCELLED = of("message.inventory.sync_cancelled");
-    public static final I18n INVENTORY_TOO_FAR = of("message.inventory.too_far");
-    public static final I18n INVENTORY_SYNC_PROGRESS = of("message.inventory.sync_progress");
-    public static final I18n INVENTORY_SYNC_COMPLETE = of("message.inventory.sync_complete");
-    public static final I18n INVENTORY_FULL = of("message.inventory.full");
-    public static final I18n INVENTORY_RESTORE_FAILED = of("message.inventory.restore_failed");
-    public static final I18n INVENTORY_SHULKER_OCCUPIED = of("message.inventory.shulker_occupied");
-    public static final I18n INVENTORY_CLEARED = of("message.inventory.cleared");
-    public static final I18n INVENTORY_OPEN_FAILED = of("message.inventory.open_failed");
+    public final static I18n INVENTORY_ADD_COMPLETE = of("message.inventory.add_complete");
+    public final static I18n INVENTORY_ADDING = of("message.inventory.adding");
+    public final static I18n INVENTORY_CONTAINER_CANNOT_OPEN = of("message.inventory.container_cannot_open");
+    public final static I18n INVENTORY_NOT_CONTAINER = of("message.inventory.not_container");
+    public final static I18n INVENTORY_SYNC_CANCELLED = of("message.inventory.sync_cancelled");
+    public final static I18n INVENTORY_TOO_FAR = of("message.inventory.too_far");
+    public final static I18n INVENTORY_SYNC_PROGRESS = of("message.inventory.sync_progress");
+    public final static I18n INVENTORY_SYNC_COMPLETE = of("message.inventory.sync_complete");
+    public final static I18n INVENTORY_FULL = of("message.inventory.full");
+    public final static I18n INVENTORY_RESTORE_FAILED = of("message.inventory.restore_failed");
+    public final static I18n INVENTORY_SHULKER_OCCUPIED = of("message.inventory.shulker_occupied");
+    public final static I18n INVENTORY_CLEARED = of("message.inventory.cleared");
+    public final static I18n INVENTORY_OPEN_FAILED = of("message.inventory.open_failed");
 
-    private static final String PREFIX_CONFIG = "config";
-    private static final String PREFIX_COMMENT = "desc";
+    private final static String PREFIX_CONFIG = "config";
+    private final static String PREFIX_COMMENT = "desc";
 
     private final @Nullable String prefix;
     private final String nameKey;

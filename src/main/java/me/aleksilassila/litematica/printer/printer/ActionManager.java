@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Input;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class ActionManager {
-    public static final ActionManager INSTANCE = new ActionManager();
+    public final static ActionManager INSTANCE = new ActionManager();
 
     public BlockPos target;
     public Direction side;

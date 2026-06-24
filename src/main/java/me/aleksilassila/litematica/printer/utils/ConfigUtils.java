@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConfigUtils {
     @NotNull
-    public static final Minecraft client = Minecraft.getInstance();
+    public final static Minecraft client = Minecraft.getInstance();
 
     public static boolean isEnable() {
         return Configs.Core.WORK_SWITCH.getBooleanValue();

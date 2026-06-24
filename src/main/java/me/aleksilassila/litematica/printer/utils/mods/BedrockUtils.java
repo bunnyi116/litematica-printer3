@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 import java.lang.reflect.Method;
 
 public class BedrockUtils {
-    private static final Minecraft client = Minecraft.getInstance();
+    private final static Minecraft client = Minecraft.getInstance();
     private static Object taskManagerInstance;
     private static Method addBlockTaskMethod;
     private static Method addRegionTaskMethod;
