@@ -9,9 +9,6 @@ public class EventCallbacks {
     public final static Event<ClientTickEvents.StartTick> CLIENT_START_TICK = ClientTickEvents.START_CLIENT_TICK;
     public final static Event<ClientTickEvents.EndTick> CLIENT_END_TICK = ClientTickEvents.END_CLIENT_TICK;
 
-    public final static Event<ClientTickEvents.StartLevelTick> CLIENT_LEVEL_START_TICK = ClientTickEvents.START_LEVEL_TICK;
-    public final static Event<ClientTickEvents.EndLevelTick> CLIENT_LEVEL_END_TICK = ClientTickEvents.END_LEVEL_TICK;
-
     public final static Event<ClientPlayConnectionEvents.Join> CLIENT_PLAY_JOIN = ClientPlayConnectionEvents.JOIN;
     public final static Event<ClientPlayConnectionEvents.Disconnect> CLIENT_PLAY_DISCONNECT = ClientPlayConnectionEvents.DISCONNECT;
 
