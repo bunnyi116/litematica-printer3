@@ -72,7 +72,7 @@ public class FluidModule extends Module {
     }
 
     @Override
-    protected boolean canIterate() {
+    protected boolean canExecute() {
         return !fillItems.isEmpty() && !fluidBlocks.isEmpty();
     }
 

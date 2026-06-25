@@ -61,8 +61,8 @@ public class ModuleManager {
             }
             receivePacketCount++;
         }
-        for (Module handler : Modules.VALUES) {
-            boolean isGui = handler instanceof GuiModule;
+        for (Module module : Modules.VALUES) {
+            boolean isGui = module instanceof GuiModule;
             // Gui无需等待处理
             if (!isGui) {
                 // 同TICK不同处理程序进行二次迭代检查, 避免独立的处理程序修改了内容没有及时跳出导致出现资源抢占问题
@@ -74,9 +74,11 @@ public class ModuleManager {
                     return;
                 }
             }
-            handler.tick();
+            module.tick();
         }
         BlockPosCooldownUtils.INSTANCE.tick();
+
+
     }
 
 }

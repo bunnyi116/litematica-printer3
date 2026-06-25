@@ -76,7 +76,7 @@ public class PrintModule extends Module {
         if (schematic == null) {
             return false;
         }
-        SchematicBlockContext context = new SchematicBlockContext(client, level, schematic, blockPos);
+        SchematicBlockContext context = new SchematicBlockContext(mc, level, schematic, blockPos);
         if (Configs.Print.PRINT_SKIP.getBooleanValue()) {
             Set<String> skipSet = new HashSet<>(Configs.Print.PRINT_SKIP_LIST.getStrings()); // 转换为 HashSet
             if (skipSet.stream().anyMatch(s -> FilterUtils.matchName(s, context.requiredState))) {

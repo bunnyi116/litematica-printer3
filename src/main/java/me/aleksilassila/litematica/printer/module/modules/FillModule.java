@@ -83,7 +83,7 @@ public class FillModule extends Module {
     }
 
     @Override
-    protected boolean canIterate() {
+    protected boolean canExecute() {
         return fillModeItemList.length > 0;
     }
 

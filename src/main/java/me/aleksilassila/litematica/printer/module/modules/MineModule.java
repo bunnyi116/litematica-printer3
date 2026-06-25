@@ -8,6 +8,7 @@ import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
 import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
+import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
@@ -78,7 +79,7 @@ public class MineModule extends Module {
     @Override
     protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         BlockBreakResult result = InteractionUtils.INSTANCE.continueDestroyBlock(blockPos);
-        this.setBlockPosCooldown(blockPos, getBreakCooldown());
+        this.setBlockPosCooldown(blockPos, ConfigUtils.getBreakCooldown());
         if (result == BlockBreakResult.IN_PROGRESS) {
             skipIteration.set(true);    // 本 TICK 退出剩下位置迭代
         }

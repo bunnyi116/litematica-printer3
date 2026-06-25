@@ -60,23 +60,23 @@ public class GuiModule extends Module {
         if (ConfigUtils.isPrintMode()) {
             WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
             if (schematic != null) {
-                SchematicBlockContext context = new SchematicBlockContext(client, level, schematic, blockPos);
+                SchematicBlockContext context = new SchematicBlockContext(mc, level, schematic, blockPos);
                 boolean isDone = BlockMatchResult.compare(context) != BlockMatchResult.MISSING;
                 printProgress.add(isDone);
                 totalProgress.add(isDone);
             }
         }
-        if (isFluidMode()) {
+        if (ConfigUtils.isFluidMode()) {
             boolean isDone = level.getBlockState(blockPos).getBlock() instanceof LiquidBlock;
             fluidProgress.add(!isDone);
             totalProgress.add(!isDone);
         }
-        if (isFillMode()) {
+        if (ConfigUtils.isFillMode()) {
             boolean isDone = !level.getBlockState(blockPos).isAir();
             fillProgress.add(isDone);
             totalProgress.add(isDone);
         }
-        if (isMineMode()) {
+        if (ConfigUtils.isMineMode()) {
             boolean isDone = level.getBlockState(blockPos).isAir();
             mineProgress.add(isDone);
             totalProgress.add(isDone);

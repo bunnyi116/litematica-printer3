@@ -63,7 +63,7 @@ public class FluidGuide extends Guide {
             if (currentBlock instanceof IceBlock) {
                 if (!InteractionUtils.INSTANCE.contains(blockPos)) {
                     InteractionUtils.INSTANCE.add(context);
-                    setCooldown(10);
+                    setCooldown(2);
                 }
                 return Result.skip().setIterationNextBlockPos(blockPos);
             }
