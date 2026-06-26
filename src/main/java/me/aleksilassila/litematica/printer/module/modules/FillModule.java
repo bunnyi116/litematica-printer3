@@ -7,7 +7,7 @@ import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.action.Action;
-import me.aleksilassila.litematica.printer.printer.ActionManager;
+import me.aleksilassila.litematica.printer.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import me.aleksilassila.litematica.printer.utils.InventoryUtils;
@@ -122,7 +122,7 @@ public class FillModule extends Module {
                     action = new Action()
                             .queueAction(blockPos, getPlayerPlacementDirection(), false, player);
                 }
-                ActionManager.INSTANCE.setLook(action.getPlayerLook());
+                ActionManager.INSTANCE.setLook(action.getLook());
                 if (ActionManager.INSTANCE.sendQueue(player).needWaitModifyLook){
                     skipIteration.set(true);
                 }

@@ -9,6 +9,7 @@ import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.VineBlock;
 
 /**
  * 藤蔓/发光地衣
@@ -22,7 +23,7 @@ public class VineGuide extends Guide {
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         for (Direction direction : Direction.values()) {
-            if (direction == Direction.DOWN && requiredBlock instanceof net.minecraft.world.level.block.VineBlock) continue;
+            if (direction == Direction.DOWN && requiredBlock instanceof VineBlock) continue;
             Object value = BlockStateUtils.getPropertyByName(requiredState, direction.name());
             if (value instanceof Boolean && (Boolean) value) {
                 return Result.success(new Action().setSides(direction));
@@ -34,7 +35,7 @@ public class VineGuide extends Guide {
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         for (Direction direction : Direction.values()) {
-            if (direction == Direction.DOWN && requiredBlock instanceof net.minecraft.world.level.block.VineBlock) continue;
+            if (direction == Direction.DOWN && requiredBlock instanceof VineBlock) continue;
             Object value = BlockStateUtils.getPropertyByName(requiredState, direction.name());
             if (value instanceof Boolean && (Boolean) value) {
                 return Result.success(new Action().setSides(direction).setLookDirection(direction));

@@ -25,6 +25,6 @@ public class AmethystGuide extends Guide {
 
         return Result.success(new Action()
                 .setSides(attachDirection)
-                .setRequiresSupport());
+                .setNeedSupportBlock());
     }
 }

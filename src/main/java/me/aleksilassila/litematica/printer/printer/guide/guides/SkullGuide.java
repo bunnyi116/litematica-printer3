@@ -29,13 +29,13 @@ public class SkullGuide extends Guide {
             return Result.success(new Action()
                     .setSides(Direction.DOWN)
                     .setLookRotation(DirectionUtils.getOppositeRotation(rotation))
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
         if (requiredBlock instanceof WallSkullBlock && facing != null) {
             return Result.success(new Action()
                     .setSides(facing.getOpposite())
                     .setLookDirection(facing.getOpposite())
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
         return Result.skip();
     }

@@ -22,6 +22,6 @@ public class TorchGuide extends Guide {
         Direction facing = getProperty(requiredState, WallTorchBlock.FACING).orElse(Direction.UP);
         return Result.success(new Action()
                 .setSides(facing.getOpposite())
-                .setRequiresSupport());
+                .setNeedSupportBlock());
     }
 }

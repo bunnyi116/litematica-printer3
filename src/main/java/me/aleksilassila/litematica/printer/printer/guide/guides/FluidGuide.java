@@ -20,13 +20,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import java.util.Optional;
 
 /**
- * 流体统一处理指南。
- * <ul>
- *   <li>水源：破冰放水</li>
- *   <li>含水方块：水已满足时 PASS 给块指南</li>
- *   <li>熔岩：暂跳过</li>
- *   <li>水生植物：检查水环境，无水则跳过</li>
- * </ul>
+ * 流体。
  */
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class FluidGuide extends Guide {
@@ -41,15 +35,19 @@ public class FluidGuide extends Guide {
 
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
+        // 不处理岩浆打印, 跳过
         if (requiredState.is(Blocks.LAVA)) {
             return Result.skip();
         }
+        // 玩家可跳过含水方块打印
         if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue()) {
             return Result.skip();
         }
+        // 创造放行
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
             return Result.pass();
         }
+        // 破冰放水逻辑
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
             if (isOnCooldown()) {
                 return Result.skip().setIterationNextBlockPos(blockPos);

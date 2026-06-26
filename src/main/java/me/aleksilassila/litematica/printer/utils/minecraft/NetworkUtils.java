@@ -1,6 +1,6 @@
 package me.aleksilassila.litematica.printer.utils.minecraft;
 
-import me.aleksilassila.litematica.printer.printer.PlayerLook;
+import me.aleksilassila.litematica.printer.printer.Look;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -38,8 +38,8 @@ public class NetworkUtils {
         ));
     }
 
-    public static void sendLookPacket(LocalPlayer playerEntity, PlayerLook playerLook) {
-        sendLookPacket(playerEntity, playerLook.getYaw(), playerLook.getPitch());
+    public static void sendLookPacket(LocalPlayer playerEntity, Look look) {
+        sendLookPacket(playerEntity, look.getYaw(), look.getPitch());
     }
 
     public interface SequenceExtension {

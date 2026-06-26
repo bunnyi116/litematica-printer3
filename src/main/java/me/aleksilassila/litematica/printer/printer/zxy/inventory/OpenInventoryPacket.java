@@ -5,7 +5,6 @@ import io.netty.buffer.Unpooled;
 import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.I18n;
-import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
@@ -297,7 +296,7 @@ public class OpenInventoryPacket {
 //            //#if MC < 12005
 //            module = ((BlockWithEntity) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
 //            //#else
-//            //$$ module = ((me.aleksilassila.litematica.printer.mixin.openinv.BlockWithEntityMixin) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
+//            //$$ module = ((me.aleksilassila.litematica.printer.mixin.mixins.openinv.BlockWithEntityMixin) blockState.getBlock()).createScreenHandlerFactory(blockState, level, pos);
 //            //#endif
 //        } catch (Exception ignored) {
 //            openReturn(player, blockState, false);

@@ -87,7 +87,7 @@ public class DoorGuide extends Guide {
                 || (occupancy == 0 && (isLeftDoor == isRightDoor));
 
         return Result.resultIf(canPlace,
-                new Action().setSides(sides).setLookDirection(facing).setRequiresSupport());
+                new Action().setSides(sides).setLookDirection(facing).setNeedSupportBlock());
     }
 
     @Override

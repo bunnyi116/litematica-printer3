@@ -14,7 +14,7 @@ import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
-import me.aleksilassila.litematica.printer.printer.ActionManager;
+import me.aleksilassila.litematica.printer.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
 import me.aleksilassila.litematica.printer.utils.*;
@@ -133,11 +133,11 @@ public class PrintModule extends Module {
         }
 
         boolean useShift;
-        if (action.getShift() == null) {
+        if (action.getSneak() == null) {
             useShift = (Reference.isInteractive(level.getBlockState(blockPos.relative(side)).getBlock()) && !(action instanceof ClickAction))
                     || Configs.Print.PRINT_FORCED_SNEAK.getBooleanValue();
         } else {
-            useShift = action.getShift();
+            useShift = action.getSneak();
         }
         action.queueAction(blockPos, side, useShift, player);
         Vec3 hitModifier = LitematicaUtils.usePrecisionPlacement(blockPos, ctx.requiredState);
@@ -145,7 +145,7 @@ public class PrintModule extends Module {
             ActionManager.INSTANCE.hitModifier = hitModifier;
             ActionManager.INSTANCE.useProtocol = true;
         }
-        ActionManager.INSTANCE.setLook(action.getPlayerLook());
+        ActionManager.INSTANCE.setLook(action.getLook());
         if (ActionManager.INSTANCE.sendQueue(player).needWaitModifyLook) {
             skipIteration.set(true);
         }

@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 
 /**
  * 通用兜底指南。
- * 处理所有没有被专用 Guide 接管的方块。
+ * 处理所有没有被其他专用 Guide 接管的方块。
  *
  * <p>优先级最低，应最后注册。
  */
@@ -26,19 +26,16 @@ public class DefaultGuide extends Guide {
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Action action = new Action();
 
-        // 获取属性
+        // 获取方块方向信息(大部分已经有专用指南处理, 也许还有其他方块带有方向性, 所以这里需要处理)
         Direction facing = getProperty(requiredState, BlockStateProperties.FACING)
                 .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING))
                 .or(() -> getProperty(requiredState, BlockStateProperties.VERTICAL_DIRECTION))
                 .or(() -> getProperty(requiredState, BlockStateProperties.FACING_HOPPER))
                 .orElse(null);
-        Direction.Axis axis = getProperty(requiredState, BlockStateProperties.AXIS)
-                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_AXIS))
-                .orElse(null);
-        Half half = getProperty(requiredState, BlockStateProperties.HALF).orElse(null);
+
         AttachFace attachFace = getProperty(requiredState, BlockStateProperties.ATTACH_FACE).orElse(null);
 
-        // 1. 附着面方块（按钮、拉杆等 FaceAttachedHorizontalDirectionalBlock）
+        // 附着面方块（按钮、拉杆等 FaceAttachedHorizontalDirectionalBlock）
         if (requiredBlock instanceof FaceAttachedHorizontalDirectionalBlock && facing != null && attachFace != null) {
             Direction sidePitch = attachFace == AttachFace.CEILING ? Direction.UP
                     : attachFace == AttachFace.FLOOR ? Direction.DOWN
@@ -47,7 +44,11 @@ public class DefaultGuide extends Guide {
             return Result.success(action.setSides(clickSide).setLookDirection(clickSide.getOpposite(), sidePitch));
         }
 
-        // 2. 轴向方块（原木、锁链等）
+        // 轴向方块（原木、锁链等）
+        Direction.Axis axis = getProperty(requiredState, BlockStateProperties.AXIS)
+                .or(() -> getProperty(requiredState, BlockStateProperties.HORIZONTAL_AXIS))
+                .orElse(null);
+
         if (axis != null) {
             action.setSides(axis);
         }
@@ -79,7 +80,7 @@ public class DefaultGuide extends Guide {
                     Direction entityFacing = facing;
                     if (requiredBlock instanceof ShulkerBoxBlock) {
                         entityFacing = entityFacing.getOpposite();
-                        action.setShift();
+                        action.setSneak();
                     }
                     action.setSides(entityFacing).setLookDirection(entityFacing.getOpposite());
                 }
@@ -96,7 +97,8 @@ public class DefaultGuide extends Guide {
             }
         }
 
-        // 4. Half 属性兜底
+        // Half 属性兜底
+        Half half = getProperty(requiredState, BlockStateProperties.HALF).orElse(null);
         if (half != null && facing == null) {
             action.setSides(half == Half.BOTTOM
                     ? Direction.DOWN : Direction.UP);

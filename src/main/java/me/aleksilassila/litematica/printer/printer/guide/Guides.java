@@ -1,14 +1,12 @@
 package me.aleksilassila.litematica.printer.printer.guide;
 
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
-import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.guide.guides.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Guides {
     public final static Guides INSTANCE = new Guides();

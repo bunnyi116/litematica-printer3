@@ -23,7 +23,7 @@ public class NetherPortalGuide extends Guide {
         if (canCreatePortal) {
             return Result.success(new Action()
                     .setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE)
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
         return Result.skip();
     }

@@ -17,7 +17,7 @@ public class FlowerGuide extends Guide {
 
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
-        return Result.success(new Action().setRequiresSupport());
+        return Result.success(new Action().setNeedSupportBlock());
     }
 
     @Override

@@ -50,7 +50,7 @@ public class CoralGuide extends Guide {
         if (!blockId.getPath().contains("_block")) {
             getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING)
                     .ifPresent(facing -> action.setSides(facing.getOpposite()));
-            action.setRequiresSupport();
+            action.setNeedSupportBlock();
         }
 
         return Result.success(action);

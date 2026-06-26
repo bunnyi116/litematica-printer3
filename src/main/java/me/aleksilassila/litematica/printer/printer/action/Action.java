@@ -3,8 +3,7 @@ package me.aleksilassila.litematica.printer.printer.action;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.printer.ActionManager;
-import me.aleksilassila.litematica.printer.printer.PlayerLook;
+import me.aleksilassila.litematica.printer.printer.Look;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,13 +25,13 @@ public class Action {
     protected Map<Direction, Vec3> sides;
     @Nullable
     @Getter
-    protected PlayerLook playerLook = null;
+    protected Look look = null;
     @Nullable
-    protected Item[] clickItems; // null == 空手
-    protected boolean requiresSupport = false;
+    protected Item[] useItems;
+    protected boolean needSupportBlock = false;
     @Getter
     @Nullable
-    protected Boolean shift = null;
+    protected Boolean sneak = null;
 
     public Action() {
         this.sides = new HashMap<>();
@@ -42,27 +41,27 @@ public class Action {
     }
 
     public Action setLookRotation(int lookRotation) {
-        this.playerLook = new PlayerLook(lookRotation);
+        this.look = new Look(lookRotation);
         return this;
     }
 
     public Action setLookDirection(Direction lookDirection) {
-        this.playerLook = new PlayerLook(lookDirection);
+        this.look = new Look(lookDirection);
         return this;
     }
 
     public Action setLookDirection(Direction lookDirectionYaw, Direction lookDirectionPitch) {
-        this.playerLook = new PlayerLook(lookDirectionYaw, lookDirectionPitch);
+        this.look = new Look(lookDirectionYaw, lookDirectionPitch);
         return this;
     }
 
     public @Nullable Item[] getRequiredItems(Block backup) {
-        if (clickItems == null) {
+        if (useItems == null) {
             if (backup.asItem() != Items.AIR) {
                 return new Item[]{backup.asItem()};
             }
         }
-        return clickItems;
+        return useItems;
     }
 
     public @NotNull Map<Direction, Vec3> getSides() {
@@ -115,10 +114,7 @@ public class Action {
         for (Direction side : sides.keySet()) {
             BlockPos neighborPos = pos.relative(side);
             BlockState neighborState = world.getBlockState(neighborPos);
-            if (Configs.Print.PLACE_IN_AIR.getBooleanValue() && !this.requiresSupport
-                // TODO: 没理解, 都凭空放置了, 还检查相邻方块类型？所以注释掉了
-                // && !Implementation.isInteractive(neighborState.getBlock())
-            ) {
+            if (Configs.Print.PLACE_IN_AIR.getBooleanValue() && !this.needSupportBlock) {
                 return side;
             }
             if (canBeClicked(world, neighborPos) && !BlockUtils.isReplaceable(neighborState)) {
@@ -144,30 +140,30 @@ public class Action {
     }
 
     public Action setItems(Item... items) {
-        this.clickItems = items;
+        this.useItems = items;
         return this;
     }
 
-    public Action setRequiresSupport(boolean requiresSupport) {
-        this.requiresSupport = requiresSupport;
+    public Action setNeedSupportBlock(boolean needSupportBlock) {
+        this.needSupportBlock = needSupportBlock;
         return this;
     }
 
-    public Action setRequiresSupport() {
-        return this.setRequiresSupport(true);
+    public Action setNeedSupportBlock() {
+        return this.setNeedSupportBlock(true);
     }
 
-    public Action setShift(boolean useShift) {
-        this.shift = useShift;
+    public Action setSneak(boolean useShift) {
+        this.sneak = useShift;
         return this;
     }
 
-    public Action setShift() {
-        return this.setShift(true);
+    public Action setSneak() {
+        return this.setSneak(true);
     }
 
     public Action queueAction(@NotNull BlockPos blockPos, @NotNull Direction side, boolean useShift, @NotNull LocalPlayer player) {
-        if (Configs.Print.PLACE_IN_AIR.getBooleanValue() && !this.requiresSupport) {
+        if (Configs.Print.PLACE_IN_AIR.getBooleanValue() && !this.needSupportBlock) {
             ActionManager.INSTANCE.queueClick(
                     blockPos,
                     side.getOpposite(),

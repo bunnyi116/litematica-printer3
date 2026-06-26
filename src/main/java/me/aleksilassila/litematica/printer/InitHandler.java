@@ -5,7 +5,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.utils.HighlightBlockRende
 import me.aleksilassila.litematica.printer.config.gui.masa.ConfigUi;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
-import me.aleksilassila.litematica.printer.printer.ActionManager;
+import me.aleksilassila.litematica.printer.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.utils.minecraft.MessageUtils;
 import me.aleksilassila.litematica.printer.utils.mods.BedrockUtils;
 import me.aleksilassila.litematica.printer.utils.mods.ModLoadUtils;

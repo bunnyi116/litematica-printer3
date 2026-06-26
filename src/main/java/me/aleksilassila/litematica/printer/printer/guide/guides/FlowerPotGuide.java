@@ -30,7 +30,7 @@ public class FlowerPotGuide extends Guide {
         if (requiredBlock instanceof FlowerPotBlock potBlock) {
             Block content = potBlock.getPotted();
             if (content != Blocks.AIR) {
-                return Result.success(new ClickAction().setItem(content.asItem()).setRequiresSupport());
+                return Result.success(new ClickAction().setItem(content.asItem()).setNeedSupportBlock());
             }
         }
         return Result.skip();

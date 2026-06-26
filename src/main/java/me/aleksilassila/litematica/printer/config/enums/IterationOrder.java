@@ -3,7 +3,6 @@ package me.aleksilassila.litematica.printer.config.enums;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.config.ConfigOptionListEntry;
-import me.aleksilassila.litematica.printer.printer.WorkBox;
 
 @Getter
 public enum IterationOrder implements ConfigOptionListEntry<IterationOrder> {

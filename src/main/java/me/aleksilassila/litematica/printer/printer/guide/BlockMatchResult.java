@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 public enum BlockMatchResult {
     /**
-     * 缺失方块：实际位置为空，或当前方块在可替换列表中且启用了替换功能
+     * 缺失方块：实际位置为空
      */
     MISSING,
 

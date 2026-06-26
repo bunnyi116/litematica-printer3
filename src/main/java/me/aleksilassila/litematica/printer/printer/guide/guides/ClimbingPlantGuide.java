@@ -23,15 +23,15 @@ public class ClimbingPlantGuide extends Guide {
         }
         if (requiredBlock instanceof net.minecraft.world.level.block.CaveVinesBlock
                 || requiredBlock instanceof net.minecraft.world.level.block.CaveVinesPlantBlock) {
-            return Result.success(new Action().setItem(Items.GLOW_BERRIES).setRequiresSupport());
+            return Result.success(new Action().setItem(Items.GLOW_BERRIES).setNeedSupportBlock());
         }
         if (requiredBlock instanceof net.minecraft.world.level.block.WeepingVinesBlock
                 || requiredBlock instanceof net.minecraft.world.level.block.WeepingVinesPlantBlock) {
-            return Result.success(new Action().setItem(Items.WEEPING_VINES).setRequiresSupport());
+            return Result.success(new Action().setItem(Items.WEEPING_VINES).setNeedSupportBlock());
         }
         if (requiredBlock instanceof net.minecraft.world.level.block.TwistingVinesBlock
                 || requiredBlock instanceof net.minecraft.world.level.block.TwistingVinesPlantBlock) {
-            return Result.success(new Action().setItem(Items.TWISTING_VINES).setRequiresSupport());
+            return Result.success(new Action().setItem(Items.TWISTING_VINES).setNeedSupportBlock());
         }
         return Result.skip();
     }

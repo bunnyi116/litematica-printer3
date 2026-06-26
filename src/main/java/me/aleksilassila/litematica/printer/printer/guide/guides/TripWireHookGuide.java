@@ -21,7 +21,7 @@ public class TripWireHookGuide extends Guide {
         var facing = getProperty(requiredState, TripWireHookBlock.FACING).orElseThrow();
         return Result.success(new Action()
                 .setSides(facing.getOpposite())
-                .setRequiresSupport()
+                .setNeedSupportBlock()
         );
     }
 

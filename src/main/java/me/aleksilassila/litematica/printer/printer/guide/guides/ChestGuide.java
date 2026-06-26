@@ -46,7 +46,7 @@ public class ChestGuide extends Guide {
             boolean hasChestNeighbor = Direction.Plane.HORIZONTAL.stream()
                     .anyMatch(s -> !noChestSides.containsKey(s));
             if (hasChestNeighbor) {
-                return Result.success(new Action().setLookDirection(facingOpposite).setShift());
+                return Result.success(new Action().setLookDirection(facingOpposite).setSneak());
             }
             return Result.success(new Action().setSides(noChestSides).setLookDirection(facingOpposite));
         }
@@ -63,7 +63,7 @@ public class ChestGuide extends Guide {
         return Result.success(new Action()
                 .setSides(clickSides)
                 .setLookDirection(facingOpposite)
-                .setShift(false));
+                .setSneak(false));
     }
 
     @Override

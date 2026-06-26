@@ -6,7 +6,6 @@ import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
-import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.DirectionUtils;
 import net.minecraft.core.BlockPos;

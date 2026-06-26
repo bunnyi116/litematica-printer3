@@ -31,10 +31,10 @@ public class CropsGuide extends Guide {
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         String blockKey = BlockUtils.getKeyString(requiredBlock);
         if (blockKey.contains("pumpkin")) {
-            return Result.success(new Action().setItem(Items.PUMPKIN_SEEDS).setRequiresSupport());
+            return Result.success(new Action().setItem(Items.PUMPKIN_SEEDS).setNeedSupportBlock());
         }
         if (blockKey.contains("melon")) {
-            return Result.success(new Action().setItem(Items.MELON_SEEDS).setRequiresSupport());
+            return Result.success(new Action().setItem(Items.MELON_SEEDS).setNeedSupportBlock());
         }
         return Result.success(new Action());
     }

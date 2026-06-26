@@ -32,7 +32,7 @@ public class SignGuide extends Guide {
             return Result.success(new Action()
                     .setSides(Direction.DOWN)
                     .setLookRotation(rotation)
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
 
         // 墙壁告示牌
@@ -40,7 +40,7 @@ public class SignGuide extends Guide {
             return Result.success(new Action()
                     .setSides(facing.getOpposite())
                     .setLookDirection(facing.getOpposite())
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
 
         //#if MC >= 12002
@@ -52,7 +52,7 @@ public class SignGuide extends Guide {
             return Result.success(new Action()
                     .setSides(sides.toArray(new Direction[0]))
                     .setLookDirection(facing.getOpposite())
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
 
         // 天花板悬挂告示牌（CeilingHangingSignBlock）
@@ -60,10 +60,10 @@ public class SignGuide extends Guide {
             int rotation = getProperty(requiredState, CeilingHangingSignBlock.ROTATION).orElse((int) 0);
             boolean attached = getProperty(requiredState, BlockStateProperties.ATTACHED).orElse(false);
             return Result.success(new Action()
-                    .setShift(attached)
+                    .setSneak(attached)
                     .setSides(Direction.UP)
                     .setLookRotation(rotation)
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
         //#endif
 

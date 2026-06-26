@@ -2,7 +2,6 @@ package me.aleksilassila.litematica.printer.printer.zxy.chesttracker;
 
 //#if MC >= 12001
 import me.aleksilassila.litematica.printer.config.Configs;
-import me.aleksilassila.litematica.printer.module.ModuleManager;
 import me.aleksilassila.litematica.printer.I18n;
 import me.aleksilassila.litematica.printer.module.Modules;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket;

@@ -7,7 +7,7 @@ import me.aleksilassila.litematica.printer.config.enums.ExcavateListMode;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.module.Module;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
-import me.aleksilassila.litematica.printer.mixin_extension.BlockBreakResult;
+import me.aleksilassila.litematica.printer.mixin.extension.BlockBreakResult;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.FilterUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;

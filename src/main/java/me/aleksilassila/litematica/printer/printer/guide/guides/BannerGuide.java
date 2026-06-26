@@ -28,13 +28,13 @@ public class BannerGuide extends Guide {
             return Result.success(new Action()
                     .setSides(Direction.DOWN)
                     .setLookRotation(rotation)
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
         if (requiredBlock instanceof WallBannerBlock && facing != null) {
             return Result.success(new Action()
                     .setSides(facing.getOpposite())
                     .setLookDirection(facing.getOpposite())
-                    .setRequiresSupport());
+                    .setNeedSupportBlock());
         }
         return Result.skip();
     }

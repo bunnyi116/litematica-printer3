@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.event.EventCallbacks;
-import me.aleksilassila.litematica.printer.mixin_extension.MultiPlayerGameModeExtension;
+import me.aleksilassila.litematica.printer.mixin.extension.MultiPlayerGameModeExtension;
 import me.aleksilassila.litematica.printer.module.modules.*;
-import me.aleksilassila.litematica.printer.printer.ActionManager;
+import me.aleksilassila.litematica.printer.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;
@@ -46,7 +46,6 @@ public class ModuleManager {
         InteractionUtils.INSTANCE.preprocess();
         InteractionUtils.INSTANCE.onTick();
 
-
         // 本次TICK共享部分预先检查
         if (isOpenHandler || switchItem() || InteractionUtils.INSTANCE.isNeedHandle()) {
             return;
@@ -77,8 +76,5 @@ public class ModuleManager {
             module.tick();
         }
         BlockPosCooldownUtils.INSTANCE.tick();
-
-
     }
-
 }
