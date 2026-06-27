@@ -80,11 +80,9 @@ public abstract class Module extends ModuleGameVariables {
             for (BlockPos blockPos : workBox) {
                 if (maxTotalIter > 0 && ++totalIterCount >= maxTotalIter) {
                     interrupt = true;
-                    break;
                 }
                 if (this.skipOtherPosIteration.get() || ActionManager.INSTANCE.needWaitModifyLook) {
                     interrupt = true;
-                    break;
                 }
                 if (blockPos == null) {
                     continue;
