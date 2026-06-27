@@ -59,10 +59,10 @@ public abstract class Module extends ModuleGameVariables {
             return;
         }
         this.onPreprocess();
-        if (!this.canExecute()) {
+        if (!this.isAllowConfigExecute()) {
             return;
         }
-        if (!this.isAllowConfigExecute()) {
+        if (!this.canExecute()) {
             return;
         }
         boolean interrupt = false;
