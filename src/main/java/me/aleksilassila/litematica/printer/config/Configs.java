@@ -605,7 +605,6 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
         // 关闭全部模式
         public final static ConfigHotkey CLOSE_ALL_MODE = hotkey("closeAllMode")
-                .defaultStorageString("LEFT_CONTROL,G")
                 .build();
 
         // 切换模式
