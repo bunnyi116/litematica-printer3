@@ -7,6 +7,7 @@ public class MessageUtils {
     public static void setOverlayMessage(Component message, boolean bl) {
         //#if MC>=260200
         Minecraft.getInstance().gui.hud.setOverlayMessage(message, false);
+        //#else
         //$$ Minecraft.getInstance().gui.setOverlayMessage(message, false);
         //#endif
     }

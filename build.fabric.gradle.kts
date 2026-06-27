@@ -91,7 +91,7 @@ loom {
             client()
             runDirectory.set(file("../../run/client"))
             jvmArguments.add("-Dmixin.debug.export=true")
-            jvmArguments.add("-Dmixin.debug.countInjections=true")
+            jvmArguments.add("-Dmixin.debug.countInjections=false")
             jvmArguments.add("-Dmixin.env.remapRefMap=true")
             programArguments.addAll("--width", "1280")
             programArguments.addAll("--height", "720")
