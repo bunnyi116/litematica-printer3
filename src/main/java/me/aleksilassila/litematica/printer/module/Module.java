@@ -68,6 +68,10 @@ public abstract class Module extends ModuleGameVariables {
         boolean interrupt = false;
         WorkBox workBox = updateWorkBox();
         if (workBox != null) {
+            if (workBox.isIterationFinished()){
+                workBox.resetIterator();
+            }
+
             int maxEffectiveExec = this.getMaxEffectiveExecutionsPerTick();
             int maxTotalIter = this.getMaxTotalIterationsPerTick();
             int totalIterCount = 0;
@@ -113,7 +117,7 @@ public abstract class Module extends ModuleGameVariables {
                     break;
                 }
             }
-            this.onIterationEnd(interrupt);
+            this.onIterationEnd(workBox.isIterationFinished());
         }
     }
 

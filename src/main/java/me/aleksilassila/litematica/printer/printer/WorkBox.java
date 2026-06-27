@@ -102,6 +102,8 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxZ = Math.max(z1, z2);
 
         updateCenter();
+        // 范围变更后重置迭代器状态
+        resetIterator();
     }
 
     public void setCenterAndRadius(int cx, int cy, int cz, int radius) {
@@ -114,6 +116,7 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxZ = cz + radius;
 
         updateCenter();
+        resetIterator();
     }
 
     public void setCenterAndRadiusWithLevel(int cx, int cy, int cz, int radius, Level level) {
@@ -128,6 +131,7 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxZ = cz + radius;
 
         updateCenter();
+        resetIterator();
     }
 
     public void setCenter(int cx, int cy, int cz) {
@@ -184,6 +188,26 @@ public class WorkBox implements Iterable<BlockPos> {
             this.iterator = new BoxIterator();
         }
         return this.iterator;
+    }
+
+    // ===================== 新增对外公开方法 =====================
+
+    /**
+     * 手动重置迭代器，从头开始遍历
+     */
+    public void resetIterator() {
+        if (this.iterator == null) {
+            this.iterator = new BoxIterator();
+        }
+        this.iterator.reset();
+    }
+
+    /**
+     * 判断当前迭代是否已经全部遍历完毕
+     */
+    public boolean isIterationFinished() {
+        if (iterator == null) return false;
+        return iterator.isCompleted;
     }
 
     protected class BoxIterator implements Iterator<BlockPos> {
@@ -270,7 +294,7 @@ public class WorkBox implements Iterable<BlockPos> {
                 return true;
             }
             if (isCompleted) {
-                reset();
+                return false;
             }
             if (!initialized) {
                 init();
@@ -278,8 +302,9 @@ public class WorkBox implements Iterable<BlockPos> {
             boolean hasNext = inRange(IterationOrder.Axis.X) && inRange(IterationOrder.Axis.Y) && inRange(IterationOrder.Axis.Z);
             if (!hasNext) {
                 isCompleted = true;
+                return false;
             }
-            return hasNext;
+            return true;
         }
 
         @Override
@@ -289,13 +314,17 @@ public class WorkBox implements Iterable<BlockPos> {
                 nextIterationPos = null;
                 return blockPos;
             }
+
             if (!hasNext()) {
                 return null;
             }
+
             BlockPos pos = new BlockPos(currX, currY, currZ);
             if (!step(iterationOrder.getThird())) {
                 if (!step(iterationOrder.getSecond())) {
-                    step(iterationOrder.getFirst());
+                    if (!step(iterationOrder.getFirst())) {
+                        isCompleted = true;
+                    }
                 }
             }
             return pos;
