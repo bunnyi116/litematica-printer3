@@ -36,9 +36,9 @@ import me.aleksilassila.litematica.printer.printer.zxy.chesttracker.SearchItem;
 //$$ import me.aleksilassila.litematica.printer.printer.zxy.memory.Memory;
 //$$ import me.aleksilassila.litematica.printer.printer.zxy.memory.MemoryDatabase;
 //$$ import me.aleksilassila.litematica.printer.printer.zxy.memory.MemoryUtils;
-    //#if MC > 11902
-    //$$ import net.minecraft.core.registries.Registries;
-    //#endif
+//#if MC > 11902
+//$$ import net.minecraft.core.registries.Registries;
+//#endif
 //#endif
 
 //#if MC >= 12001
@@ -46,6 +46,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.chesttracker.SearchItem;
 //#endif
 
 import java.util.HashSet;
+
 import static me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPacket.openIng;
 
 public class InventoryUtils {
@@ -92,6 +93,9 @@ public class InventoryUtils {
     public static boolean switchItem() {
         if (!lastNeedItemList.isEmpty() && !isOpenHandler && !openIng && OpenInventoryPacket.key == null) {
             LocalPlayer player = client.player;
+            if (player == null) {
+                return false;
+            }
             AbstractContainerMenu sc = player.containerMenu;
             if (!player.containerMenu.equals(player.inventoryMenu)) return false;
             //排除合成栏 装备栏 副手
@@ -121,11 +125,11 @@ public class InventoryUtils {
                     //$$        for (ResourceLocation dimension : database.getDimensions()) {
                     //$$            for (Memory memory : database.findItems(item.getDefaultInstance(), dimension)) {
                     //$$                MemoryUtils.setLatestPos(memory.getPosition());
-                        //#if MC < 11904
-                        //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension));
-                        //#else
-                        //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registries.DIMENSION, dimension));
-                        //#endif
+                    //#if MC < 11904
+                    //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension));
+                    //#else
+                    //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registries.DIMENSION, dimension));
+                    //#endif
                     //$$                if(ModLoadUtils.closeScreen == 0) ModLoadUtils.closeScreen++;
                     //$$                me.aleksilassila.litematica.printer.module.Modules.PRINT.setPrinterMemorySync(true);
                     //$$                isOpenHandler = true;
