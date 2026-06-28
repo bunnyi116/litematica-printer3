@@ -81,6 +81,9 @@ public class CropsGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
+            return Result.skip();
+        }
         String requiredKey = BlockUtils.getKeyString(requiredBlock);
         String currentKey = BlockUtils.getKeyString(currentBlock);
         if (requiredKey.contains("pumpkin_stem") && !currentKey.contains("pumpkin_stem")) {

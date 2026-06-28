@@ -129,6 +129,6 @@ public class DefaultGuide extends Guide {
                 }
             }
         }
-        return Result.pass();
+        return Result.skip();
     }
 }

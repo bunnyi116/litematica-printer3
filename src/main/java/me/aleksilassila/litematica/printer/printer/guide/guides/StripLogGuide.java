@@ -49,6 +49,9 @@ public class StripLogGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
+            return Result.skip();
+        }
         Block stripped = STRIPPED_LOGS.get(currentBlock);
         if (stripped != null && stripped == requiredBlock) {
             return Result.success(new ClickAction().setItems(Reference.AXE_ITEMS));

@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.printer.guide.guides;
 
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
@@ -27,6 +28,9 @@ public class FlowerPotGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
+            return Result.skip();
+        }
         if (requiredBlock instanceof FlowerPotBlock potBlock) {
             Block content = potBlock.getPotted();
             if (content != Blocks.AIR) {

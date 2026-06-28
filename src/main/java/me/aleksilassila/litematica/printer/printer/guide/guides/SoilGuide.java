@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.printer.guide.guides;
 
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
@@ -48,6 +49,9 @@ public class SoilGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
+            return Result.skip();
+        }
         if (requiredBlock instanceof net.minecraft.world.level.block.FarmlandBlock) {
             Block[] soilBlocks = {Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.DIRT_PATH, Blocks.COARSE_DIRT};
             for (Block soilBlock : soilBlocks) {

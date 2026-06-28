@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.printer.guide.guides;
 
+import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
@@ -27,6 +28,9 @@ public class PistonGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
+        if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
+            return Result.skip();
+        }
         if (currentState.hasProperty(PistonBaseBlock.FACING)) {
             if (!getProperty(currentState, PistonBaseBlock.FACING).equals(getProperty(requiredState, PistonBaseBlock.FACING))) {
                 InteractionUtils.INSTANCE.add(context);

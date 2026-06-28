@@ -46,8 +46,7 @@ public class CauldronGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
-        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()
-                && InteractionUtils.canBreakBlock(blockPos)) {
+        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue() && InteractionUtils.canBreakBlock(blockPos)) {
             InteractionUtils.INSTANCE.add(context);
         }
         return Result.skip();
