@@ -101,8 +101,10 @@ public abstract class Module extends ModuleGameVariables {
                     continue;
                 }
                 if (this.canIterationBlockPos(blockPos) && !isBlockPosOnCooldown(blockPos)) {
-                    this.executeIterationBlockPos(blockPos, this.skipOtherPosIteration);
-                    if (this.skipOtherPosIteration.get() || maxEffectiveExec > 0 && ++effectiveExecCount >= maxEffectiveExec) {
+                    if (this.executeIterationBlockPos(blockPos, this.skipOtherPosIteration)){
+                        effectiveExecCount++;
+                    }
+                    if (this.skipOtherPosIteration.get() || maxEffectiveExec > 0 && effectiveExecCount >= maxEffectiveExec) {
                         interrupt = true;
                     }
                 }
@@ -119,7 +121,19 @@ public abstract class Module extends ModuleGameVariables {
         }
     }
 
+    protected boolean executeIterationBlockPos(BlockPos pos, AtomicReference<Boolean> skipIteration) {
+        return false;
+    }
+
+    protected boolean canIterationBlockPos(BlockPos pos) {
+        return true;
+    }
+
     protected void onIterationEnd(boolean interrupt) {
+    }
+
+    protected boolean canExecute() {
+        return true;
     }
 
     protected void onPreprocess() {
@@ -127,17 +141,6 @@ public abstract class Module extends ModuleGameVariables {
 
     protected boolean isSchematicBlockHandler() {
         return false;
-    }
-
-    protected void executeIterationBlockPos(BlockPos pos, AtomicReference<Boolean> skipIteration) {
-    }
-
-    protected boolean canIterationBlockPos(BlockPos pos) {
-        return true;
-    }
-
-    protected boolean canExecute() {
-        return true;
     }
 
     protected int getTickWorkInterval() {

@@ -111,24 +111,24 @@ public class PrintModule extends Module {
     }
 
     @Override
-    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         if (Configs.Placement.FALLING_CHECK.getBooleanValue() && ctx.requiredState.getBlock() instanceof FallingBlock) {
             BlockPos downPos = blockPos.below();
             if (FallingBlock.isFree(level.getBlockState(downPos))) {
                 MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_NO_SUPPORT.getName(ctx.requiredBlockName().getString()));
-                return;
+                return false;
             } else if (level.getBlockState(downPos) != ctx.schematic.getBlockState(downPos)) {
                 MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_MISMATCH.getName(ctx.requiredBlockName().getString()));
-                return;
+                return false;
             }
         }
         Direction side = action.getValidSide(level, blockPos);
-        if (side == null) return;
+        if (side == null) return false;
 
         @Nullable Item[] reqItems = action.getRequiredItems(ctx.requiredState.getBlock());
         if (reqItems == null || !InventoryUtils.switchToItems(player, reqItems)) {
-            if (!(action instanceof ClickAction)){
-                return;
+            if (!(action instanceof ClickAction)) {
+                return false;
             }
         }
 
@@ -150,6 +150,7 @@ public class PrintModule extends Module {
             skipIteration.set(true);
         }
         setBlockPosCooldown(blockPos, ConfigUtils.getPlaceCooldown());
+        return true;
     }
 }
 

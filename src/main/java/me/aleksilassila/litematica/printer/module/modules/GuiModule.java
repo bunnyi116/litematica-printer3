@@ -55,7 +55,7 @@ public class GuiModule extends Module {
     }
 
     @Override
-    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         this.blockPos = blockPos;
         if (ConfigUtils.isPrintMode()) {
             WorldSchematic schematic = SchematicWorldHandler.getSchematicWorld();
@@ -81,6 +81,7 @@ public class GuiModule extends Module {
             mineProgress.add(isDone);
             totalProgress.add(isDone);
         }
+        return false;
     }
 
     @Override

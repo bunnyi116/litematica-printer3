@@ -97,14 +97,14 @@ public class FillModule extends Module {
     }
 
     @Override
-    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         if (Configs.Placement.FALLING_CHECK.getBooleanValue() &&
                 player.getMainHandItem().getItem() instanceof BlockItem item &&
                 item.getBlock() instanceof FallingBlock block &&
                 FallingBlock.isFree(level.getBlockState(blockPos.below()))
         ) {
             MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_NO_SUPPORT.getName(block.getName().getString()));
-            return;
+            return false;
         }
         boolean handheld = Configs.Fill.FILL_BLOCK_MODE.getOptionListValue() == FillBlockModeType.HANDHELD;
         BlockState currentState = level.getBlockState(blockPos);
@@ -127,8 +127,10 @@ public class FillModule extends Module {
                     skipIteration.set(true);
                 }
                 this.setBlockPosCooldown(blockPos, ConfigUtils.getPlaceCooldown());
+                return true;
             }
         }
+        return false;
     }
 
 }

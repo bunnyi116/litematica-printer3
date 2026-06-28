@@ -9,6 +9,8 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.mixin.mixins.printer.litematica.InventoryUtilsAccessor;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -93,9 +95,12 @@ public class InventoryUtils {
     public static boolean switchItem() {
         if (!lastNeedItemList.isEmpty() && !isOpenHandler && !openIng && OpenInventoryPacket.key == null) {
             LocalPlayer player = client.player;
-            if (player == null) {
+            ClientLevel level = client.level;
+            MultiPlayerGameMode gameMode = client.gameMode;
+            if (player == null || level == null || gameMode == null) {
                 return false;
             }
+
             AbstractContainerMenu sc = player.containerMenu;
             if (!player.containerMenu.equals(player.inventoryMenu)) return false;
             //排除合成栏 装备栏 副手
@@ -110,7 +115,7 @@ public class InventoryUtils {
             } else if (Configs.Core.CLOUD_INVENTORY.getBooleanValue()) {
                 for (Item item : lastNeedItemList) {
                     //#if MC >= 12001
-                    MemoryUtils.currentMemoryKey = client.level.dimension().identifier();
+                    MemoryUtils.currentMemoryKey = level.dimension().identifier();
                     MemoryUtils.itemStack = new ItemStack(item);
                     if (SearchItem.search(true)) {
                         ModLoadUtils.closeScreen++;
@@ -125,11 +130,11 @@ public class InventoryUtils {
                     //$$        for (ResourceLocation dimension : database.getDimensions()) {
                     //$$            for (Memory memory : database.findItems(item.getDefaultInstance(), dimension)) {
                     //$$                MemoryUtils.setLatestPos(memory.getPosition());
-                    //#if MC < 11904
-                    //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension));
-                    //#else
-                    //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registries.DIMENSION, dimension));
-                    //#endif
+                        //#if MC < 11904
+                        //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension));
+                        //#else
+                        //$$ OpenInventoryPacket.sendOpenInventory(memory.getPosition(), ResourceKey.create(Registries.DIMENSION, dimension));
+                        //#endif
                     //$$                if(ModLoadUtils.closeScreen == 0) ModLoadUtils.closeScreen++;
                     //$$                me.aleksilassila.litematica.printer.module.Modules.PRINT.setPrinterMemorySync(true);
                     //$$                isOpenHandler = true;
@@ -148,8 +153,13 @@ public class InventoryUtils {
 
     static int shulkerBoxSlot = -1;
 
+    @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
     public static void switchInv() {
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = client.player;
+        MultiPlayerGameMode gameMode = client.gameMode;
+        if (player == null || gameMode == null) {
+            return;
+        }
         AbstractContainerMenu sc = player.containerMenu;
         if (sc.equals(player.inventoryMenu)) {
             return;
@@ -182,8 +192,8 @@ public class InventoryUtils {
                             player.closeContainer();
                             //刷新濳影盒
                             if (shulkerBoxSlot != -1) {
-                                client.gameMode.handleContainerInput(sc.containerId, shulkerBoxSlot, 0, ContainerInput.PICKUP, client.player);
-                                client.gameMode.handleContainerInput(sc.containerId, shulkerBoxSlot, 0, ContainerInput.PICKUP, client.player);
+                                gameMode.handleContainerInput(sc.containerId, shulkerBoxSlot, 0, ContainerInput.PICKUP, player);
+                                gameMode.handleContainerInput(sc.containerId, shulkerBoxSlot, 0, ContainerInput.PICKUP, player);
                             }
                             shulkerBoxSlot = -1;
                             isOpenHandler = false;
@@ -206,15 +216,19 @@ public class InventoryUtils {
     }
 
     private static boolean openShulker(HashSet<Item> items) {
+        LocalPlayer player = client.player;
+        if (player == null) {
+            return false;
+        }
         if (shulkerCooldown > 0) {
             return false;
         }
         for (Item item : items) {
-            AbstractContainerMenu sc = Minecraft.getInstance().player.inventoryMenu;
+            AbstractContainerMenu sc = player.inventoryMenu;
             for (int i = 9; i < sc.slots.size(); i++) {
                 ItemStack stack = sc.slots.get(i).getItem();
-                String itemid = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-                if (itemid.contains("shulker_box") && stack.getCount() == 1) {
+                String itemId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+                if (itemId.contains("shulker_box") && stack.getCount() == 1) {
                     NonNullList<ItemStack> items1 = fi.dy.masa.malilib.util.InventoryUtils.getStoredItems(stack, -1);
                     if (items1.stream().anyMatch(s1 -> s1.getItem().equals(item))) {
                         try {

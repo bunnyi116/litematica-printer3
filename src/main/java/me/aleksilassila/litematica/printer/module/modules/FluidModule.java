@@ -77,20 +77,22 @@ public class FluidModule extends Module {
     }
 
     @Override
-    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         FluidState fluidState = level.getBlockState(blockPos).getFluidState();
         if (fluids.contains(fluidState.getType())) {
             if (!Configs.Fluid.FILL_FLOWING_FLUID.getBooleanValue() && !fluidState.isSource()) {
-                return;
+                return false;
             }
             if (!InventoryUtils.switchToItems(player, fillItems.toArray(new Item[0]))) {
-                return;
+                return false;
             }
             new Action().queueAction(blockPos, Direction.UP, false, player);
             if (ActionManager.INSTANCE.sendQueue(player).needWaitModifyLook) {
                 skipIteration.set(true);
             }
             setBlockPosCooldown(blockPos, Fluids.WATER.getTickDelay(level) * 2);
+            return true;
         }
+        return false;
     }
 }

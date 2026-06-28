@@ -77,11 +77,12 @@ public class MineModule extends Module {
     }
 
     @Override
-    protected void executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
+    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         BlockBreakResult result = InteractionUtils.INSTANCE.continueDestroyBlock(blockPos);
         this.setBlockPosCooldown(blockPos, ConfigUtils.getBreakCooldown());
         if (result == BlockBreakResult.IN_PROGRESS) {
             skipIteration.set(true);    // 本 TICK 退出剩下位置迭代
         }
+        return true;
     }
 }
