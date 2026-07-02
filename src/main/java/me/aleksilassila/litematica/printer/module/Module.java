@@ -94,7 +94,7 @@ public abstract class Module extends ModuleGameVariables {
                 } else if (!LitematicaUtils.isWithinSelection1ModeRange(blockPos)) {
                     continue;
                 }
-                if (Configs.Core.CHECK_PLAYER_INTERACTION_RANGE.getBooleanValue() && !ConfigUtils.canInteracted(blockPos)) {
+                if (!ConfigUtils.canInteracted(blockPos)) {
                     continue;
                 }
                 if (selectionType != null && !ConfigUtils.isPositionInSelectionRange(player, blockPos, selectionType)) {

@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class ConfigUtils {
     @NotNull
     public final static Minecraft client = Minecraft.getInstance();
