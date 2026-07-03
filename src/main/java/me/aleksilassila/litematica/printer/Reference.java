@@ -28,9 +28,11 @@ public class Reference {
 
 
     public static Class<?>[] ignoreWrongStateBlocks = {
-            BrewingStandBlock.class,            // 酿造台
+            //#if MC >= 12000
             ChiseledBookShelfBlock.class,       // 雕文书架
-            StainedGlassPaneBlock.class,        // 雕文书架
+            //#endif
+            BrewingStandBlock.class,            // 酿造台
+            StainedGlassPaneBlock.class,        // 玻璃板
             VegetationBlock.class,              // 植被
 
 //            TurtleEggBlock.class,               // 海龟蛋
