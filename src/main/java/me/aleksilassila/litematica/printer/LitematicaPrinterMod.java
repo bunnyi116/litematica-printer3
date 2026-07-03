@@ -6,6 +6,7 @@ import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPa
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
+
 public class LitematicaPrinterMod implements ModInitializer, ClientModInitializer {
     @Override
     public void onInitialize() {
@@ -17,7 +18,6 @@ public class LitematicaPrinterMod implements ModInitializer, ClientModInitialize
     public void onInitializeClient() {
         OpenInventoryPacket.registerClientReceivePacket();
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
-
         ModuleManager.INSTANCE.registerEvents();
     }
 }

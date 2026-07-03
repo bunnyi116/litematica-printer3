@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.printer.guide;
 
+import me.aleksilassila.litematica.printer.Reference;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
@@ -120,9 +121,10 @@ public class DefaultGuide extends Guide {
                     .or(() -> getProperty(requiredState, BlockStateProperties.SOUTH))
                     .or(() -> getProperty(requiredState, BlockStateProperties.WEST));
 
-            if (wall.isEmpty()) {
-                InteractionUtils.INSTANCE.add(context);
+            if (wall.isPresent() || Reference.isIgnoreWrongStateBlocks(requiredBlock)) {
+                return Result.skip();
             }
+            InteractionUtils.INSTANCE.add(context);
         }
         return Result.skip();
     }

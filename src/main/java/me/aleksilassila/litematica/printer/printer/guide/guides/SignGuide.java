@@ -1,5 +1,6 @@
 package me.aleksilassila.litematica.printer.printer.guide.guides;
 
+import me.aleksilassila.litematica.printer.printer.action.ClickAction;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
@@ -8,6 +9,7 @@ import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -72,18 +74,11 @@ public class SignGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
-        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue() && InteractionUtils.canBreakBlock(blockPos)) {
-            boolean isLegitimateSign = currentBlock instanceof StandingSignBlock
-                    || currentBlock instanceof WallSignBlock
-                    //#if MC >= 12002
-                    || currentBlock instanceof WallHangingSignBlock
-                    || currentBlock instanceof CeilingHangingSignBlock
-                    //#endif
-                    ;
-            if (!isLegitimateSign) {
-                InteractionUtils.INSTANCE.add(context);
-            }
-        }
+        return Result.skip();
+    }
+
+    @Override
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
         return Result.skip();
     }
 }

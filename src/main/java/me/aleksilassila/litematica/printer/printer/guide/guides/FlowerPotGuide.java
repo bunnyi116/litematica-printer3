@@ -7,6 +7,7 @@ import me.aleksilassila.litematica.printer.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.Action;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
+import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -28,13 +29,19 @@ public class FlowerPotGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
-        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
-            return Result.skip();
-        }
-        if (requiredBlock instanceof FlowerPotBlock potBlock) {
-            Block content = potBlock.getPotted();
-            if (content != Blocks.AIR) {
-                return Result.success(new ClickAction().setItem(content.asItem()).setNeedSupportBlock());
+        if (requiredBlock instanceof FlowerPotBlock rPotBlock) {
+            Block rPotted = rPotBlock.getPotted();
+            if (rPotted != Blocks.AIR) {
+                if (currentBlock instanceof FlowerPotBlock cPotBlock) {
+                    Block cPotted = cPotBlock.getPotted();
+                    if (cPotted == Blocks.AIR) {
+                        return Result.success(new ClickAction().setItem(rPotted.asItem()).setNeedSupportBlock());
+                    } else if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()
+                            && rPotted != cPotted
+                            && InteractionUtils.canBreakBlock(blockPos)) {
+                        InteractionUtils.INSTANCE.add(context);
+                    }
+                }
             }
         }
         return Result.skip();

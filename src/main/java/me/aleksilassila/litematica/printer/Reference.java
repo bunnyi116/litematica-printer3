@@ -26,8 +26,37 @@ public class Reference {
     public final static Item[] SHOVEL_ITEMS = {Items.DIAMOND_SHOVEL, Items.IRON_SHOVEL, Items.GOLDEN_SHOVEL, Items.NETHERITE_SHOVEL, Items.STONE_SHOVEL, Items.WOODEN_SHOVEL};
     public final static Item[] AXE_ITEMS = {Items.DIAMOND_AXE, Items.IRON_AXE, Items.GOLDEN_AXE, Items.NETHERITE_AXE, Items.STONE_AXE, Items.WOODEN_AXE};
 
+
+    public static Class<?>[] ignoreWrongStateBlocks = {
+            BrewingStandBlock.class,            // 酿造台
+            ChiseledBookShelfBlock.class,       // 雕文书架
+            StainedGlassPaneBlock.class,        // 雕文书架
+            VegetationBlock.class,              // 植被
+
+//            TurtleEggBlock.class,               // 海龟蛋
+//            SeaPickleBlock.class,               // 海泡菜
+
+    };
+
+
     /**
-     * 可以交互的方块类
+     * 检查方块是否可以交互
+     *
+     * @param block 你传入的方块类
+     * @return 是否可以交互
+     */
+    public static boolean isIgnoreWrongStateBlocks(Block block) {
+        for (Class<?> clazz : ignoreWrongStateBlocks) {
+            if (clazz.isInstance(block)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 可交互的方块类
      */
     public static Class<?>[] interactiveBlocks = {
             AbstractFurnaceBlock.class,     // 熔炉/烟熏炉/高炉
