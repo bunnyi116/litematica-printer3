@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 
+import java.util.Optional;
+
 /**
  * 通用兜底指南。
  * 处理所有没有被其他专用 Guide 接管的方块。
@@ -39,7 +41,7 @@ public class DefaultGuide extends Guide {
         if (requiredBlock instanceof FaceAttachedHorizontalDirectionalBlock && facing != null && attachFace != null) {
             Direction sidePitch = attachFace == AttachFace.CEILING ? Direction.UP
                     : attachFace == AttachFace.FLOOR ? Direction.DOWN
-                    : facing;
+                      : facing;
             Direction clickSide = attachFace == AttachFace.WALL ? facing : facing.getOpposite();
             return Result.success(action.setSides(clickSide).setLookDirection(clickSide.getOpposite(), sidePitch));
         }
@@ -60,7 +62,7 @@ public class DefaultGuide extends Guide {
                     || requiredBlock instanceof StonecutterBlock
                     //#if MC >= 12105
                     || requiredBlock instanceof FlowerBedBlock
-                    //#endif
+                //#endif
             ) {
                 // 栅栏门已由 FenceGateGuide 处理，这里不再特殊反向
                 action.setLookDirection(facing.getOpposite());
@@ -109,11 +111,20 @@ public class DefaultGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        if (!Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
-            return Result.pass();
+        if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
+            // 方块带有布尔方向属性则跳过状态错误破坏(该属性大多数是玻璃板或墙连接状态，为避免误触所以跳过该类型的状态错误破坏
+            Optional<Boolean> wall = getProperty(requiredState, BlockStateProperties.UP)
+                    .or(() -> getProperty(requiredState, BlockStateProperties.DOWN))
+                    .or(() -> getProperty(requiredState, BlockStateProperties.NORTH))
+                    .or(() -> getProperty(requiredState, BlockStateProperties.EAST))
+                    .or(() -> getProperty(requiredState, BlockStateProperties.SOUTH))
+                    .or(() -> getProperty(requiredState, BlockStateProperties.WEST));
+
+            if (wall.isEmpty()) {
+                InteractionUtils.INSTANCE.add(context);
+            }
         }
-        InteractionUtils.INSTANCE.add(context);
-        return Result.pass();
+        return Result.skip();
     }
 
     @Override
