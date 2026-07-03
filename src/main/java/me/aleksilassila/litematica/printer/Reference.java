@@ -40,10 +40,7 @@ public class Reference {
 
 
     /**
-     * 检查方块是否可以交互
-     *
-     * @param block 你传入的方块类
-     * @return 是否可以交互
+     * 是否忽略错误状态方块
      */
     public static boolean isIgnoreWrongStateBlocks(Block block) {
         for (Class<?> clazz : ignoreWrongStateBlocks) {
@@ -104,9 +101,6 @@ public class Reference {
 
     /**
      * 检查方块是否可以交互
-     *
-     * @param block 你传入的方块类
-     * @return 是否可以交互
      */
     public static boolean isInteractive(Block block) {
         for (Class<?> clazz : interactiveBlocks) {
