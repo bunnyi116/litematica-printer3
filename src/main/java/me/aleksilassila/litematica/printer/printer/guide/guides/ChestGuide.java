@@ -68,9 +68,10 @@ public class ChestGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        // 目标是双箱子：当前箱子类型不对，需要破坏后重新放置来触发自动合并
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
-            InteractionUtils.INSTANCE.add(context);
+            if (requiredState.getValue(ChestBlock.TYPE) == ChestType.SINGLE) {
+                InteractionUtils.INSTANCE.add(context);
+            }
         }
         return Result.skip();
     }

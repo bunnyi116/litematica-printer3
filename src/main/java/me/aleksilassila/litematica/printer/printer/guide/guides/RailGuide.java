@@ -24,7 +24,9 @@ public class RailGuide extends Guide {
         Optional<RailShape> railShape = getProperty(requiredState, BlockStateProperties.RAIL_SHAPE)
                 .or(() -> getProperty(requiredState, BlockStateProperties.RAIL_SHAPE_STRAIGHT));
 
-        if (railShape.isEmpty()) return Result.pass();
+        if (railShape.isEmpty()) {
+            return Result.skip();
+        }
 
         Action action = new Action();
         switch (railShape.get()) {

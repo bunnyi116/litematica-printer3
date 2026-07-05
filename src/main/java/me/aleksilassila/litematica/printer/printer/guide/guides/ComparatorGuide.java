@@ -37,7 +37,7 @@ public class ComparatorGuide extends Guide {
                 if (level.getSignal(blockPos, requiredFacing) != schematic.getSignal(blockPos, requiredFacing)) {
                     // 检验输入端是否为"能输出比较器信号方块"
                     if (facingFirstBlockCtx.requiredState.hasAnalogOutputSignal()) {
-                        return Result.pass();
+                        return Result.skip();
                     }
                     // 检验输入端非透明方块
                     if (facingFirstBlockCtx.requiredState.isRedstoneConductor(facingFirstBlockCtx.level, facingFirstBlockCtx.blockPos)) {
@@ -51,11 +51,11 @@ public class ComparatorGuide extends Guide {
                         );
                         // 隔非透明方块检验容器
                         if (facingSecondBlockCtx.requiredState.hasAnalogOutputSignal()) {
-                            return Result.pass();
+                            return Result.skip();
                         }
                         // 隔非透明方块检验物品展示框
                         if (!itemFrameList.isEmpty()) {
-                            return Result.pass();
+                            return Result.skip();
                         }
                     }
                 }

@@ -45,10 +45,14 @@ public class DoorGuide extends Guide {
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, DoorBlock.FACING).orElse(null);
-        if (facing == null || doorHinge == null || doubleBlockHalf == null) return Result.pass();
+        if (facing == null || doorHinge == null || doubleBlockHalf == null) {
+            return Result.skip();
+        }
 
         // 只放置门的下半，上半由游戏自动生成
-        if (doubleBlockHalf == DoubleBlockHalf.UPPER) return Result.pass();
+        if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
+            return Result.skip();
+        }
 
         BlockPos upperPos = blockPos.above();
 

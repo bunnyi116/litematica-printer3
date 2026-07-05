@@ -43,9 +43,9 @@ public class FluidGuide extends Guide {
         if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue()) {
             return Result.skip();
         }
-        // 创造放行
+        // 创造跳过
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
-            return Result.pass();
+            return Result.skip();
         }
         // 破冰放水逻辑
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {

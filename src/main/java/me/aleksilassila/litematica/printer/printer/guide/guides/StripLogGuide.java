@@ -30,7 +30,7 @@ public class StripLogGuide extends Guide {
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction.Axis axis = getProperty(requiredState, BlockStateProperties.AXIS).orElse(null);
-        if (axis == null) return Result.pass();
+        if (axis == null) return Result.skip();
 
         Action action = new Action().setSides(axis);
 

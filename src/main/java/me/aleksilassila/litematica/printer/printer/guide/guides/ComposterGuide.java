@@ -28,7 +28,7 @@ public class ComposterGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return Result.pass();
+        if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return Result.skip();
         if (!currentState.hasProperty(ComposterBlock.LEVEL) || !requiredState.hasProperty(ComposterBlock.LEVEL)) {
             return Result.skip();
         }
@@ -36,7 +36,7 @@ public class ComposterGuide extends Guide {
         int currentLevel = getProperty(currentState, ComposterBlock.LEVEL).orElse(0);
         int requiredLevel = getProperty(requiredState, ComposterBlock.LEVEL).orElse(0);
 
-        if (currentLevel >= requiredLevel) return Result.pass();
+        if (currentLevel >= requiredLevel) return Result.skip();
 
         List<String> whitelist = Configs.Print.FILL_COMPOSTER_WHITELIST.getStrings();
         if (!whitelist.equals(compostWhitelistCache)) {

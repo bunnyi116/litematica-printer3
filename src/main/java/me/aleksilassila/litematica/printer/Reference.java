@@ -34,6 +34,7 @@ public class Reference {
             BrewingStandBlock.class,            // 酿造台
             StainedGlassPaneBlock.class,        // 玻璃板
             VegetationBlock.class,              // 植被
+            LeavesBlock.class,                  // 树叶
 
 //            TurtleEggBlock.class,               // 海龟蛋
 //            SeaPickleBlock.class,               // 海泡菜
