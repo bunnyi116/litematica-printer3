@@ -1,6 +1,5 @@
 package me.aleksilassila.litematica.printer.utils.minecraft;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
@@ -17,13 +16,6 @@ import java.util.Optional;
 
 @SuppressWarnings("EnhancedSwitchMigration")
 public class BlockStateUtils extends BlockUtils {
-    private final static BooleanProperty wallUpProperty = BlockStateProperties.UP;
-    private final static EnumProperty<WallSide> wallNorthProperty = BlockStateProperties.NORTH_WALL;
-    private final static EnumProperty<WallSide> wallSouthProperty = BlockStateProperties.SOUTH_WALL;
-    private final static EnumProperty<WallSide> wallWestProperty = BlockStateProperties.WEST_WALL;
-    private final static EnumProperty<WallSide> wallEastProperty = BlockStateProperties.EAST_WALL;
-
-    // ==================== 原有方法保持不变 ====================
 
     public static Comparable<?> getPropertyByName(BlockState state, String name) {
         for (Property<?> prop : state.getProperties()) {
@@ -84,16 +76,14 @@ public class BlockStateUtils extends BlockUtils {
 
     public static Optional<Property<?>> getWallFacingProperty(Direction wallFacing) {
         switch (wallFacing) {
-            case UP:
-                return Optional.of(wallUpProperty);
             case NORTH:
-                return Optional.of(wallNorthProperty);
+                return Optional.of(BlockStateProperties.NORTH_WALL);
             case SOUTH:
-                return Optional.of(wallSouthProperty);
+                return Optional.of(BlockStateProperties.SOUTH_WALL);
             case WEST:
-                return Optional.of(wallWestProperty);
+                return Optional.of(BlockStateProperties.WEST_WALL);
             case EAST:
-                return Optional.of(wallEastProperty);
+                return Optional.of(BlockStateProperties.EAST_WALL);
         }
         return Optional.empty();
     }
@@ -101,13 +91,13 @@ public class BlockStateUtils extends BlockUtils {
     public static Optional<Property<?>> getCrossCollisionBlock(Direction wallFacing) {
         switch (wallFacing) {
             case NORTH:
-                return Optional.of(wallNorthProperty);
+                return Optional.of(BlockStateProperties.NORTH);
             case SOUTH:
-                return Optional.of(wallSouthProperty);
+                return Optional.of(BlockStateProperties.SHORT);
             case WEST:
-                return Optional.of(wallWestProperty);
+                return Optional.of(BlockStateProperties.WEST);
             case EAST:
-                return Optional.of(wallEastProperty);
+                return Optional.of(BlockStateProperties.EAST);
         }
         return Optional.empty();
     }

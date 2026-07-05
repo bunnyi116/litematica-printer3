@@ -38,7 +38,7 @@ public class SchematicBlockContext {
     }
 
     public SchematicBlockContext offset(Direction direction, int steps) {
-        return new SchematicBlockContext(client, level, schematic, blockPos.relative(direction,steps));
+        return new SchematicBlockContext(client, level, schematic, blockPos.relative(direction, steps));
     }
 
     public SchematicBlockContext offset(Direction direction) {
@@ -70,6 +70,6 @@ public class SchematicBlockContext {
     }
 
     public BlockMatchResult compare(Property<?>... propertiesToIgnore) {
-        return BlockMatchResult.compare(this);
+        return BlockMatchResult.compare(this, propertiesToIgnore);
     }
 }
