@@ -261,7 +261,7 @@
   "litematica-printer.message.inventory.shulker_occupied": "潜影盒占用了预选栏",
   "litematica-printer.message.inventory.sync_cancelled": "已取消同步",
   "litematica-printer.message.inventory.sync_complete": "同步完成",
-  "litematica-printer.message.inventory.sync_progress": "剩余 %d 个容器. 再次按下快捷键取消同步",
+  "litematica-printer.message.inventory.sync_progress": "剩余 %s 个容器. 再次按下快捷键取消同步",
   "litematica-printer.message.inventory.too_far": "距离过远无法打开容器",
   "litematica-printer.message.remote.auto_disabled": "已自动关闭远程交互容器",
   "litematica-printer.message.remote.auto_enabled": "已自动启用远程交互容器!!!",
