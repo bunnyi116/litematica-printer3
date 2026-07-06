@@ -45,7 +45,7 @@ public class FluidGuide extends Guide {
         }
         // 创造跳过
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
-            return Result.skip();
+            return Result.pass();
         }
         // 破冰放水逻辑
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
@@ -69,7 +69,7 @@ public class FluidGuide extends Guide {
                 return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(blockPos);
             }
         }
-        return Result.skip();
+        return Result.pass();
     }
 
     /**
