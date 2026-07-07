@@ -41,6 +41,6 @@ public class SeaPickleGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

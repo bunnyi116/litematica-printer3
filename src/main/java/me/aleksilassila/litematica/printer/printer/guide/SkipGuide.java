@@ -10,6 +10,6 @@ public class SkipGuide extends Guide {
 
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

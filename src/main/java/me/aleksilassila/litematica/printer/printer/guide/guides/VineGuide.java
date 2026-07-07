@@ -29,7 +29,7 @@ public class VineGuide extends Guide {
                 return Result.success(new Action().setSides(direction));
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
@@ -44,6 +44,6 @@ public class VineGuide extends Guide {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

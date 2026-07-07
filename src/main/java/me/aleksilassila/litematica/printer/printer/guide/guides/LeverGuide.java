@@ -21,6 +21,6 @@ public class LeverGuide extends Guide {
         if (!getProperty(requiredState, LeverBlock.POWERED).equals(getProperty(currentState, LeverBlock.POWERED))) {
             return Result.success(new ClickAction());
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

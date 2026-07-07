@@ -37,39 +37,39 @@ public class FluidGuide extends Guide {
     protected Result onBuildAction(BlockMatchResult state) {
         // 不处理岩浆打印, 跳过
         if (requiredState.is(Blocks.LAVA)) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         // 玩家可跳过含水方块打印
         if (Configs.Print.SKIP_WATERLOGGED_BLOCK.getBooleanValue()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         // 创造跳过
         if (client.gameMode == null || client.gameMode.getPlayerMode().isCreative()) {
-            return Result.pass();
+            return Result.passToNext();
         }
         // 破冰放水逻辑
         if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
             if (isOnCooldown()) {
-                return Result.skip().setIterationNextBlockPos(blockPos);
+                return Result.skipOtherGuide().setIterationNextBlockPos(blockPos);
             }
             if (isCorrectWaterLevel(requiredState, currentState)) {
-                return Result.pass().setIterationNextBlockPos(blockPos);
+                return Result.passToNext().setIterationNextBlockPos(blockPos);
             }
             if (!canIceMeltIntoWaterSource(level, blockPos)) {
-                return Result.skip().setIterationNextBlockPos(blockPos);
+                return Result.skipOtherGuide().setIterationNextBlockPos(blockPos);
             }
             if (currentBlock instanceof IceBlock) {
                 if (!InteractionUtils.INSTANCE.contains(blockPos)) {
                     InteractionUtils.INSTANCE.add(context);
                     setCooldown(2);
                 }
-                return Result.skip().setIterationNextBlockPos(blockPos);
+                return Result.skipOtherGuide().setIterationNextBlockPos(blockPos);
             }
             if (BlockStateUtils.isReplaceable(currentState)) {
                 return Result.success(new Action().setItem(Items.ICE)).setIterationNextBlockPos(blockPos);
             }
         }
-        return Result.pass();
+        return Result.passToNext();
     }
 
     /**

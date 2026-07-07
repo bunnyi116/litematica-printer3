@@ -62,7 +62,7 @@ public class ObserverGuide extends Guide {
             SchematicBlockContext output = context.offset(facing.getOpposite());    // 输出端块（红点面）
             if (!output.requiredState.isAir()) {
                 //TODO: 正常来讲, 应该还要检查输出端周围是否还有活塞, 因为可能会触发更新导致激活
-                return Result.skip();
+                return Result.skipOtherGuide();
             }
         }
 
@@ -72,7 +72,7 @@ public class ObserverGuide extends Guide {
             Direction tempFacing = temp.requiredState.getValue(ObserverBlock.FACING);
             SchematicBlockContext offset = temp.offset(tempFacing);
             if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
-                return Result.skip();
+                return Result.skipOtherGuide();
             }
             temp = offset;
         }
@@ -83,7 +83,7 @@ public class ObserverGuide extends Guide {
             while (temp.requiredState.getBlock() instanceof FallingBlock) {
                 SchematicBlockContext offset = temp.offset(Direction.DOWN);
                 if (BlockMatchResult.compare(offset) != BlockMatchResult.CORRECT) {
-                    return Result.skip();
+                    return Result.skipOtherGuide();
                 }
                 temp = offset;
             }
@@ -94,7 +94,7 @@ public class ObserverGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
 }

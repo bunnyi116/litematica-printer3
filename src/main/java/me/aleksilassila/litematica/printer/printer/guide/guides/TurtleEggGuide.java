@@ -33,6 +33,6 @@ public class TurtleEggGuide extends Guide {
         if (currentEggs < requiredEggs) {
             return Result.success(new ClickAction().setItem(Items.TURTLE_EGG));
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

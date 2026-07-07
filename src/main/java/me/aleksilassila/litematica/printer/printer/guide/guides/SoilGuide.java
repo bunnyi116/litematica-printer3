@@ -44,13 +44,13 @@ public class SoilGuide extends Guide {
                     )
             );
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         if (requiredBlock instanceof net.minecraft.world.level.block.FarmlandBlock) {
             Block[] soilBlocks = {Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.DIRT_PATH, Blocks.COARSE_DIRT};
@@ -75,11 +75,11 @@ public class SoilGuide extends Guide {
                 }
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

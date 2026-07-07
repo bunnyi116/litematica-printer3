@@ -23,6 +23,6 @@ public class NoteBlockGuide extends Guide {
                 && !getProperty(requiredState, NoteBlock.NOTE).equals(getProperty(currentState, NoteBlock.NOTE))) {
             return Result.success(new ClickAction());
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

@@ -25,11 +25,11 @@ public class NetherPortalGuide extends Guide {
                     .setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE)
                     .setNeedSupportBlock());
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

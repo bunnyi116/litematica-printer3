@@ -43,6 +43,6 @@ public class FenceGateGuide extends Guide {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             me.aleksilassila.litematica.printer.utils.InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

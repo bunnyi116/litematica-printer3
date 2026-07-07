@@ -27,11 +27,11 @@ public final class Result {
         this.skipOtherGuide = skipOtherGuide;
     }
 
-    public static Result pass() {
+    public static Result passToNext() {
         return new Result(null, true, false);
     }
 
-    public static Result skip() {
+    public static Result skipOtherGuide() {
         return new Result(null, false, true);
     }
 
@@ -48,10 +48,10 @@ public final class Result {
      *
      * @param condition 条件
      * @param action    要返回的动作
-     * @return 条件成立则返回 {@link #success(Action)}，否则返回 {@link #pass}
+     * @return 条件成立则返回 {@link #success(Action)}，否则返回 {@link #passToNext}
      */
     public static Result resultIf(boolean condition, Action action) {
-        return condition ? success(action) : pass();
+        return condition ? success(action) : passToNext();
     }
 
     /**
@@ -59,10 +59,10 @@ public final class Result {
      *
      * @param condition 条件
      * @param supplier  动作供应者（延迟执行）
-     * @return 条件成立则返回成功结果，否则返回 {@link #pass}
+     * @return 条件成立则返回成功结果，否则返回 {@link #passToNext}
      */
     public static Result resultIf(boolean condition, Supplier<Action> supplier) {
-        return condition ? success(supplier.get()) : pass();
+        return condition ? success(supplier.get()) : passToNext();
     }
 
     /**

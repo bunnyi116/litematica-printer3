@@ -37,7 +37,7 @@ public class SlabGuide extends Guide {
         // DOUBLE + WRONG_STATE：在已有单层台阶上点击另一面来合并
         // 交给 onBuildActionWrongState 处理（使用 ClickAction 直接点击方块本身）
         if (slabType == SlabType.DOUBLE && state == BlockMatchResult.WRONG_STATE) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         // DOUBLE：MISSING 时当前位置是空气，需要先放一个单层台阶（BOTTOM）
@@ -91,7 +91,7 @@ public class SlabGuide extends Guide {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     public static Map<Direction, Vec3> getSlabSides(Level world, BlockPos pos, SlabType requiredHalf) {

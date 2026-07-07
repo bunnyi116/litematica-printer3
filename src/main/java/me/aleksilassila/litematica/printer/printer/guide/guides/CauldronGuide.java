@@ -1,12 +1,10 @@
 package me.aleksilassila.litematica.printer.printer.guide.guides;
 
-import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.printer.guide.BlockMatchResult;
 import me.aleksilassila.litematica.printer.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.printer.action.ClickAction;
-import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.InventoryUtils;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.item.Items;
@@ -28,7 +26,7 @@ public class CauldronGuide extends Guide {
         Optional<Integer> requiredLevel = getProperty(requiredState, LayeredCauldronBlock.LEVEL);
 
         if (currentLevel.isEmpty() || requiredLevel.isEmpty()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         if (currentLevel.get() > requiredLevel.get()) {
@@ -41,11 +39,11 @@ public class CauldronGuide extends Guide {
                 return Result.success(new ClickAction().setItem(Items.POTION));
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

@@ -41,6 +41,6 @@ public class SnowGuide extends Guide {
             }
         }
 
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

@@ -33,11 +33,11 @@ public class ClimbingPlantGuide extends Guide {
                 || requiredBlock instanceof net.minecraft.world.level.block.TwistingVinesPlantBlock) {
             return Result.success(new Action().setItem(Items.TWISTING_VINES).setNeedSupportBlock());
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

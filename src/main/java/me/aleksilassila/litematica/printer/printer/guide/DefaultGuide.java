@@ -122,11 +122,11 @@ public class DefaultGuide extends Guide {
                     .or(() -> getProperty(requiredState, BlockStateProperties.WEST));
 
             if (wall.isPresent() || Reference.isIgnoreWrongStateBlocks(requiredBlock)) {
-                return Result.skip();
+                return Result.skipOtherGuide();
             }
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
@@ -142,6 +142,6 @@ public class DefaultGuide extends Guide {
                 }
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

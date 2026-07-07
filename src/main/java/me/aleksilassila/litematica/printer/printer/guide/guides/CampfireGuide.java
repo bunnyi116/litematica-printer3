@@ -39,6 +39,6 @@ public class CampfireGuide extends Guide {
                 && facing != getProperty(currentState, net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING).orElse(null)) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

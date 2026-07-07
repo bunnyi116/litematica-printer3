@@ -46,12 +46,12 @@ public class DoorGuide extends Guide {
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, DoorBlock.FACING).orElse(null);
         if (facing == null || doorHinge == null || doubleBlockHalf == null) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         // 只放置门的下半，上半由游戏自动生成
         if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         BlockPos upperPos = blockPos.above();
@@ -98,7 +98,7 @@ public class DoorGuide extends Guide {
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         // 铁门 / 铁活板门无法手动交互
         if (requiredState.is(Blocks.IRON_DOOR) || requiredState.is(Blocks.IRON_TRAPDOOR)) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         // 开关状态不一致 → 右键点击切换
         if (!getProperty(requiredState, BlockStateProperties.OPEN).equals(getProperty(currentState, BlockStateProperties.OPEN))) {
@@ -113,6 +113,6 @@ public class DoorGuide extends Guide {
                 .orElse(null)) {
             me.aleksilassila.litematica.printer.utils.InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

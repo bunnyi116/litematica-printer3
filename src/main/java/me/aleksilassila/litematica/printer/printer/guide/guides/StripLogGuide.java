@@ -30,7 +30,7 @@ public class StripLogGuide extends Guide {
     @Override
     protected Result onBuildActionMissingBlock(BlockMatchResult state) {
         Direction.Axis axis = getProperty(requiredState, BlockStateProperties.AXIS).orElse(null);
-        if (axis == null) return Result.skip();
+        if (axis == null) return Result.skipOtherGuide();
 
         Action action = new Action().setSides(axis);
 
@@ -50,12 +50,12 @@ public class StripLogGuide extends Guide {
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         Block stripped = STRIPPED_LOGS.get(currentBlock);
         if (stripped != null && stripped == requiredBlock) {
             return Result.success(new ClickAction().setItems(Reference.AXE_ITEMS));
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

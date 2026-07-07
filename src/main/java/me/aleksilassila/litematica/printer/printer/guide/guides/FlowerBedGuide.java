@@ -29,7 +29,7 @@ public class FlowerBedGuide extends Guide {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }
 //#endif

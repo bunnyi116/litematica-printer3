@@ -37,6 +37,6 @@ public class SkullGuide extends Guide {
                     .setLookDirection(facing.getOpposite())
                     .setNeedSupportBlock());
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

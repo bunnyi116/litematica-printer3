@@ -25,7 +25,7 @@ public class RailGuide extends Guide {
                 .or(() -> getProperty(requiredState, BlockStateProperties.RAIL_SHAPE_STRAIGHT));
 
         if (railShape.isEmpty()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         Action action = new Action();
@@ -42,6 +42,6 @@ public class RailGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

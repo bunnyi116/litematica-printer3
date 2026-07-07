@@ -73,6 +73,6 @@ public class ChestGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

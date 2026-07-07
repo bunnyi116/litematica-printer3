@@ -44,11 +44,11 @@ public class FlowerPotGuide extends Guide {
                 }
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

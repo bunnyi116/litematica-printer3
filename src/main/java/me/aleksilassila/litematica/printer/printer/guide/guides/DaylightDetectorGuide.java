@@ -25,12 +25,12 @@ public class DaylightDetectorGuide extends Guide {
 
         // POWER 由光照强度决定，无法修正
         if (requiredPower != currentPower) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         // POWER 相同但 INVERTED 不同 → 右键切换
         if (requiredInverted != currentInverted) {
             return Result.success(new ClickAction());
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

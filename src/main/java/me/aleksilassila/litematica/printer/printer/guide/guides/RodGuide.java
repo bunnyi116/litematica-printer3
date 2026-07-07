@@ -42,7 +42,7 @@ public class RodGuide extends Guide {
                 if (statesEqual(forwardSchematic, forwardState)) {
                     return Result.success(new Action().setSides(facing.getOpposite()));
                 }
-                return Result.skip();
+                return Result.skipOtherGuide();
             }
         }
 

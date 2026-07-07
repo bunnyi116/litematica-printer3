@@ -29,7 +29,7 @@ public class StairGuide extends Guide {
         Direction facing = getProperty(requiredState, StairBlock.FACING).orElse(null);
         Half half = getProperty(requiredState, StairBlock.HALF).orElse(null);
         if (facing == null || half == null) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         Map<Direction, Vec3> sides = new HashMap<>();
@@ -55,6 +55,6 @@ public class StairGuide extends Guide {
                 InteractionUtils.INSTANCE.add(context);
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }

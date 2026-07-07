@@ -32,15 +32,15 @@ public class FireGuide extends Guide {
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         // AGE 不同 → 环境决定，无法修正，跳过
         if (!getProperty(requiredState, FireBlock.AGE).equals(getProperty(currentState, FireBlock.AGE))) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         // SoulFire 没有方向属性，AGE 相同即可
         if (requiredBlock instanceof SoulFireBlock) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         // 方向属性不对 → 放置性错误，破坏重放
-        return Result.pass();
+        return Result.passToNext();
     }
 
     /**

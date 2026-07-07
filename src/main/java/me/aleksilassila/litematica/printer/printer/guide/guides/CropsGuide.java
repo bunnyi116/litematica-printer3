@@ -42,7 +42,7 @@ public class CropsGuide extends Guide {
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
         if (!Configs.Print.BONEMEAL_CROPS.getBooleanValue()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         Direction facing = getProperty(requiredState, BlockStateProperties.HORIZONTAL_FACING).orElse(null);
@@ -52,10 +52,10 @@ public class CropsGuide extends Guide {
             if (facing != null
                     && currentState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                     && !getProperty(currentState, BlockStateProperties.HORIZONTAL_FACING).equals(Optional.of(facing))) {
-                return Result.pass(); // facing 不对 → 放置性错误，交给 DefaultGuide 破坏重放
+                return Result.passToNext(); // facing 不对 → 放置性错误，交给 DefaultGuide 破坏重放
             }
             // AGE 由生长决定，跳过
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
 
         // 农作物（CropBlock）和甜菜根（BeetrootBlock）：骨粉催熟
@@ -70,7 +70,7 @@ public class CropsGuide extends Guide {
                 ageProp = CropBlock.AGE;
                 maxAge = cropBlock.getMaxAge();
             } else {
-                return Result.skip();
+                return Result.skipOtherGuide();
             }
             int requiredAge = getProperty(requiredState, ageProp).orElse(0);
             int currentAge = getProperty(currentState, ageProp).orElse(0);
@@ -78,13 +78,13 @@ public class CropsGuide extends Guide {
                 return Result.success(new ClickAction().setItem(Items.BONE_MEAL));
             }
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 
     @Override
     protected Result onBuildActionWrongBlock(BlockMatchResult state) {
         if (!Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
-            return Result.skip();
+            return Result.skipOtherGuide();
         }
         String requiredKey = BlockUtils.getKeyString(requiredBlock);
         String currentKey = BlockUtils.getKeyString(currentBlock);
@@ -93,6 +93,6 @@ public class CropsGuide extends Guide {
         } else if (requiredKey.contains("melon_stem") && !currentKey.contains("melon_stem")) {
             InteractionUtils.INSTANCE.add(context);
         }
-        return Result.skip();
+        return Result.skipOtherGuide();
     }
 }
