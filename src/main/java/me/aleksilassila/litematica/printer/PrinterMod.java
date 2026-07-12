@@ -6,8 +6,10 @@ import me.aleksilassila.litematica.printer.printer.zxy.inventory.OpenInventoryPa
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
-
-public class LitematicaPrinterMod implements ModInitializer, ClientModInitializer {
+/**
+ * Fabric模组入口
+ */
+public class PrinterMod implements ModInitializer, ClientModInitializer {
     @Override
     public void onInitialize() {
         OpenInventoryPacket.init();

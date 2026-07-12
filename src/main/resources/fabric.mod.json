@@ -20,10 +20,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.aleksilassila.litematica.printer.LitematicaPrinterMod"
+      "me.aleksilassila.litematica.printer.PrinterMod"
     ],
     "client": [
-      "me.aleksilassila.litematica.printer.LitematicaPrinterMod"
+      "me.aleksilassila.litematica.printer.PrinterMod"
     ],
     "modmenu": [
       "me.aleksilassila.litematica.printer.config.ModMenu"
