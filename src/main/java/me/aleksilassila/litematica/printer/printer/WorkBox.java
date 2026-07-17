@@ -103,7 +103,7 @@ public class WorkBox implements Iterable<BlockPos> {
 
         updateCenter();
         // 范围变更后重置迭代器状态
-        resetIterator();
+//        resetIterator();
     }
 
     public void setCenterAndRadius(int cx, int cy, int cz, int radius) {
@@ -116,7 +116,7 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxZ = cz + radius;
 
         updateCenter();
-        resetIterator();
+//        resetIterator();
     }
 
     public void setCenterAndRadiusWithLevel(int cx, int cy, int cz, int radius, Level level) {
@@ -131,7 +131,7 @@ public class WorkBox implements Iterable<BlockPos> {
         this.maxZ = cz + radius;
 
         updateCenter();
-        resetIterator();
+//        resetIterator();
     }
 
     public void setCenter(int cx, int cy, int cz) {

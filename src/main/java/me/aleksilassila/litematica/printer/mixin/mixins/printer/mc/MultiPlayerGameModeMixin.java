@@ -183,7 +183,7 @@ public abstract class MultiPlayerGameModeMixin implements MultiPlayerGameModeExt
             if (this.hasDelayedDestroy && blockPos.equals(this.delayedDestroyPos)) {
                 this.hasDelayedDestroy = false;
             }
-            if (this.isDestroying && this.sameDestroyTarget(blockPos)) {
+            if (this.isDestroying && blockPos.equals(this.destroyBlockPos)) {
                 this.isDestroying = false;
             }
             return BlockBreakResult.COMPLETED;
@@ -240,7 +240,8 @@ public abstract class MultiPlayerGameModeMixin implements MultiPlayerGameModeExt
                         }
                         return getActionPacket(Action.STOP_DESTROY_BLOCK, blockPos, direction, sequence);
                     });
-                    level.destroyBlockProgress(player.getId(), blockPos, this.litematica_printer$getDestroyStage());
+                    int state = (int) (Math.max(destroyProgress, 1.0F) * 10.0f);
+                    level.destroyBlockProgress(player.getId(), blockPos, state);
                     return BlockBreakResult.COMPLETED;
                 } else if (!hasDelayedDestroy) {
                     // 发送STOP让服务端当前处理位置状态转移到延迟破坏位置中
@@ -249,7 +250,8 @@ public abstract class MultiPlayerGameModeMixin implements MultiPlayerGameModeExt
                     this.delayedDestroyPos = blockPos;
                     this.delayedDestroyStartTick = getClientTickCount();
                     this.delayedDestroyLocalPrediction = localPrediction;
-                    level.destroyBlockProgress(player.getId(), blockPos, this.litematica_printer$getDestroyStage());
+                    int state = (int) (destroyProgress * 10.0f);
+                    level.destroyBlockProgress(player.getId(), blockPos, state);
                     return this.isDestroying ? BlockBreakResult.IN_PROGRESS : BlockBreakResult.COMPLETED;
                 }
             }
