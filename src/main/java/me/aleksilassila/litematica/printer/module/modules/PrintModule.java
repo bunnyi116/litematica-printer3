@@ -38,10 +38,6 @@ public class PrintModule extends Module {
 
     @Getter
     @Setter
-    private boolean pistonNeedFix;
-
-    @Getter
-    @Setter
     private boolean printerMemorySync;
 
     private SchematicBlockContext ctx;
@@ -107,21 +103,21 @@ public class PrintModule extends Module {
         }
         this.action = action.get();
         this.ctx = context;
-        return true;
-    }
-
-    @Override
-    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         if (Configs.Placement.FALLING_CHECK.getBooleanValue() && ctx.requiredState.getBlock() instanceof FallingBlock) {
             BlockPos downPos = blockPos.below();
             if (FallingBlock.isFree(level.getBlockState(downPos))) {
                 MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_NO_SUPPORT.getName(ctx.requiredBlockName().getString()));
                 return false;
-            } else if (level.getBlockState(downPos) != ctx.schematic.getBlockState(downPos)) {
+            } else if (LitematicaUtils.isSchematicBlock(downPos) && level.getBlockState(downPos) != ctx.schematic.getBlockState(downPos)) {
                 MessageUtils.setOverlayMessage(I18n.FALLING_BLOCK_MISMATCH.getName(ctx.requiredBlockName().getString()));
                 return false;
             }
         }
+        return true;
+    }
+
+    @Override
+    protected boolean executeIterationBlockPos(BlockPos blockPos, AtomicReference<Boolean> skipIteration) {
         Direction side = action.getValidSide(level, blockPos);
         if (side == null) return false;
 

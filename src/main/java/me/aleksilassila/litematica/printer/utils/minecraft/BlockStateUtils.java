@@ -13,17 +13,22 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @SuppressWarnings("EnhancedSwitchMigration")
 public class BlockStateUtils extends BlockUtils {
 
-    public static Comparable<?> getPropertyByName(BlockState state, String name) {
+    public static Comparable<?> getPropertyByName(BlockState state, Predicate<Property<?>> property) {
         for (Property<?> prop : state.getProperties()) {
-            if (prop.getName().equalsIgnoreCase(name)) {
+            if (property.test(prop)) {
                 return state.getValue(prop);
             }
         }
         return null;
+    }
+
+    public static Comparable<?> getPropertyByName(BlockState state, String name) {
+        return getPropertyByName(state, property -> property.getName().equalsIgnoreCase(name));
     }
 
     public static boolean statesEqualIgnoreProperties(BlockState state1, BlockState state2, Property<?>... propertiesToIgnore) {
