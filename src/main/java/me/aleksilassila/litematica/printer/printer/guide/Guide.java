@@ -39,10 +39,10 @@ public abstract class Guide extends BlockStateUtils {
             return this.onBuildActionCorrect(state);
         }
 
-        // 方块在此位置无法自然存活（火把无附着面、植物在石头上等），跳过放置
-        if (!requiredState.canSurvive(level, blockPos)) {
-            return Result.passToNext();
-        }
+//        // 方块在此位置无法自然存活（火把无附着面、植物在石头上等），跳过放置
+//        if (!requiredState.canSurvive(level, blockPos)) {
+//            return Result.passToNext();
+//        }
 
         Result result = this.onBuildAction(state);
         if (!result.isPassToNext() || result.isSkipOtherGuide()) {

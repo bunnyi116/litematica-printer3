@@ -11,6 +11,7 @@ import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 /**
  * 篝火
@@ -28,15 +29,18 @@ public class CampfireGuide extends Guide {
         boolean currentLit = getProperty(currentState, CampfireBlock.LIT).orElseThrow();
 
         if (!requiredLit && currentLit) {
-            return Result.success(new ClickAction().setItems(Reference.SHOVEL_ITEMS).setSides(Direction.UP));
+            return Result.success(new ClickAction()
+                    .setItems(Reference.SHOVEL_ITEMS)
+                    .setSides(Direction.UP));
         }
         if (requiredLit && !currentLit) {
-            return Result.success(new ClickAction().setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE));
+            return Result.success(new ClickAction()
+                    .setItems(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE));
         }
 
         // 朝向不对 → 破坏
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()
-                && facing != getProperty(currentState, net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING).orElse(null)) {
+                && facing != getProperty(currentState, BlockStateProperties.FACING).orElse(null)) {
             InteractionUtils.INSTANCE.add(context);
         }
         return Result.skipOtherGuide();

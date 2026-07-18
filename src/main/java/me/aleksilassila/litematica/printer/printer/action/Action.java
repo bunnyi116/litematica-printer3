@@ -23,15 +23,12 @@ import java.util.*;
 @SuppressWarnings("UnusedReturnValue")
 public class Action {
     protected Map<Direction, Vec3> sides;
-    @Nullable
     @Getter
-    protected Look look = null;
-    @Nullable
-    protected Item[] useItems;
+    protected @Nullable Look look = null;
+    protected @Nullable Item[] useItems;
     protected boolean needSupportBlock = false;
     @Getter
-    @Nullable
-    protected Boolean sneak = null;
+    protected @Nullable Boolean sneak = null;
 
     public Action() {
         this.sides = new HashMap<>();

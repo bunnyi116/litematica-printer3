@@ -30,6 +30,7 @@ public class BedGuide extends Guide {
 
     @Override
     protected Result onBuildActionWrongState(BlockMatchResult state) {
+        //TODO: 状态错误破坏待处理
         return Result.skipOtherGuide();
     }
 }
