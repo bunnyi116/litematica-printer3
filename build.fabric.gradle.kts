@@ -58,7 +58,8 @@ dependencies {
 
     implementation("com.belerweb:pinyin4j:${prop("pinyin_version")}")?.let { include(it) }
 
-    implementation("com.terraformersmc:modmenu:${prop("modmenu")}")
+//    implementation("com.terraformersmc:modmenu:${prop("modmenu")}")
+    implementation("maven.modrinth:modmenu:${prop("modmenu")}")
 
     // masa
     implementation("maven.modrinth:malilib:$malilib")

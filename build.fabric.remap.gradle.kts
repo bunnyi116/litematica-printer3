@@ -1,7 +1,5 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage", "MISSING_DEPENDENCY_SUPERCLASS_IN_TYPE_ARGUMENT")
 
-import groovy.json.JsonSlurper
-import java.text.SimpleDateFormat
 import java.util.*
 
 plugins {
@@ -56,8 +54,12 @@ configurations.all {
         force("maven.modrinth:malilib:${prop("malilib")}")
         force("maven.modrinth:litematica:${prop("litematica")}")
         force("maven.modrinth:tweakeroo:${prop("tweakeroo")}")
-        force("com.terraformersmc:modmenu:${prop("modmenu")}")
+        force("maven.modrinth:modmenu:${prop("modmenu")}")
     }
+    exclude(group = "com.terraformersmc", module = "modmenu")
+    exclude(group = "com.github.sakura-ryoko", module = "malilib")
+    exclude(group = "com.github.sakura-ryoko", module = "litematica")
+    exclude(group = "com.github.sakura-ryoko", module = "tweakeroo")
 }
 
 dependencies {
@@ -67,7 +69,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.belerweb:pinyin4j:${prop("pinyin_version")}")?.let { include(it) }
 
-    modImplementation("com.terraformersmc:modmenu:${prop("modmenu")}")
+    modImplementation("maven.modrinth:modmenu:${prop("modmenu")}")
+//    modImplementation("com.terraformersmc:modmenu:${prop("modmenu")}")
 
     // modImplementation("com.github.sakura-ryoko:malilib:${props["malilib"]}")
     // modImplementation("com.github.sakura-ryoko:litematica:${props["litematica"]}")
