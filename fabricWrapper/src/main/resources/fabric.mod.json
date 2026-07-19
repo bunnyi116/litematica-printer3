@@ -39,9 +39,11 @@
   "license": "${mod_license}",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "com.github.bunnyi116.fabric.wrapper.Mod"
+    ]
   },
   "depends": {
-    "litematica-printer": "*",
     "malilib": "*",
     "litematica": "*",
     "fabric-api": "*"
