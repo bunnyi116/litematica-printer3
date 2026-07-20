@@ -7,7 +7,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.AxisDirection;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.config.enums.WorkMode;
-import me.aleksilassila.litematica.printer.printer.action.ActionManager;
+import me.aleksilassila.litematica.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.printer.WorkBox;
 import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;

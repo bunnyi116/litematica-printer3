@@ -1,0 +1,114 @@
+package me.aleksilassila.litematica.printer.guide.guides;
+
+import me.aleksilassila.litematica.printer.config.Configs;
+import me.aleksilassila.litematica.printer.guide.BlockMatchResult;
+import me.aleksilassila.litematica.printer.guide.Guide;
+import me.aleksilassila.litematica.printer.guide.Result;
+import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
+import me.aleksilassila.litematica.printer.action.Action;
+import me.aleksilassila.litematica.printer.utils.InteractionUtils;
+import me.aleksilassila.litematica.printer.utils.minecraft.DirectionUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 台阶
+ */
+public class SlabGuide extends Guide {
+    public SlabGuide(SchematicBlockContext context) {
+        super(context);
+
+    }
+
+    @Override
+    protected Result onBuildActionMissingBlock(BlockMatchResult state) {
+        SlabType slabType = getProperty(requiredState, SlabBlock.TYPE).orElseThrow();
+        // DOUBLE + WRONG_STATE：在已有单层台阶上点击另一面来合并
+        // 交给 onBuildActionWrongState 处理（使用 ClickAction 直接点击方块本身）
+        if (slabType == SlabType.DOUBLE && state == BlockMatchResult.WRONG_STATE) {
+            return Result.skipOtherGuide();
+        }
+
+        // DOUBLE：MISSING 时当前位置是空气，需要先放一个单层台阶（BOTTOM）
+        if (slabType == SlabType.DOUBLE && state == BlockMatchResult.MISSING) {
+            // 确保只在有支撑的面放置
+            Map<Direction, Vec3> slabSides = getSlabSides(level, blockPos, SlabType.BOTTOM);
+            return Result.success(new Action().setSides(slabSides));
+        }
+
+        Map<Direction, Vec3> sides = new HashMap<>();
+        Direction half;
+
+        if (slabType == SlabType.TOP) {
+            half = Direction.UP;
+        } else if (slabType == SlabType.BOTTOM) {
+            half = Direction.DOWN;
+        } else {
+            // DOUBLE + MISSING（上面已处理，这里不会到达）
+            half = Direction.DOWN;
+        }
+
+        sides.put(half, Vec3.ZERO);
+
+        // 检查水平相邻台阶
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockPos neighborPos = blockPos.relative(side);
+            BlockState neighborState = level.getBlockState(neighborPos);
+            if (neighborState.hasProperty(SlabBlock.TYPE)) {
+                SlabType neighborType = getProperty(neighborState, SlabBlock.TYPE).orElse(SlabType.BOTTOM);
+                if (neighborType != SlabType.DOUBLE && neighborType != slabType) {
+                    continue;
+                }
+            }
+            sides.put(side, Vec3.atLowerCornerOf(DirectionUtils.getVector(half)).scale(0.25));
+        }
+
+        return Result.success(new Action().setSides(sides));
+    }
+
+    @Override
+    protected Result onBuildActionWrongState(BlockMatchResult state) {
+        SlabType slabType = getProperty(requiredState, SlabBlock.TYPE).orElseThrow();
+        if (slabType == SlabType.DOUBLE) {
+            if (currentState.hasProperty(SlabBlock.TYPE)) {
+                SlabType current = getProperty(currentState, SlabBlock.TYPE).orElse(SlabType.BOTTOM);
+                Direction clickFace = current == SlabType.BOTTOM ? Direction.DOWN : Direction.UP;
+                return Result.success(new Action()
+                        .setSides(clickFace)
+                        .setItem(requiredBlock.asItem()));
+            }
+        }
+        if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
+            InteractionUtils.INSTANCE.add(context);
+        }
+        return Result.skipOtherGuide();
+    }
+
+    public static Map<Direction, Vec3> getSlabSides(Level world, BlockPos pos, SlabType requiredHalf) {
+        if (requiredHalf == SlabType.DOUBLE) requiredHalf = SlabType.BOTTOM;
+        Direction requiredDir = requiredHalf == SlabType.TOP ? Direction.UP : Direction.DOWN;
+        Map<Direction, Vec3> sides = new HashMap<>();
+        sides.put(requiredDir, new Vec3(0, 0, 0));
+        if (world.getBlockState(pos).hasProperty(SlabBlock.TYPE)) {
+            sides.put(requiredDir.getOpposite(), Vec3.atLowerCornerOf(DirectionUtils.getVector(requiredDir)).scale(0.5));
+        }
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockState neighborCurrentState = world.getBlockState(pos.relative(side));
+            if (neighborCurrentState.hasProperty(SlabBlock.TYPE) && neighborCurrentState.getValue(SlabBlock.TYPE) != SlabType.DOUBLE) {
+                if (neighborCurrentState.getValue(SlabBlock.TYPE) != requiredHalf) {
+                    continue;
+                }
+            }
+            sides.put(side, Vec3.atLowerCornerOf(DirectionUtils.getVector(requiredDir)).scale(0.25));
+        }
+        return sides;
+    }
+}

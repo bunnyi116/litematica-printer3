@@ -1,6 +1,6 @@
 package me.aleksilassila.litematica.printer.mixin.mixins.printer.mc;
 
-import me.aleksilassila.litematica.printer.printer.action.ActionManager;
+import me.aleksilassila.litematica.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.printer.Look;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import org.spongepowered.asm.mixin.Mixin;

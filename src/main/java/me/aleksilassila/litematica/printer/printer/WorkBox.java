@@ -16,31 +16,13 @@ import java.util.Iterator;
 
 public class WorkBox implements Iterable<BlockPos> {
     @Getter
-    protected int minX;
+    protected int minX, minY, minZ;
 
     @Getter
-    protected int minY;
+    protected int maxX, maxY, maxZ;
 
     @Getter
-    protected int minZ;
-
-    @Getter
-    protected int maxX;
-
-    @Getter
-    protected int maxY;
-
-    @Getter
-    protected int maxZ;
-
-    @Getter
-    protected int centerX;
-
-    @Getter
-    protected int centerY;
-
-    @Getter
-    protected int centerZ;
+    protected int centerX, centerY, centerZ;
 
     @Getter
     @Setter

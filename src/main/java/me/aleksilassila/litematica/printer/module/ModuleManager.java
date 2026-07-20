@@ -6,7 +6,7 @@ import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.event.EventCallbacks;
 import me.aleksilassila.litematica.printer.mixin.extension.MultiPlayerGameModeExtension;
 import me.aleksilassila.litematica.printer.module.modules.*;
-import me.aleksilassila.litematica.printer.printer.action.ActionManager;
+import me.aleksilassila.litematica.printer.action.ActionManager;
 import me.aleksilassila.litematica.printer.printer.zxy.inventory.InventoryUtils;
 import me.aleksilassila.litematica.printer.printer.zxy.utils.ZxyUtils;
 import me.aleksilassila.litematica.printer.utils.BlockPosCooldownUtils;

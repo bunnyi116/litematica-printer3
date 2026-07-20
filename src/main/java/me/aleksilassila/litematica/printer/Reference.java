@@ -35,7 +35,7 @@ public class Reference {
             StainedGlassPaneBlock.class,        // 玻璃板
             VegetationBlock.class,              // 植被
             LeavesBlock.class,                  // 树叶
-
+            SugarCaneBlock.class,               // 甘蔗
 //            TurtleEggBlock.class,               // 海龟蛋
 //            SeaPickleBlock.class,               // 海泡菜
 
