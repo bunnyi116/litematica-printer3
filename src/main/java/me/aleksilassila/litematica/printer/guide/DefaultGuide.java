@@ -111,7 +111,7 @@ public class DefaultGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             // 方块带有布尔方向属性则跳过状态错误破坏(该属性大多数是玻璃板或墙连接状态，为避免误触所以跳过该类型的状态错误破坏
             Optional<Boolean> wall = getProperty(requiredState, BlockStateProperties.UP)
@@ -130,7 +130,7 @@ public class DefaultGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         boolean printBreakWrongBlock = Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue();
         boolean printBreakExtraBlock = Configs.Print.BREAK_EXTRA_BLOCK.getBooleanValue();
         if (printBreakWrongBlock || printBreakExtraBlock) {

@@ -27,7 +27,7 @@ public class PistonGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             if (currentState.hasProperty(PistonBaseBlock.FACING)) {
                 if (!getProperty(currentState, PistonBaseBlock.FACING).equals(getProperty(requiredState, PistonBaseBlock.FACING))) {

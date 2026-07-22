@@ -29,7 +29,7 @@ public class FireGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         // AGE 不同 → 环境决定，无法修正，跳过
         if (!getProperty(requiredState, FireBlock.AGE).equals(getProperty(currentState, FireBlock.AGE))) {
             return Result.skipOtherGuide();

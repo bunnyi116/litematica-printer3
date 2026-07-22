@@ -18,7 +18,7 @@ public class RedstoneWireGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         RedstoneSide rNorth = getProperty(requiredState, BlockStateProperties.NORTH_REDSTONE).orElse(RedstoneSide.NONE);
         RedstoneSide rEast = getProperty(requiredState, BlockStateProperties.EAST_REDSTONE).orElse(RedstoneSide.NONE);
         RedstoneSide rSouth = getProperty(requiredState, BlockStateProperties.SOUTH_REDSTONE).orElse(RedstoneSide.NONE);

@@ -51,8 +51,8 @@ public abstract class Guide extends BlockStateUtils {
 
         return switch (state) {
             case MISSING -> this.onBuildActionMissingBlock(state);
-            case WRONG_BLOCK -> this.onBuildActionWrongBlock(state);
-            case WRONG_STATE -> this.onBuildActionWrongState(state);
+            case ERROR_BLOCK -> this.onBuildActionErrorBlock(state);
+            case ERROR_STATE -> this.onBuildActionErrorState(state);
             default -> Result.passToNext();
         };
     }
@@ -75,11 +75,11 @@ public abstract class Guide extends BlockStateUtils {
         return Result.passToNext();
     }
 
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         return Result.passToNext();
     }
 
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         return Result.passToNext();
     }
 

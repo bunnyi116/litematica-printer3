@@ -40,7 +40,7 @@ public class CropsGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (!Configs.Print.BONEMEAL_CROPS.getBooleanValue()) {
             return Result.skipOtherGuide();
         }
@@ -82,7 +82,7 @@ public class CropsGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         if (!Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
             return Result.skipOtherGuide();
         }

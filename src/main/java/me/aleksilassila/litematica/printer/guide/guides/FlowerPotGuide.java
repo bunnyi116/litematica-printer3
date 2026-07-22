@@ -28,7 +28,7 @@ public class FlowerPotGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         if (requiredBlock instanceof FlowerPotBlock rPotBlock) {
             Block rPotted = rPotBlock.getPotted();
             if (rPotted != Blocks.AIR) {
@@ -48,7 +48,7 @@ public class FlowerPotGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         return Result.skipOtherGuide();
     }
 }

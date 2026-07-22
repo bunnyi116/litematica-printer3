@@ -27,7 +27,7 @@ public class TurtleEggGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         int currentEggs = getProperty(currentState, TurtleEggBlock.EGGS).orElseThrow();
         int requiredEggs = getProperty(requiredState, TurtleEggBlock.EGGS).orElseThrow();
         if (currentEggs < requiredEggs) {

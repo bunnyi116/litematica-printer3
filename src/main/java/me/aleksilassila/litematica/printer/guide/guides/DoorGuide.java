@@ -96,7 +96,7 @@ public class DoorGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         // 铁门 / 铁活板门无法手动交互
         if (requiredState.is(Blocks.IRON_DOOR) || requiredState.is(Blocks.IRON_TRAPDOOR)) {
             return Result.skipOtherGuide();

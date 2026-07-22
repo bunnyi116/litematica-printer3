@@ -20,7 +20,7 @@ public class EndPortalFrameGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         boolean requiredHasEye = getProperty(requiredState, EndPortalFrameBlock.HAS_EYE).orElseThrow();
         boolean currentHasEye = getProperty(currentState, EndPortalFrameBlock.HAS_EYE).orElseThrow();
         if (requiredHasEye && !currentHasEye) {

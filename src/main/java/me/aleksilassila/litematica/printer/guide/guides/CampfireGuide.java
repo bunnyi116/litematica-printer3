@@ -23,7 +23,7 @@ public class CampfireGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, CampfireBlock.FACING).orElseThrow();
         boolean requiredLit = getProperty(requiredState, CampfireBlock.LIT).orElseThrow();
         boolean currentLit = getProperty(currentState, CampfireBlock.LIT).orElseThrow();

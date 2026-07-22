@@ -48,7 +48,7 @@ public class StripLogGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue()) {
             return Result.skipOtherGuide();
         }

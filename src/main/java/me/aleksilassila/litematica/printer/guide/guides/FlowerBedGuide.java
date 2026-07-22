@@ -20,7 +20,7 @@ public class FlowerBedGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         int requiredAmount = getProperty(requiredState, BlockStateProperties.FLOWER_AMOUNT).orElse(1);
         int currentAmount = getProperty(currentState, BlockStateProperties.FLOWER_AMOUNT).orElse(1);
         if (currentAmount <= requiredAmount) {

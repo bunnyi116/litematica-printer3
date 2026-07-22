@@ -41,7 +41,7 @@ public class SeaPickleGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (currentState.getBlock() instanceof SeaPickleBlock) {
             int currentPickles = getProperty(currentState, SeaPickleBlock.PICKLES).orElse(1);
             int requiredPickles = getProperty(requiredState, SeaPickleBlock.PICKLES).orElse(1);

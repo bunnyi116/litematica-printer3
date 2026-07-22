@@ -38,7 +38,7 @@ public class ClimbingPlantGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         return Result.skipOtherGuide();
     }
 }

@@ -44,7 +44,7 @@ public class SeagrassGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         return Result.skipOtherGuide();
     }
 

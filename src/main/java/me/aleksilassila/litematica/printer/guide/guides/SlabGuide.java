@@ -33,7 +33,7 @@ public class SlabGuide extends Guide {
         SlabType slabType = getProperty(requiredState, SlabBlock.TYPE).orElseThrow();
         // DOUBLE + WRONG_STATE：在已有单层台阶上点击另一面来合并
         // 交给 onBuildActionWrongState 处理（使用 ClickAction 直接点击方块本身）
-        if (slabType == SlabType.DOUBLE && state == BlockMatchResult.WRONG_STATE) {
+        if (slabType == SlabType.DOUBLE && state == BlockMatchResult.ERROR_STATE) {
             return Result.skipOtherGuide();
         }
 
@@ -75,7 +75,7 @@ public class SlabGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         SlabType slabType = getProperty(requiredState, SlabBlock.TYPE).orElseThrow();
         if (slabType == SlabType.DOUBLE) {
             if (currentState.hasProperty(SlabBlock.TYPE)) {

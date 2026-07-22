@@ -13,12 +13,12 @@ public enum BlockMatchResult {
     /**
      * 方块错误：方块类型完全不同，且不满足缺失/状态错误的条件
      */
-    WRONG_BLOCK,
+    ERROR_BLOCK,
 
     /**
      * 状态错误：方块类型相同，但方块状态（如朝向、亮度等）不一致
      */
-    WRONG_STATE,
+    ERROR_STATE,
 
     /**
      * 正确匹配：原理图方块与实际方块的类型和状态完全一致
@@ -34,12 +34,12 @@ public enum BlockMatchResult {
             if (BlockStateUtils.statesEqualIgnoreProperties(context.requiredState, context.currentState, propertiesToIgnore)) {
                 return CORRECT;
             }
-            return WRONG_STATE;
+            return ERROR_STATE;
         }
         if (!context.requiredState.isAir() && BlockStateUtils.isReplaceable(context.currentState)) {
             return MISSING;
         }
-        return WRONG_BLOCK;
+        return ERROR_BLOCK;
     }
 }
 

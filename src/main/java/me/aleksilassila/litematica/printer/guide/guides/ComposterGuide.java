@@ -27,7 +27,7 @@ public class ComposterGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (!Configs.Print.FILL_COMPOSTER.getBooleanValue()) return Result.skipOtherGuide();
         if (!currentState.hasProperty(ComposterBlock.LEVEL) || !requiredState.hasProperty(ComposterBlock.LEVEL)) {
             return Result.skipOtherGuide();

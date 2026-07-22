@@ -17,7 +17,7 @@ public class LeverGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (!getProperty(requiredState, LeverBlock.POWERED).equals(getProperty(currentState, LeverBlock.POWERED))) {
             return Result.success(new ClickAction());
         }

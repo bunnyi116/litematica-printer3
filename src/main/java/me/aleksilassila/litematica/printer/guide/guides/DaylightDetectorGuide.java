@@ -17,7 +17,7 @@ public class DaylightDetectorGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         int requiredPower = getProperty(requiredState, DaylightDetectorBlock.POWER).orElseThrow();
         int currentPower = getProperty(currentState, DaylightDetectorBlock.POWER).orElseThrow();
         boolean requiredInverted = getProperty(requiredState, DaylightDetectorBlock.INVERTED).orElseThrow();

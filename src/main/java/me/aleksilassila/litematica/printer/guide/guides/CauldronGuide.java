@@ -21,7 +21,7 @@ public class CauldronGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         Optional<Integer> currentLevel = getProperty(currentState, LayeredCauldronBlock.LEVEL);
         Optional<Integer> requiredLevel = getProperty(requiredState, LayeredCauldronBlock.LEVEL);
 
@@ -43,7 +43,7 @@ public class CauldronGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongBlock(BlockMatchResult state) {
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
         return Result.skipOtherGuide();
     }
 }

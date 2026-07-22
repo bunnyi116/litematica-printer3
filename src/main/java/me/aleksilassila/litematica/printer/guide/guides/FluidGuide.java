@@ -35,7 +35,7 @@ public class FluidGuide extends Guide {
 
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
-        if (state == BlockMatchResult.WRONG_BLOCK) {
+        if (state == BlockMatchResult.ERROR_BLOCK) {
             InteractionUtils.INSTANCE.add(context);
         }
         // 不处理岩浆打印, 跳过

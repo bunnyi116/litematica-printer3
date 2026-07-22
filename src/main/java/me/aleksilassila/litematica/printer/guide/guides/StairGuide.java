@@ -45,7 +45,7 @@ public class StairGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, StairBlock.FACING).orElse(null);
         Half half = getProperty(requiredState, StairBlock.HALF).orElse(null);
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {

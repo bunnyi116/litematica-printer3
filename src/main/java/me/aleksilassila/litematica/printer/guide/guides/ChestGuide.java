@@ -67,7 +67,7 @@ public class ChestGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (Configs.Print.BREAK_WRONG_STATE_BLOCK.getBooleanValue()) {
             if (requiredState.getValue(ChestBlock.TYPE) == ChestType.SINGLE) {
                 InteractionUtils.INSTANCE.add(context);

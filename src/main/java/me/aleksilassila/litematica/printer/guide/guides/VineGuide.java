@@ -33,7 +33,7 @@ public class VineGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         for (Direction direction : Direction.values()) {
             if (direction == Direction.DOWN && requiredBlock instanceof VineBlock) continue;
             Object value = BlockStateUtils.getPropertyByName(requiredState, direction.name());

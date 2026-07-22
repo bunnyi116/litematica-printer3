@@ -28,7 +28,7 @@ public class FenceGateGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         Direction facing = getProperty(requiredState, FenceGateBlock.FACING).orElseThrow();
 
         Direction currentFacing = getProperty(currentState, BlockStateProperties.HORIZONTAL_FACING).orElse(null);

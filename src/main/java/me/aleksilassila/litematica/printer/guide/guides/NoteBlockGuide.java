@@ -18,7 +18,7 @@ public class NoteBlockGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         if (Configs.Print.NOTE_BLOCK_TUNING.getBooleanValue()
                 && !getProperty(requiredState, NoteBlock.NOTE).equals(getProperty(currentState, NoteBlock.NOTE))) {
             return Result.success(new ClickAction());

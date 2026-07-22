@@ -20,7 +20,7 @@ public class CandleGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         int requiredCandles = getProperty(requiredState, CandleBlock.CANDLES).orElseThrow();
         int currentCandles = getProperty(currentState, CandleBlock.CANDLES).orElseThrow();
         boolean requiredLit = getProperty(requiredState, CandleBlock.LIT).orElseThrow();

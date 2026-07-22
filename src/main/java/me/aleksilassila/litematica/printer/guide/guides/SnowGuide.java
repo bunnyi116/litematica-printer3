@@ -26,7 +26,7 @@ public class SnowGuide extends Guide {
     }
 
     @Override
-    protected Result onBuildActionWrongState(BlockMatchResult state) {
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
         int requiredLayers = getProperty(requiredState, SnowLayerBlock.LAYERS).orElseThrow();
         Optional<Integer> layers = getProperty(currentState, SnowLayerBlock.LAYERS);
 
