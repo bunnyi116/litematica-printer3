@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.AxisDirection;
+import me.aleksilassila.litematica.printer.config.enums.IterationOrder;
 import me.aleksilassila.litematica.printer.config.enums.WorkSingleMode;
 import me.aleksilassila.litematica.printer.config.enums.WorkMode;
 import me.aleksilassila.litematica.printer.action.ActionManager;
@@ -167,6 +168,7 @@ public abstract class Module extends ModuleGameVariables {
                 return v;
             }
         });
+        box.setIterationOrder((IterationOrder) Configs.Core.ITERATION_ORDER.getOptionListValue());
         box.setXDirection((AxisDirection) Configs.Core.AXIS_DIRECTION_X.getOptionListValue());
         box.setYDirection((AxisDirection) Configs.Core.AXIS_DIRECTION_Y.getOptionListValue());
         box.setZDirection((AxisDirection) Configs.Core.AXIS_DIRECTION_Z.getOptionListValue());

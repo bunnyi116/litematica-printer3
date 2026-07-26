@@ -152,7 +152,7 @@ public class Configs extends ConfigBuilders implements IConfigHandler {
 
         // 核心 - 遍历顺序
         public final static ConfigOptionList ITERATION_ORDER = optionList("workIteratorMode")
-                .defaultValue(IterationOrder.XZY)
+                .defaultValue(IterationOrder.YXZ)
                 .build();
 
         // 核心 - 迭代X轴反向
