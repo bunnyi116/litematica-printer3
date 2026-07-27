@@ -3,6 +3,7 @@ package me.aleksilassila.litematica.printer.module;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import lombok.Getter;
+import me.aleksilassila.litematica.printer.Debug;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.enums.AxisDirection;
 import me.aleksilassila.litematica.printer.config.enums.IterationOrder;
@@ -69,10 +70,9 @@ public abstract class Module extends ModuleGameVariables {
         boolean interrupt = false;
         WorkBox workBox = updateWorkBox();
         if (workBox != null) {
-            if (workBox.isIterationFinished()){
+            if (workBox.isIterationFinished()) {
                 workBox.resetIterator();
             }
-
             int maxEffectiveExec = this.getMaxEffectiveExecutionsPerTick();
             int maxTotalIter = this.getMaxTotalIterationsPerTick();
             int totalIterCount = 0;
@@ -102,7 +102,7 @@ public abstract class Module extends ModuleGameVariables {
                     continue;
                 }
                 if (this.canIterationBlockPos(blockPos) && !isBlockPosOnCooldown(blockPos)) {
-                    if (this.executeIterationBlockPos(blockPos, this.skipOtherPosIteration)){
+                    if (this.executeIterationBlockPos(blockPos, this.skipOtherPosIteration)) {
                         effectiveExecCount++;
                     }
                     if (this.skipOtherPosIteration.get() || maxEffectiveExec > 0 && effectiveExecCount >= maxEffectiveExec) {

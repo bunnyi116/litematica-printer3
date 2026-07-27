@@ -10,6 +10,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Guide extends BlockStateUtils {
     protected final SchematicBlockContext context;
@@ -49,12 +50,19 @@ public abstract class Guide extends BlockStateUtils {
             return result;
         }
 
-        return switch (state) {
+        @Nullable BlockPos blockPos = result.getIterationNextBlockPos();
+        result = switch (state) {
             case MISSING -> this.onBuildActionMissingBlock(state);
             case ERROR_BLOCK -> this.onBuildActionErrorBlock(state);
             case ERROR_STATE -> this.onBuildActionErrorState(state);
             default -> Result.passToNext();
         };
+
+        if (result.getIterationNextBlockPos() == null && blockPos != null) {
+            result.setIterationNextBlockPos(blockPos);
+        }
+
+        return result;
     }
 
     protected boolean canExecute() {

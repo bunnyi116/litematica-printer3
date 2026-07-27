@@ -6,6 +6,7 @@ import me.aleksilassila.litematica.printer.guide.Guide;
 import me.aleksilassila.litematica.printer.guide.Result;
 import me.aleksilassila.litematica.printer.printer.SchematicBlockContext;
 import me.aleksilassila.litematica.printer.action.Action;
+import me.aleksilassila.litematica.printer.utils.ConfigUtils;
 import me.aleksilassila.litematica.printer.utils.InteractionUtils;
 import me.aleksilassila.litematica.printer.utils.minecraft.BlockStateUtils;
 import net.minecraft.core.BlockPos;
@@ -35,9 +36,6 @@ public class FluidGuide extends Guide {
 
     @Override
     protected Result onBuildAction(BlockMatchResult state) {
-        if (state == BlockMatchResult.ERROR_BLOCK) {
-            InteractionUtils.INSTANCE.add(context);
-        }
         // 不处理岩浆打印, 跳过
         if (requiredState.is(Blocks.LAVA)) {
             return Result.skipOtherGuide();
@@ -51,12 +49,15 @@ public class FluidGuide extends Guide {
             return Result.passToNext();
         }
         // 破冰放水逻辑
-        if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue()) {
+        if (Configs.Print.PRINT_ICE_FOR_WATER.getBooleanValue() && BlockStateUtils.isWaterSource(requiredState)) {
             if (isOnCooldown()) {
                 return Result.skipOtherGuide().setIterationNextBlockPos(blockPos);
             }
             if (isCorrectWaterLevel(requiredState, currentState)) {
-                return Result.passToNext().setIterationNextBlockPos(blockPos);
+                if (BlockStateUtils.isReplaceable(currentState)) {
+                    return Result.passToNext().setIterationNextBlockPos(blockPos);
+                }
+                return Result.passToNext();
             }
             if (!canIceMeltIntoWaterSource(level, blockPos)) {
                 return Result.skipOtherGuide().setIterationNextBlockPos(blockPos);
@@ -73,6 +74,19 @@ public class FluidGuide extends Guide {
             }
         }
         return Result.passToNext();
+    }
+
+    @Override
+    protected Result onBuildActionErrorBlock(BlockMatchResult state) {
+        if (Configs.Print.BREAK_WRONG_BLOCK.getBooleanValue() && requiredBlock != currentBlock) {
+            InteractionUtils.INSTANCE.add(context);
+        }
+        return Result.skipOtherGuide();
+    }
+
+    @Override
+    protected Result onBuildActionErrorState(BlockMatchResult state) {
+        return Result.skipOtherGuide();
     }
 
     /**
